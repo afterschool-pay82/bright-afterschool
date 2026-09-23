@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>밝은생각 | 방과후학교 행정 허브</title>
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- SheetJS (Excel) -->
+  <!-- SheetJS (Excel 파싱 & 미리보기) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Fonts -->
+  <!-- Google Fonts: Gaegu & Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -30,8 +30,10 @@
 
   <style>
     body { background-color: #F8F9FA; font-family: 'Noto Sans KR', sans-serif; }
-    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background-color: #E2E8F0; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background-color: #94A3B8; }
     @media print {
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
@@ -40,14 +42,14 @@
     }
   </style>
 </head>
-<body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
+<body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased selection:bg-amber-200 selection:text-amber-900">
 
   <!-- ================= 1. LEFT SIDEBAR ================= -->
-  <aside class="w-full md:w-72 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
-    <!-- Brand Header (밝은생각 한글만 표시) -->
-    <div class="p-5 border-b border-amber-100 bg-amber-50/60 flex items-center justify-between">
+  <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20 shadow-xs">
+    <!-- Brand Header -->
+    <div class="p-5 border-b border-amber-100 bg-amber-50/70 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">
+        <div class="w-11 h-11 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-2xl shadow-xs">
           🌟
         </div>
         <div>
@@ -60,46 +62,46 @@
     <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
       <!-- 전체 위탁학교 버튼 -->
-      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm">
+      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
           <span class="text-lg">🏫</span>
           <span class="text-sm font-extrabold tracking-tight">전체 학교 통합보기</span>
         </div>
-        <span id="badge-total-schools" class="text-xs px-2 py-0.5 rounded-full bg-white/80 text-amber-900 font-extrabold">0개교</span>
+        <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/90 text-amber-950 font-extrabold">0개교</span>
       </button>
 
       <!-- 학교 목록 헤더 -->
       <div class="flex items-center justify-between px-2 mb-2">
-        <span class="text-xs font-bold text-stone-400">위탁 학교 목록</span>
+        <span class="text-xs font-bold text-stone-400">위탁 학교 목록 (수정 가능)</span>
         <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> 학교 추가
         </button>
       </div>
 
-      <!-- 학교 리스트 (단정하게 학교명 1줄만 출력) -->
+      <!-- 학교 리스트 -->
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- JS 렌더링 -->
       </div>
     </div>
 
-    <!-- 파일 저장 안내 -->
-    <div class="p-3 border-t border-stone-200 bg-amber-50/30">
-      <div class="p-2.5 bg-white rounded-xl border border-amber-200 text-stone-600 text-xs leading-relaxed">
-        <span class="font-bold text-amber-900 flex items-center gap-1 mb-0.5">
-          <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> 파일 저장 지원
+    <!-- 파일 지원 안내 -->
+    <div class="p-3 border-t border-stone-200 bg-amber-50/40">
+      <div class="p-3 bg-white rounded-2xl border border-amber-200/80 text-stone-600 text-xs leading-relaxed shadow-2xs">
+        <span class="font-extrabold text-amber-900 flex items-center gap-1 mb-1">
+          <i data-lucide="eye" class="w-3.5 h-3.5 text-amber-600"></i> 전 파일 화면 미리보기 지원
         </span>
-        청구서(엑셀), 안내장(PDF)을 직접 올리고 언제든 원본을 다운로드할 수 있습니다.
+        청구서·출근부 <b>엑셀 표 뷰어</b>와 안내장 <b>PDF 문서 뷰어</b>를 화면에서 즉시 열람 및 원본 다운로드 가능합니다.
       </div>
     </div>
   </aside>
 
-  <!-- ================= 2. MAIN CONTENT ================= -->
+  <!-- ================= 2. MAIN WORKSPACE ================= -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scroll min-w-0">
     <!-- Top Bar -->
-    <header class="bg-white sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
+    <header class="bg-white/95 backdrop-blur-sm sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span id="current-school-badge" class="px-3 py-1 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-200">
+          <span id="current-school-badge" class="px-3 py-1 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-950 border border-amber-300">
             전체 위탁학교 통합
           </span>
           <span class="text-xs text-stone-400 font-mono" id="realtime-clock"></span>
@@ -110,49 +112,54 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="downloadSampleExcel()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-200">
+        <button onclick="downloadSampleExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-200 shadow-2xs">
           <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i> 서식 엑셀 다운
         </button>
-        <button onclick="window.print()" class="px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
           <i data-lucide="printer" class="w-4 h-4"></i> 인쇄
         </button>
       </div>
     </header>
 
     <!-- School Banner -->
-    <div id="school-hero-banner" class="mx-6 mt-5 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
+    <div id="school-hero-banner" class="mx-6 mt-5 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 shadow-xs">
       <div>
         <span class="text-xs font-extrabold px-2 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영</span>
         <h3 class="text-xl font-bold text-stone-900 mt-1.5" id="hero-school-name">전체 위탁학교 종합 현황</h3>
-        <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">청구서(엑셀), 시간표, 대체강사 매칭 및 안내장(PDF)을 관리합니다.</p>
+        <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">청구서(엑셀), 시간표, 대체강사 매칭 및 분기별 안내장(PDF)을 통합 관리합니다.</p>
       </div>
-      <button onclick="openAddBillingModal()" class="px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
-        <i data-lucide="plus-circle" class="w-4 h-4"></i> 청구서 엑셀 올리기
-      </button>
+      <div class="flex items-center gap-2">
+        <button id="btn-edit-current-school" onclick="quickEditCurrentSchool()" class="px-3.5 py-2 rounded-2xl bg-white hover:bg-amber-100 text-amber-950 font-bold text-xs border border-amber-300 flex items-center gap-1.5 shadow-2xs hidden">
+          <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-700"></i> 학교명 수정
+        </button>
+        <button onclick="openAddBillingModal()" class="px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> 청구서 엑셀 올리기
+        </button>
+      </div>
     </div>
 
-    <!-- Tabs Navigation -->
+    <!-- Tabs Navigation (이미지 요청사항 반영: 안내장 -> '분기별 안내장') -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
-        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-amber-500 text-white shadow-sm">
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-amber-500 text-white shadow-xs whitespace-nowrap">
           <i data-lucide="calculator" class="w-4 h-4"></i> 1~4분기 4주 청구서
         </button>
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 whitespace-nowrap">
           <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표 & 대체강사 찾기
         </button>
-        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 whitespace-nowrap">
           <i data-lucide="receipt" class="w-4 h-4"></i> 지출결의서 & 출근부 (엑셀)
         </button>
-        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="file-text" class="w-4 h-4"></i> 안내장 / 가정통신문 (PDF)
+        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 whitespace-nowrap">
+          <i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장
         </button>
       </nav>
     </div>
 
-    <!-- Container for dynamic views -->
+    <!-- Tab View Container -->
     <div id="printArea" class="p-6 space-y-6">
 
-      <!-- ================= 1. BILLING TAB (간소화: 학교이름/회기/차수/청구서) ================= -->
+      <!-- ================= 1. BILLING TAB ================= -->
       <section id="view-billing" class="space-y-5">
         <!-- Quarter & Period Selector -->
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
@@ -173,7 +180,7 @@
                 <option value="3">3차 (9주~12주)</option>
               </select>
             </div>
-            <button onclick="openAddBillingModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <button onclick="openAddBillingModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-xs">
               <i data-lucide="upload" class="w-3.5 h-3.5"></i> 새 청구서 등록
             </button>
           </div>
@@ -199,11 +206,11 @@
           </div>
         </div>
 
-        <!-- Billing Table -->
+        <!-- Billing Table (미리보기 + 다운로드 버튼 지원) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
           <div class="p-4 border-b border-stone-100 flex items-center justify-between">
             <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">청구서 정산 내역</h3>
-            <span class="text-xs text-stone-400">학교이름 · 회기 · 차수 · 청구서 엑셀 다운로드</span>
+            <span class="text-xs text-stone-400">학교이름 · 회기 · 차수 · 청구서 미리보기 & 엑셀 다운로드</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -214,7 +221,7 @@
                   <th class="py-3 px-3 text-center">회기(분기)</th>
                   <th class="py-3 px-3 text-center">차수(4주)</th>
                   <th class="py-3 px-4 text-right">청구 금액</th>
-                  <th class="py-3 px-4 text-center">청구서 (엑셀 파일)</th>
+                  <th class="py-3 px-4 text-center">첨부 엑셀 청구서</th>
                   <th class="py-3 px-3 text-center">삭제</th>
                 </tr>
               </thead>
@@ -231,7 +238,7 @@
           <div class="mb-3">
             <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-sky-200 text-sky-900">스마트 매칭</span>
             <h4 class="text-base font-bold text-stone-900 mt-1">시간표가 겹치지 않는 대체 강사 검색</h4>
-            <p class="text-xs text-stone-500">결강이나 사정 발생 시, 원하는 요일·시간대에 다른 수업이 없는 강사를 실시간 매칭합니다.</p>
+            <p class="text-xs text-stone-500">결강이나 사정 발생 시, 원하는 요일·시간대에 다른 학교 수업이 없는 강사를 실시간 매칭합니다.</p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5">
@@ -354,7 +361,7 @@
                     <th class="p-2.5">학교명</th>
                     <th class="p-2.5">내용</th>
                     <th class="p-2.5 text-right">금액</th>
-                    <th class="p-2.5 text-center">엑셀</th>
+                    <th class="p-2.5 text-center">엑셀 파일</th>
                     <th class="p-2.5 text-center">삭제</th>
                   </tr>
                 </thead>
@@ -375,7 +382,7 @@
                     <th class="p-2.5">학교명</th>
                     <th class="p-2.5">강사(과목)</th>
                     <th class="p-2.5 text-center">출석일</th>
-                    <th class="p-2.5 text-center">엑셀</th>
+                    <th class="p-2.5 text-center">엑셀 파일</th>
                     <th class="p-2.5 text-center">삭제</th>
                   </tr>
                 </thead>
@@ -386,15 +393,19 @@
         </div>
       </section>
 
-      <!-- ================= 4. NOTICES TAB (PDF) ================= -->
+      <!-- ================= 4. TAB: 분기별 안내장 (Quarterly Notices) ================= -->
       <section id="view-notices" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h4 class="font-bold text-stone-900 text-sm">학교별 안내장 & 공문 서류 (PDF)</h4>
-            <p class="text-xs text-stone-400">가정통신문 및 행정공문 원본 PDF를 보관하고 다운로드합니다.</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-stone-400 mr-1">분기 필터:</span>
+            <button onclick="filterNoticeQuarter('all')" id="btn-nq-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white">전체 보기</button>
+            <button onclick="filterNoticeQuarter('1분기')" id="btn-nq-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">1분기</button>
+            <button onclick="filterNoticeQuarter('2분기')" id="btn-nq-2" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">2분기</button>
+            <button onclick="filterNoticeQuarter('3분기')" id="btn-nq-3" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">3분기</button>
+            <button onclick="filterNoticeQuarter('4분기')" id="btn-nq-4" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">4분기</button>
           </div>
           <button onclick="openAddNoticeModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-            <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 안내장 PDF 등록
+            <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 분기별 안내장 등록 (PDF)
           </button>
         </div>
 
@@ -404,10 +415,10 @@
               <tr>
                 <th class="py-3 px-4">등록일</th>
                 <th class="py-3 px-4">학교명</th>
+                <th class="py-3 px-3 text-center">해당 분기</th>
                 <th class="py-3 px-3">구분</th>
-                <th class="py-3 px-4">제목</th>
-                <th class="py-3 px-4 text-center">첨부 파일</th>
-                <th class="py-3 px-3 text-center">다운로드</th>
+                <th class="py-3 px-4">안내장 제목</th>
+                <th class="py-3 px-4 text-center">첨부 PDF 파일</th>
                 <th class="py-3 px-3 text-center">삭제</th>
               </tr>
             </thead>
@@ -419,9 +430,69 @@
     </div>
   </main>
 
-  <!-- ================= M O D A L S ================= -->
+  <!-- ================= 3. FULL FILE PREVIEW MODAL ================= -->
+  <div id="modal-file-preview" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 z-50 hidden">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden border border-stone-200 animate-in fade-in zoom-in-95">
+      <!-- Modal Header -->
+      <div class="p-4 px-6 border-b border-stone-200 bg-stone-50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div id="preview-file-icon" class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+            <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="preview-file-name" class="font-bold text-sm sm:text-base text-stone-900 truncate max-w-md">문서 미리보기</h3>
+            <p id="preview-file-info" class="text-xs text-stone-400">파일 뷰어</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="preview-download-btn" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold text-xs flex items-center gap-1.5 transition-colors">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> 원본 다운로드
+          </button>
+          <button onclick="closeModal('modal-file-preview')" class="w-8 h-8 rounded-xl bg-stone-200 hover:bg-stone-300 flex items-center justify-center text-stone-600 transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
 
-  <!-- 1. 학교 추가 모달 (수동 직접 입력) -->
+      <!-- Excel Sheet Tabs (엑셀일 때만 표시) -->
+      <div id="excel-sheets-bar" class="px-6 py-2 bg-stone-100 border-b border-stone-200 flex items-center gap-2 overflow-x-auto custom-scroll hidden">
+        <span class="text-xs font-bold text-stone-500 mr-1">시트 목록:</span>
+        <div id="excel-sheet-tabs" class="flex gap-1.5"></div>
+      </div>
+
+      <!-- Preview Body Container -->
+      <div id="preview-body" class="flex-1 overflow-auto p-4 sm:p-6 bg-stone-50/50">
+        <!-- JS 동적 주입 (엑셀 테이블 또는 PDF iframe) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. OTHER ACTION MODALS ================= -->
+
+  <!-- 1. 학교명 수정 모달 -->
+  <div id="modal-edit-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="edit" class="w-5 h-5 text-amber-500"></i> 학교명 수정
+        </h3>
+        <button onclick="closeModal('modal-edit-school')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleUpdateSchoolName(event)" class="space-y-4">
+        <input type="hidden" id="edit-school-target-id" />
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">변경할 학교 이름</label>
+          <input type="text" id="edit-school-name-input" required class="w-full text-xs p-3 rounded-xl border border-stone-200 focus:border-amber-400 outline-none font-bold text-stone-900" />
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="closeModal('modal-edit-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-amber-500 text-white font-bold">수정 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. 학교 추가 모달 -->
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
@@ -433,7 +504,7 @@
       <form onsubmit="handleSaveSchool(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-stone-700 mb-1">학교 이름 입력</label>
-          <input type="text" id="new-school-name" required placeholder="예: 경원초 또는 경원초등학교" class="w-full text-xs p-3 rounded-xl border border-stone-200 focus:border-amber-400 outline-none font-bold" />
+          <input type="text" id="new-school-name" required placeholder="예: 인천경원초 또는 경원초" class="w-full text-xs p-3 rounded-xl border border-stone-200 focus:border-amber-400 outline-none font-bold" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -443,7 +514,7 @@
     </div>
   </div>
 
-  <!-- 2. 청구서 등록 모달 (학교/회기/차수/금액/엑셀) -->
+  <!-- 3. 청구서 등록 모달 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
@@ -482,7 +553,7 @@
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">청구서 엑셀 파일 (.xlsx, .xls)</label>
-          <input type="file" id="billing-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+          <input type="file" id="billing-input-file" accept=".xlsx,.xls,.csv" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -492,7 +563,7 @@
     </div>
   </div>
 
-  <!-- 3. 시간표 등록 모달 -->
+  <!-- 4. 시간표 등록 모달 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -550,7 +621,7 @@
     </div>
   </div>
 
-  <!-- 4. 지출결의서 등록 모달 -->
+  <!-- 5. 지출결의서 등록 모달 -->
   <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -572,7 +643,7 @@
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">엑셀 파일 첨부 (.xlsx, .xls)</label>
-          <input type="file" id="exp-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+          <input type="file" id="exp-input-file" accept=".xlsx,.xls,.csv" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -582,7 +653,7 @@
     </div>
   </div>
 
-  <!-- 5. 출근부 등록 모달 -->
+  <!-- 6. 출근부 등록 모달 -->
   <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -610,7 +681,7 @@
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">출근부 엑셀 첨부 (.xlsx, .xls)</label>
-          <input type="file" id="att-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
+          <input type="file" id="att-input-file" accept=".xlsx,.xls,.csv" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -620,11 +691,11 @@
     </div>
   </div>
 
-  <!-- 6. 안내장 PDF 등록 모달 -->
+  <!-- 7. 분기별 안내장 PDF 등록 모달 -->
   <div id="modal-add-notice" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900">안내장 PDF 등록</h3>
+        <h3 class="text-base font-bold text-stone-900">분기별 안내장 PDF 등록</h3>
         <button onclick="closeModal('modal-add-notice')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveNotice(event)" class="space-y-3 text-xs">
@@ -632,16 +703,27 @@
           <label class="block font-bold text-stone-700 mb-1">대상 학교</label>
           <select id="not-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
         </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">구분</label>
-          <select id="not-input-type" class="w-full p-2.5 rounded-xl border border-stone-200">
-            <option value="가정통신문">가정통신문 (학부모)</option>
-            <option value="행정공문">학교 행정실 공문</option>
-            <option value="수강신청서">수강신청 안내서</option>
-          </select>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">해당 분기</label>
+            <select id="not-input-quarter" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold">
+              <option value="1분기">1분기</option>
+              <option value="2분기">2분기</option>
+              <option value="3분기">3분기</option>
+              <option value="4분기">4분기</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">서류 구분</label>
+            <select id="not-input-type" class="w-full p-2.5 rounded-xl border border-stone-200">
+              <option value="가정통신문">가정통신문</option>
+              <option value="행정공문">행정공문</option>
+              <option value="수강신청서">수강신청서</option>
+            </select>
+          </div>
         </div>
         <div>
-          <label class="block font-bold text-stone-700 mb-1">제목</label>
+          <label class="block font-bold text-stone-700 mb-1">안내장 제목</label>
           <input type="text" id="not-input-title" required placeholder="안내장 제목 입력" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
         <div>
@@ -656,13 +738,13 @@
     </div>
   </div>
 
-  <!-- ================= 3. JAVASCRIPT LOGIC ================= -->
+  <!-- ================= 5. JAVASCRIPT CORE ================= -->
   <script>
     // ---------- 1. IndexedDB File Engine ----------
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_FilesDB_v3', 1);
+        const req = indexedDB.open('BrightMind_FilesDB_v4', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -697,24 +779,29 @@
       });
     }
 
+    function getFileFromDB(fileId) {
+      return new Promise((resolve) => {
+        if (!dbInstance) return resolve(null);
+        const tx = dbInstance.transaction('files', 'readonly');
+        const store = tx.objectStore('files');
+        const req = store.get(fileId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
     async function downloadFileFromDB(fileId, fallbackName) {
-      if (!dbInstance) return;
-      const tx = dbInstance.transaction('files', 'readonly');
-      const store = tx.objectStore('files');
-      const req = store.get(fileId);
-      req.onsuccess = () => {
-        const item = req.result;
-        if (item && item.data) {
-          const a = document.createElement('a');
-          a.href = item.data;
-          a.download = item.name || fallbackName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        } else {
-          alert('저장된 파일 원본이 없습니다. 새 파일을 등록해 보세요.');
-        }
-      };
+      const item = await getFileFromDB(fileId);
+      if (item && item.data) {
+        const a = document.createElement('a');
+        a.href = item.data;
+        a.download = item.name || fallbackName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('저장된 파일 원본이 없습니다. 새 파일을 등록해 보세요.');
+      }
     }
 
     // ---------- 2. Data & LocalStorage ----------
@@ -726,7 +813,7 @@
       localStorage.setItem('bm_' + key, JSON.stringify(val));
     }
 
-    // 사용자 입력 학교 목록 우선 로드, 없으면 기본값
+    // 사용자의 실제 등록 학교 데이터 보존 (경원초, 남부초, 문남초 등)
     let schools = load('schools', [
       { id: 'sch_1', name: '경원초' },
       { id: 'sch_2', name: '남부초' },
@@ -749,6 +836,7 @@
     let currentQuarter = 1;
     let currentPeriod = 1;
     let currentMonth = 3;
+    let currentNoticeQuarterFilter = 'all';
 
     // ---------- 3. Lifecycle Initialization ----------
     window.addEventListener('DOMContentLoaded', async () => {
@@ -776,16 +864,16 @@
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
-          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-amber-500 text-white shadow-sm";
+          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-amber-500 text-white shadow-xs whitespace-nowrap";
         } else {
           v.classList.add('hidden');
-          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200";
+          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 whitespace-nowrap";
         }
       });
       lucide.createIcons();
     }
 
-    // ---------- 5. School Logic (단정하고 깔끔한 학교명 1줄 렌더링) ----------
+    // ---------- 5. School Logic & Rename (학교명 수정 기능 탑재) ----------
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
@@ -794,13 +882,12 @@
       schools.forEach(sch => {
         const isActive = currentSchoolId === sch.id;
         const div = document.createElement('div');
-        div.className = `group flex items-center justify-between px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+        div.className = `group flex items-center justify-between px-3 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
           isActive 
             ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-xs' 
             : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'
         }`;
         
-        // 2글자 요약 배지 생성
         const shortName = sch.name.slice(0, 2);
 
         div.innerHTML = `
@@ -810,16 +897,21 @@
             }">${shortName}</span>
             <span class="truncate text-sm font-extrabold">${sch.name}</span>
           </div>
-          <button onclick="deleteSchool('${sch.id}', event)" class="opacity-0 group-hover:opacity-100 text-stone-400 hover:text-red-500 p-1 transition-opacity">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-          </button>
+          <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800 transition-colors" title="학교명 수정">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-red-500 transition-colors" title="학교 삭제">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         `;
         container.appendChild(div);
       });
 
       const allBtn = document.getElementById('btn-school-all');
       if (currentSchoolId === 'all') {
-        allBtn.className = "w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm";
+        allBtn.className = "w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs";
       } else {
         allBtn.className = "w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700";
       }
@@ -836,12 +928,14 @@
       const badgeEl = document.getElementById('current-school-badge');
       const heroName = document.getElementById('hero-school-name');
       const heroDesc = document.getElementById('hero-school-desc');
+      const editBtn = document.getElementById('btn-edit-current-school');
 
       if (id === 'all') {
         titleEl.textContent = '위탁운영 통합 행정 관리실';
         badgeEl.textContent = '전체 위탁학교 통합';
         heroName.textContent = '전체 위탁학교 종합 현황';
-        heroDesc.textContent = '청구서(엑셀), 시간표, 대체강사 매칭 및 안내장(PDF)을 관리합니다.';
+        heroDesc.textContent = '청구서(엑셀), 시간표, 대체강사 매칭 및 분기별 안내장(PDF)을 통합 관리합니다.';
+        if (editBtn) editBtn.classList.add('hidden');
       } else {
         const sch = schools.find(s => s.id === id);
         const name = sch ? sch.name : '학교 전용';
@@ -849,13 +943,45 @@
         badgeEl.textContent = name;
         heroName.textContent = `${name} 방과후 위탁운영`;
         heroDesc.textContent = `${name}의 청구 정산, 요일별 강좌 시간표 및 공문/안내장을 집중 관리합니다.`;
+        if (editBtn) editBtn.classList.remove('hidden');
       }
 
       renderAllViews();
     }
 
+    // 학교명 수정 모달 열기
+    function openEditSchoolModal(id, e) {
+      if (e) e.stopPropagation();
+      const sch = schools.find(s => s.id === id);
+      if (!sch) return;
+      document.getElementById('edit-school-target-id').value = sch.id;
+      document.getElementById('edit-school-name-input').value = sch.name;
+      openModal('modal-edit-school');
+    }
+
+    function quickEditCurrentSchool() {
+      if (currentSchoolId === 'all') return;
+      openEditSchoolModal(currentSchoolId);
+    }
+
+    function handleUpdateSchoolName(e) {
+      e.preventDefault();
+      const targetId = document.getElementById('edit-school-target-id').value;
+      const newName = document.getElementById('edit-school-name-input').value.trim();
+      if (!newName) return;
+
+      const idx = schools.findIndex(s => s.id === targetId);
+      if (idx !== -1) {
+        schools[idx].name = newName;
+        save('schools', schools);
+        closeModal('modal-edit-school');
+        renderSchoolList();
+        selectSchool(targetId);
+      }
+    }
+
     function deleteSchool(id, e) {
-      e.stopPropagation();
+      if (e) e.stopPropagation();
       const sch = schools.find(s => s.id === id);
       if (confirm(`'${sch ? sch.name : ''}' 학교를 삭제하시겠습니까?`)) {
         schools = schools.filter(s => s.id !== id);
@@ -888,7 +1014,7 @@
       renderNotices();
     }
 
-    // ---------- 6. TAB 1: BILLING (간소화 뷰) ----------
+    // ---------- 6. TAB 1: BILLING ----------
     function changeQuarter(q) {
       currentQuarter = q;
       for (let i = 1; i <= 4; i++) {
@@ -932,9 +1058,14 @@
             <td class="py-3 px-3 text-center font-semibold text-stone-700">${b.period}차 (4주)</td>
             <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(b.amount || 0).toLocaleString()}원</td>
             <td class="py-3 px-4 text-center">
-              <button onclick="downloadFileFromDB('${b.id}', '${b.fileName || '청구서.xlsx'}')" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-bold border border-emerald-200">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${b.fileName || '청구서.xlsx'}
-              </button>
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="previewFile('${b.id}', '${b.fileName || '청구서.xlsx'}', 'excel')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 text-xs font-bold transition">
+                  <i data-lucide="eye" class="w-3.5 h-3.5 text-amber-700"></i> 미리보기
+                </button>
+                <button onclick="downloadFileFromDB('${b.id}', '${b.fileName || '청구서.xlsx'}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-bold border border-emerald-200 transition">
+                  <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i> 다운
+                </button>
+              </div>
             </td>
             <td class="py-3 px-3 text-center">
               <button onclick="deleteBilling('${b.id}')" class="text-stone-300 hover:text-red-500">
@@ -1012,18 +1143,15 @@
       }
     }
 
-    // 스마트 대체강사 검색
     function findAvailableSubstitutes() {
       const day = document.getElementById('sub-filter-day').value;
       const time = document.getElementById('sub-filter-time').value;
       const keyword = document.getElementById('sub-filter-subject').value.trim().toLowerCase();
 
-      // 해당 요일/시간대에 이미 수업이 있는 강사
       const busyTeachers = new Set(
         schedules.filter(s => s.day === day && s.time === time).map(s => s.teacher)
       );
 
-      // 전체 등록 강사 풀 구축
       const teacherMap = new Map();
       schedules.forEach(s => {
         if (!teacherMap.has(s.teacher)) {
@@ -1040,7 +1168,6 @@
         }
       });
 
-      // 겹치지 않는 강사 필터링
       let available = [];
       teacherMap.forEach((info, tName) => {
         if (!busyTeachers.has(tName)) {
@@ -1113,9 +1240,14 @@
             <td class="p-2.5 font-semibold text-stone-700">${e.title}</td>
             <td class="p-2.5 text-right font-bold text-emerald-800">${(e.amount || 0).toLocaleString()}원</td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.xlsx'}')" class="px-2 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
-                ${e.fileName || '결의서.xlsx'}
-              </button>
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="previewFile('${e.id}', '${e.fileName || '지출결의서.xlsx'}', 'excel')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold">
+                  미리보기
+                </button>
+                <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.xlsx'}')" class="px-2 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
+                  다운
+                </button>
+              </div>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1143,9 +1275,14 @@
             <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
             <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.xlsx'}')" class="px-2 py-1 bg-sky-50 text-sky-800 rounded-lg text-xs font-bold border border-sky-200">
-                ${a.fileName || '출근부.xlsx'}
-              </button>
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="previewFile('${a.id}', '${a.fileName || '출근부.xlsx'}', 'excel')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold">
+                  미리보기
+                </button>
+                <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.xlsx'}')" class="px-2 py-1 bg-sky-50 text-sky-800 rounded-lg text-xs font-bold border border-sky-200">
+                  다운
+                </button>
+              </div>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1172,15 +1309,29 @@
       }
     }
 
-    // ---------- 9. TAB 4: NOTICES (PDF) ----------
+    // ---------- 9. TAB 4: 분기별 안내장 (Quarterly Notices) ----------
+    function filterNoticeQuarter(q) {
+      currentNoticeQuarterFilter = q;
+      ['all', '1분기', '2분기', '3분기', '4분기'].forEach(key => {
+        const btn = document.getElementById(`btn-nq-${key === 'all' ? 'all' : key.charAt(0)}`);
+        if (btn) {
+          btn.className = (key === q)
+            ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white"
+            : "px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600";
+        }
+      });
+      renderNotices();
+    }
+
     function renderNotices() {
       const tbody = document.getElementById('notices-table-body');
       tbody.innerHTML = '';
       let list = notices;
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
+      if (currentNoticeQuarterFilter !== 'all') list = list.filter(n => (n.quarter || '1분기') === currentNoticeQuarterFilter);
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 안내장/공문이 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
       } else {
         list.forEach(n => {
           const sch = schools.find(s => s.id === n.schoolId);
@@ -1189,17 +1340,18 @@
           tr.innerHTML = `
             <td class="py-3 px-4 font-mono text-stone-500">${n.date}</td>
             <td class="py-3 px-4 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
+            <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-extrabold">${n.quarter || '1분기'}</span></td>
             <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 font-bold">${n.type}</span></td>
             <td class="py-3 px-4 font-semibold text-stone-900">${n.title}</td>
             <td class="py-3 px-4 text-center">
-              <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono">
-                <i data-lucide="file-text" class="w-3 h-3 text-red-500"></i> ${n.fileName || '공문.pdf'}
-              </span>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">
-                다운로드
-              </button>
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="previewFile('${n.id}', '${n.fileName || '안내장.pdf'}', 'pdf')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold flex items-center gap-1">
+                  <i data-lucide="eye" class="w-3.5 h-3.5 text-amber-700"></i> 미리보기
+                </button>
+                <button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-bold border border-stone-200">
+                  다운
+                </button>
+              </div>
             </td>
             <td class="py-3 px-3 text-center">
               <button onclick="deleteNotice('${n.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1219,7 +1371,182 @@
       }
     }
 
-    // ---------- 10. MODAL HANDLERS ----------
+    // ---------- 10. UNIVERSAL PREVIEW ENGINE (엑셀 테이블 & PDF 뷰어) ----------
+    let currentPreviewWorkbook = null;
+
+    async function previewFile(fileId, fileName, hintType) {
+      const item = await getFileFromDB(fileId);
+      const modal = document.getElementById('modal-file-preview');
+      const titleEl = document.getElementById('preview-file-name');
+      const infoEl = document.getElementById('preview-file-info');
+      const iconEl = document.getElementById('preview-file-icon');
+      const downloadBtn = document.getElementById('preview-download-btn');
+      const sheetsBar = document.getElementById('excel-sheets-bar');
+      const previewBody = document.getElementById('preview-body');
+
+      titleEl.textContent = fileName || (item ? item.name : '문서 미리보기');
+      downloadBtn.onclick = () => downloadFileFromDB(fileId, fileName);
+      sheetsBar.classList.add('hidden');
+      previewBody.innerHTML = '';
+
+      const isPdf = hintType === 'pdf' || (fileName && fileName.toLowerCase().endsWith('.pdf'));
+
+      if (isPdf) {
+        // PDF 미리보기
+        iconEl.className = "w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center";
+        iconEl.innerHTML = '<i data-lucide="file-text" class="w-5 h-5"></i>';
+        infoEl.textContent = 'PDF 문서 뷰어';
+
+        if (item && item.data) {
+          previewBody.innerHTML = `
+            <iframe src="${item.data}" class="w-full h-full min-h-[500px] rounded-2xl border border-stone-200 bg-white" frameborder="0"></iframe>
+          `;
+        } else {
+          // 샘플/미첨부 PDF 안내 화면
+          previewBody.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center p-8 bg-white rounded-2xl border border-stone-200">
+              <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-2xl mb-3">📄</div>
+              <h4 class="font-bold text-stone-800 text-base mb-1">${fileName}</h4>
+              <p class="text-xs text-stone-500 max-w-sm">실제 PDF 파일이 등록되지 않은 샘플 항목입니다. [+ 안내장 등록]을 통해 실제 PDF 파일을 첨부하시면 본문이 화면에 즉시 열람됩니다.</p>
+            </div>
+          `;
+        }
+      } else {
+        // 엑셀 미리보기 (SheetJS 테이블 렌더링)
+        iconEl.className = "w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center";
+        iconEl.innerHTML = '<i data-lucide="file-spreadsheet" class="w-5 h-5"></i>';
+        infoEl.textContent = '엑셀 스프레드시트 뷰어';
+
+        if (item && item.data) {
+          try {
+            // Data URL에서 Base64 바이너리 추출
+            const base64 = item.data.split(',')[1];
+            currentPreviewWorkbook = XLSX.read(base64, { type: 'base64' });
+
+            const sheetNames = currentPreviewWorkbook.SheetNames;
+            if (sheetNames.length > 0) {
+              sheetsBar.classList.remove('hidden');
+              renderExcelSheetTabs(sheetNames);
+              renderExcelSheetTable(sheetNames[0]);
+            }
+          } catch (err) {
+            console.error('Excel parse error:', err);
+            previewBody.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">엑셀 파일을 해석하는 중 오류가 발생했습니다.</div>`;
+          }
+        } else {
+          // 샘플 엑셀 테이블 가상 생성 렌더링
+          renderVirtualSampleExcelTable(fileName);
+        }
+      }
+
+      openModal('modal-file-preview');
+      lucide.createIcons();
+    }
+
+    function renderExcelSheetTabs(sheetNames) {
+      const container = document.getElementById('excel-sheet-tabs');
+      container.innerHTML = sheetNames.map((name, i) => `
+        <button onclick="renderExcelSheetTable('${name}')" id="sheet-tab-${name}" class="px-3 py-1 rounded-xl text-xs font-bold border transition ${
+          i === 0 ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+        }">${name}</button>
+      `).join('');
+    }
+
+    function renderExcelSheetTable(sheetName) {
+      if (!currentPreviewWorkbook) return;
+      const sheet = currentPreviewWorkbook.Sheets[sheetName];
+      const previewBody = document.getElementById('preview-body');
+
+      // 탭 활성화 상태 변경
+      const container = document.getElementById('excel-sheet-tabs');
+      Array.from(container.children).forEach(btn => {
+        btn.className = (btn.id === `sheet-tab-${sheetName}`)
+          ? 'px-3 py-1 rounded-xl text-xs font-bold border bg-emerald-600 text-white border-emerald-600'
+          : 'px-3 py-1 rounded-xl text-xs font-bold border bg-white text-stone-700 border-stone-200 hover:bg-stone-50';
+      });
+
+      // HTML Table 변환
+      const htmlTable = XLSX.utils.sheet_to_html(sheet, {
+        header: '',
+        footer: '',
+        tableClass: 'w-full text-left text-xs divide-y divide-stone-200 border-collapse bg-white'
+      });
+
+      previewBody.innerHTML = `
+        <div class="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-xs p-2">
+          ${htmlTable}
+        </div>
+      `;
+
+      // 생성된 테이블 스타일 보정
+      const tbl = previewBody.querySelector('table');
+      if (tbl) {
+        tbl.querySelectorAll('td, th').forEach(cell => {
+          cell.className = "py-2.5 px-3.5 border border-stone-100 text-stone-700 font-medium whitespace-nowrap";
+        });
+        const firstRow = tbl.querySelector('tr');
+        if (firstRow) {
+          firstRow.querySelectorAll('td, th').forEach(c => {
+            c.className = "py-2.5 px-3.5 bg-stone-100 border border-stone-200 text-stone-900 font-extrabold whitespace-nowrap";
+          });
+        }
+      }
+    }
+
+    // 첨부파일 미등록 샘플 항목을 위한 가상 표 뷰어
+    function renderVirtualSampleExcelTable(fileName) {
+      const previewBody = document.getElementById('preview-body');
+      previewBody.innerHTML = `
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
+            <span class="text-xs font-bold text-emerald-800">📊 표준 정산 서식 미리보기</span>
+            <span class="text-[11px] text-stone-400 font-mono">${fileName}</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border border-stone-200">
+              <thead class="bg-stone-50 font-bold text-stone-700">
+                <tr>
+                  <th class="p-3 border">학교명</th>
+                  <th class="p-3 border">분기(회기)</th>
+                  <th class="p-3 border">차수</th>
+                  <th class="p-3 border">강좌명</th>
+                  <th class="p-3 border">강사명</th>
+                  <th class="p-3 border text-right">정산 금액</th>
+                  <th class="p-3 border text-center">비고</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-200">
+                <tr>
+                  <td class="p-3 border font-bold">경원초</td>
+                  <td class="p-3 border">1분기</td>
+                  <td class="p-3 border">1차 (1~4주)</td>
+                  <td class="p-3 border">창의 로봇코딩 A</td>
+                  <td class="p-3 border">이민호</td>
+                  <td class="p-3 border text-right font-bold text-amber-800">1,400,000원</td>
+                  <td class="p-3 border text-center text-stone-400">정상</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border font-bold">경원초</td>
+                  <td class="p-3 border">1분기</td>
+                  <td class="p-3 border">1차 (1~4주)</td>
+                  <td class="p-3 border">키즈 토탈아트 미술</td>
+                  <td class="p-3 border">박서연</td>
+                  <td class="p-3 border text-right font-bold text-amber-800">1,250,000원</td>
+                  <td class="p-3 border text-center text-stone-400">정상</td>
+                </tr>
+                <tr class="bg-stone-50 font-bold">
+                  <td class="p-3 border text-center" colspan="5">합 계</td>
+                  <td class="p-3 border text-right text-emerald-700 font-extrabold">2,650,000원</td>
+                  <td class="p-3 border text-center">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---------- 11. MODAL SUBMIT HANDLERS ----------
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -1370,6 +1697,7 @@
     async function handleSaveNotice(e) {
       e.preventDefault();
       const schoolId = document.getElementById('not-input-school').value;
+      const quarter = document.getElementById('not-input-quarter').value;
       const type = document.getElementById('not-input-type').value;
       const title = document.getElementById('not-input-title').value.trim();
       const fileInput = document.getElementById('not-input-file');
@@ -1381,13 +1709,13 @@
 
       if (file) await storeFile(fileId, file);
 
-      notices.push({ id: fileId, schoolId, date: today, type, title, fileName });
+      notices.push({ id: fileId, schoolId, date: today, quarter, type, title, fileName });
       save('notices', notices);
       closeModal('modal-add-notice');
       renderNotices();
     }
 
-    // ---------- 11. 표준 샘플 엑셀 서식 다운로드 ----------
+    // ---------- 12. 표준 샘플 엑셀 서식 다운로드 ----------
     function downloadSampleExcel() {
       const wb = XLSX.utils.book_new();
       const billingData = [

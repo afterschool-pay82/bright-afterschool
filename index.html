@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>밝은생각 | 위탁운영 협업룸</title>
+  <title>(주)밝은생각</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -13,7 +13,7 @@
   <!-- Google Fonts: Gaegu & Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -44,26 +44,24 @@
 
   <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
-    <!-- Brand Header -->
-    <div class="p-5 border-b border-amber-100 bg-amber-50/70 flex items-center justify-between">
+    <!-- Brand Header : (주)밝은생각 글씨 강조 / 다운로드 버튼 및 하단 문구 완전 제거 -->
+    <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/70 flex items-center">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">
+        <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-2xl shadow-sm shrink-0">
           🌟
         </div>
         <div>
-          <h1 class="text-2xl font-bold font-cute text-stone-900 leading-none">밝은생각</h1>
-          <p class="text-xs text-amber-900 font-semibold mt-1">위탁운영 협업룸</p>
+          <h1 class="text-2xl font-black font-cute text-stone-900 tracking-tight leading-tight">
+            (주)밝은생각
+          </h1>
         </div>
       </div>
-      <button onclick="downloadSampleExcel()" title="표준 엑셀 서식 다운" class="p-2 rounded-xl bg-white border border-amber-200 text-amber-800 hover:bg-amber-100 text-xs font-bold transition-all">
-        <i data-lucide="download" class="w-4 h-4"></i>
-      </button>
     </div>
 
     <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
-      <!-- 전체 위탁학교 버튼 -->
-      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
+      <!-- 전체 위탁기관 버튼 -->
+      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
           <span class="text-lg">🏫</span>
           <span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span>
@@ -71,15 +69,15 @@
         <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/80 text-amber-900 font-extrabold">0개소</span>
       </button>
 
-      <!-- 학교 목록 헤더 및 추가 버튼 -->
+      <!-- 기관 목록 헤더 및 추가 버튼 -->
       <div class="flex items-center justify-between px-2 mb-2">
-        <span class="text-xs font-bold text-stone-400">위탁 기관 목록 (학교·센터)</span>
+        <span class="text-xs font-bold text-stone-400">위탁 기관 목록</span>
         <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> 기관 추가
         </button>
       </div>
 
-      <!-- 학교 리스트 -->
+      <!-- 기관 리스트 (두 글자 뱃지 제거, 단일 이모티콘 🎒/🏡 적용) -->
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- JS 렌더링 -->
       </div>
@@ -133,7 +131,7 @@
           <span class="text-xs text-stone-400 font-mono" id="realtime-clock"></span>
         </div>
         <h2 id="current-school-title" class="text-xl md:text-2xl font-bold text-stone-900 flex items-center gap-2">
-          위탁운영 협업룸
+          (주)밝은생각 협업룸
         </h2>
       </div>
 
@@ -167,7 +165,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (청구서 탭 단순화) -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[69px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
@@ -596,7 +594,7 @@
     </div>
   </div>
 
-  <!-- 2. 학교/기관 추가 모달 -->
+  <!-- 2. 기관 추가 모달 -->
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
@@ -618,7 +616,7 @@
     </div>
   </div>
 
-  <!-- 3. 학교/기관명 수정 모달 -->
+  <!-- 3. 기관명 수정 모달 -->
   <div id="modal-edit-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -909,7 +907,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Portal_DB_v3', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v2', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -969,17 +967,8 @@
       }
     }
 
-    // ---------- 2. Initial Data & LocalStorage ----------
-    function load(key, fb) {
-      const v = localStorage.getItem('bm_p_' + key);
-      return v ? JSON.parse(v) : fb;
-    }
-    function save(key, val) {
-      localStorage.setItem('bm_p_' + key, JSON.stringify(val));
-    }
-
-    // 12개 위탁 기관 목록 (초등학교 + 돌봄센터)
-    let schools = load('schools', [
+    // ---------- 2. Initial Data & 영구 보존 로직 ----------
+    const fixedMasterSchools = [
       { id: 'sch_1', name: '경원초' },
       { id: 'sch_2', name: '남부초' },
       { id: 'sch_3', name: '문남초' },
@@ -992,7 +981,20 @@
       { id: 'sch_10', name: '창영초' },
       { id: 'sch_11', name: '청량초' },
       { id: 'sch_12', name: '온동네돌봄센터' }
-    ]);
+    ];
+
+    function load(key, fb) {
+      const v = localStorage.getItem('bm_perm_' + key);
+      return v ? JSON.parse(v) : fb;
+    }
+    function save(key, val) {
+      localStorage.setItem('bm_perm_' + key, JSON.stringify(val));
+    }
+
+    // 12개 기관을 기본으로 영구 보존
+    let savedSchools = load('schools', null);
+    let schools = (savedSchools && savedSchools.length >= 10) ? savedSchools : fixedMasterSchools;
+    save('schools', schools);
 
     let billings = load('billings', []);
     let schedules = load('schedules', []);
@@ -1055,7 +1057,7 @@
       lucide.createIcons();
     }
 
-    // ---------- 5. School List & Operations (돌봄센터 뱃지 스마트 분류 탑재) ----------
+    // ---------- 5. School List (두 글자 뱃지 제거, 단일 이모티콘 🎒/🏡) ----------
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
@@ -1066,28 +1068,18 @@
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
         
         const div = document.createElement('div');
-        div.className = `group flex items-center justify-between px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+        div.className = `group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
           isActive 
-            ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-xs' 
+            ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-sm' 
             : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'
         }`;
         
-        // 뱃지 내용: 센터는 '센터' 또는 이모지, 초등학교는 앞 2글자
-        let badgeContent = isCenter ? '센터' : sch.name.slice(0, 2);
-        let badgeClass = '';
-
-        if (isActive) {
-          badgeClass = 'bg-stone-900 text-amber-300';
-        } else {
-          badgeClass = isCenter ? 'bg-orange-100 text-orange-900' : 'bg-amber-100 text-amber-900';
-        }
+        const emoji = isCenter ? '🏡' : '🎒';
 
         div.innerHTML = `
           <div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')">
-            <span class="w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-[11px] shrink-0 tracking-tighter ${badgeClass}">${badgeContent}</span>
-            <div class="truncate">
-              <span class="truncate text-sm font-extrabold block leading-tight">${sch.name}</span>
-            </div>
+            <span class="text-base shrink-0">${emoji}</span>
+            <span class="truncate text-sm font-extrabold block tracking-tight">${sch.name}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
             <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800" title="기관명 수정">
@@ -1103,9 +1095,9 @@
 
       const allBtn = document.getElementById('btn-school-all');
       if (currentSchoolId === 'all') {
-        allBtn.className = "w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm";
+        allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm";
       } else {
-        allBtn.className = "w-full mb-3 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700";
+        allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700";
       }
 
       populateSelects();
@@ -1124,7 +1116,7 @@
       const editBtn = document.getElementById('hero-edit-school-btn');
 
       if (id === 'all') {
-        titleEl.textContent = '위탁운영 협업룸';
+        titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
         heroName.textContent = '전체 위탁기관 종합 현황';
         heroDesc.textContent = '현장 관리자와 본사 간 청구서·출근부·결강 대체 및 업무 메모를 공유합니다.';
@@ -1244,9 +1236,7 @@
         tr.className = "hover:bg-amber-50/30 transition-colors";
         tr.innerHTML = `
           <td class="py-3 px-4 font-bold text-stone-900 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg ${isCenter ? 'bg-orange-100 text-orange-800' : 'bg-stone-100 text-stone-700'} flex items-center justify-center text-[10px] font-bold">
-              ${isCenter ? '센터' : sch.name.slice(0,1)}
-            </span>
+            <span class="text-base">${isCenter ? '🏡' : '🎒'}</span>
             ${sch.name}
           </td>
           <td class="py-3 px-4 text-center">

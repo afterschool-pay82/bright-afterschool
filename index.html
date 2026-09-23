@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(주)밝은생각</title>
+  <title>(주)밝은생각 | 위탁운영 협업룸</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -40,7 +40,7 @@
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
 
-    /* 정갈한 실제 엑셀 서식 스타일 */
+    /* 정밀 엑셀 테이블 스타일 */
     .excel-paper-table {
       border-collapse: collapse;
       table-layout: auto;
@@ -69,7 +69,7 @@
 </head>
 <body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
 
-  <!-- ================= L E F T   S I D E B A R ================= -->
+  <!-- ================= 1. LEFT SIDEBAR ================= -->
   <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
     <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/80 flex items-center">
       <div class="flex items-center gap-3.5">
@@ -86,6 +86,7 @@
 
     <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
+      <!-- 전체 위탁기관 버튼 -->
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
           <span class="text-lg">🏫</span>
@@ -101,48 +102,40 @@
         </button>
       </div>
 
+      <!-- 기관 목록 리스트 (🎒 초등학교 / 🏡 돌봄센터) -->
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- JS 렌더링 -->
       </div>
     </div>
 
-    <!-- 서류 제출 현황 요약 위젯 -->
+    <!-- 하단 퀵 상태 -->
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
           <span class="flex items-center gap-1.5 font-bold">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 서류 제출 현황
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 업무 파일 등록 지원
           </span>
-          <span class="text-[11px] text-stone-400">실시간</span>
+          <span class="text-[11px] text-stone-400">사진·엑셀</span>
         </div>
-        <div class="grid grid-cols-3 gap-1 text-center font-mono">
-          <div class="p-1.5 bg-emerald-50 rounded-xl border border-emerald-100">
-            <p class="text-[10px] text-emerald-700 font-sans font-bold">완료</p>
-            <p class="font-bold text-emerald-800 text-xs" id="stat-ready-count">0</p>
-          </div>
-          <div class="p-1.5 bg-amber-50 rounded-xl border border-amber-100">
-            <p class="text-[10px] text-amber-700 font-sans font-bold">검토</p>
-            <p class="font-bold text-amber-800 text-xs" id="stat-pending-count">0</p>
-          </div>
-          <div class="p-1.5 bg-rose-50 rounded-xl border border-rose-100">
-            <p class="text-[10px] text-rose-700 font-sans font-bold">미제출</p>
-            <p class="font-bold text-rose-800 text-xs" id="stat-missing-count">0</p>
-          </div>
-        </div>
+        <p class="text-[11px] text-stone-600 leading-relaxed">
+          출근부와 지출결의서는 스마트폰으로 찍은 <span class="font-bold text-amber-900">영수증/서명 사진(JPG, PNG)</span>으로 바로 올릴 수 있습니다.
+        </p>
       </div>
     </div>
   </aside>
 
-  <!-- ================= M A I N   C O N T E N T ================= -->
+  <!-- ================= 2. MAIN WORKSPACE ================= -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scroll min-w-0">
+    <!-- 전사 긴급 공지 띠 배너 -->
     <div class="bg-amber-400 px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between shadow-xs">
       <div class="flex items-center gap-2 truncate">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 강사 출근부(사진/엑셀) 및 4주 청구서 등록을 25일까지 완료해 주세요!</span>
       </div>
       <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold">공지 수정</button>
     </div>
 
+    <!-- Top Bar -->
     <header class="bg-white sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
@@ -152,7 +145,7 @@
           <span class="text-xs text-stone-400 font-mono" id="realtime-clock"></span>
         </div>
         <h2 id="current-school-title" class="text-xl md:text-2xl font-brand text-stone-900 flex items-center gap-2">
-          (주)밝은생각 협업룸
+          (주)밝은생각 통합 관리실
         </h2>
       </div>
 
@@ -166,14 +159,15 @@
       </div>
     </header>
 
+    <!-- Hero Banner -->
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영 협업</span>
-          <span id="hero-admin-tag" class="text-xs font-bold text-stone-500">본사 총괄 모드</span>
+          <span id="hero-admin-tag" class="text-xs font-bold text-stone-500">본사 통합 요약 모드</span>
         </div>
         <h3 class="text-xl font-brand text-stone-900 mt-1.5" id="hero-school-name">전체 위탁기관 종합 현황</h3>
-        <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">현장 관리자와 본사 간 청구서·출근부·결강 대체 및 업무 메모를 공유합니다.</p>
+        <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">분기별 강사료 총액과 교재비 총액을 간단히 확인하고 관리합니다.</p>
       </div>
       <div class="flex items-center gap-2">
         <button id="hero-edit-school-btn" onclick="openEditCurrentSchoolModal()" class="px-3 py-2 rounded-2xl bg-white hover:bg-stone-50 border border-amber-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs hidden">
@@ -182,20 +176,20 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
+    <!-- Navigation Tabs (개별 기관 선택 시 더 돋보임) -->
+    <div id="main-nav-tabs" class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
-        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
+        <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> 정산 요약 (강사료/교재비 총액)
         </button>
-        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm">
-          <i data-lucide="calculator" class="w-4 h-4"></i> 청구서
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+          <i data-lucide="calculator" class="w-4 h-4"></i> 청구서 (1~3차)
         </button>
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표 & 대체강사
         </button>
         <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="receipt" class="w-4 h-4"></i> 지출결의서 & 출근부 (엑셀)
+          <i data-lucide="receipt" class="w-4 h-4"></i> 출근부 & 지출결의서 (사진/엑셀)
         </button>
         <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장 (PDF)
@@ -203,58 +197,96 @@
         <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="message-square" class="w-4 h-4"></i> 학교별 1:1 업무메모
         </button>
-        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="folder-archive" class="w-4 h-4"></i> 공용 서식 자료실
-        </button>
       </nav>
     </div>
 
-    <!-- Content Sections -->
+    <!-- ================= 3. VIEWS CONTAINER ================= -->
     <div id="printArea" class="p-6 space-y-6">
 
-      <!-- ================= TAB 0: CHECKLIST BOARD ================= -->
-      <section id="view-checklist" class="space-y-5 hidden">
-        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h4 class="font-bold text-stone-900 text-base flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-emerald-500"></span> 기관별 서류 제출 마감 신호등
-            </h4>
-            <p class="text-xs text-stone-500 mt-0.5">카톡으로 일일이 독촉하지 않고, 각 기관 전담 관리자의 제출 현황을 한눈에 점검합니다.</p>
+      <!-- ================= VIEW 1: 정산 요약 대시보드 (통합화면 핵심: 강사료 총액 / 교재비 총액만 시원하게) ================= -->
+      <section id="view-overview" class="space-y-6">
+        <!-- 분기 선택 바 -->
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
+            <button onclick="changeQuarter(1)" id="btn-oq-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-oq-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-oq-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-oq-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-stone-400">점검 분기:</span>
-            <select id="checklist-period" onchange="renderChecklist()" class="text-xs font-bold bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5 outline-none font-mono text-amber-900">
-              <option value="1">1분기 (3~5월)</option>
-              <option value="2">2분기 (6~8월)</option>
-              <option value="3">3분기 (9~11월)</option>
-              <option value="4">4분기 (12~2월)</option>
-            </select>
+          <span class="text-xs text-stone-400 font-bold" id="overview-quarter-notice">1분기 1차~3차 누적 정산 현황</span>
+        </div>
+
+        <!-- 메인 2대 요약 카드: [1분기 강사료 총액] & [1분기 교재비 총액] -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- 강사료 총액 카드 -->
+          <div class="bg-gradient-to-br from-amber-50 via-white to-amber-50/30 p-6 rounded-3xl border-2 border-amber-300 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-3 py-1 rounded-xl bg-amber-400 text-stone-900 font-extrabold text-xs">
+                <span id="overview-inst-quarter-badge">1분기</span> 강사료
+              </span>
+              <span class="w-10 h-10 rounded-2xl bg-amber-200/80 text-amber-900 flex items-center justify-center font-bold text-lg">
+                👨‍🏫
+              </span>
+            </div>
+            <p class="text-xs font-bold text-stone-500">전체 기관 강사료 총 청구액</p>
+            <h3 class="text-3xl md:text-4xl font-brand text-stone-900 mt-2" id="overview-total-instructor">0원</h3>
+            <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-between text-xs text-stone-500 font-bold">
+              <span>등록된 청구서 수</span>
+              <span class="font-mono text-amber-900" id="overview-inst-count">0건</span>
+            </div>
+          </div>
+
+          <!-- 교재비 총액 카드 -->
+          <div class="bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 p-6 rounded-3xl border-2 border-emerald-300 shadow-xs relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-3 py-1 rounded-xl bg-emerald-500 text-white font-extrabold text-xs">
+                <span id="overview-mat-quarter-badge">1분기</span> 교재·재료비
+              </span>
+              <span class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-900 flex items-center justify-center font-bold text-lg">
+                📚
+              </span>
+            </div>
+            <p class="text-xs font-bold text-stone-500">전체 기관 교재 및 교구재비 총액</p>
+            <h3 class="text-3xl md:text-4xl font-brand text-emerald-900 mt-2" id="overview-total-materials">0원</h3>
+            <div class="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between text-xs text-stone-500 font-bold">
+              <span>등록된 청구서 수</span>
+              <span class="font-mono text-emerald-900" id="overview-mat-count">0건</span>
+            </div>
           </div>
         </div>
 
+        <!-- 간단하고 단정한 기관별 요약 테이블 (기관명 / 강사료 총액 / 교재비 총액 / 합계 / 이동) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
+          <div class="p-4 px-6 border-b border-stone-100 flex items-center justify-between bg-stone-50/60">
+            <h4 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> 기관별 <span id="overview-table-quarter-name">1분기</span> 정산 요약
+            </h4>
+            <span class="text-xs text-stone-400">기관명을 클릭하면 해당 학교 관리실로 바로 이동합니다</span>
+          </div>
+
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold">
                 <tr>
-                  <th class="py-3 px-4">기관명</th>
-                  <th class="py-3 px-4 text-center">강사료 1차/2차/3차</th>
-                  <th class="py-3 px-4 text-center">교재비 1차/2차/3차</th>
-                  <th class="py-3 px-4 text-center">강사 출근부</th>
-                  <th class="py-3 px-4 text-center">지출결의서</th>
-                  <th class="py-3 px-4 text-center">종합 상태</th>
-                  <th class="py-3 px-4 text-center">바로가기</th>
+                  <th class="py-3 px-6">위탁 기관명</th>
+                  <th class="py-3 px-4 text-right">강사료 총액 (1~3차)</th>
+                  <th class="py-3 px-4 text-right">교재비 총액 (1~3차)</th>
+                  <th class="py-3 px-4 text-right">분기 종합 합계</th>
+                  <th class="py-3 px-4 text-center">출근부/지출서</th>
+                  <th class="py-3 px-6 text-center">바로가기</th>
                 </tr>
               </thead>
-              <tbody id="checklist-table-body" class="divide-y divide-stone-100"></tbody>
+              <tbody id="overview-table-body" class="divide-y divide-stone-100">
+                <!-- JS 렌더링 -->
+              </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 1: BILLING (1~3차 순서대로 자동 정렬 표시) ================= -->
-      <section id="view-billing" class="space-y-5">
-        <!-- Sub Tabs: 강사료 vs 교재비 -->
+      <!-- ================= VIEW 2: BILLING (1~3차 청구서 관리) ================= -->
+      <section id="view-billing" class="space-y-5 hidden">
         <div class="bg-amber-50/60 p-2 rounded-2xl border border-amber-200 inline-flex gap-2">
           <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
             <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 강사료 청구서
@@ -264,45 +296,21 @@
           </button>
         </div>
 
-        <!-- 분기 선택 바 (차수 드롭다운 제거 -> 클릭 한 번으로 분기 전환) -->
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs">1분기 (3~5월)</button>
-            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">2분기 (6~8월)</button>
-            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
-            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
+            <button onclick="changeQuarter(1)" id="btn-bq-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-bq-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-bq-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-bq-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
           </div>
-          <div class="text-xs text-stone-400 font-bold">
-            ※ 분기를 선택하면 1차, 2차, 3차가 순서대로 바로 표시됩니다.
-          </div>
+          <span class="text-xs text-stone-400 font-bold">※ 1차, 2차, 3차가 순서대로 표시됩니다.</span>
         </div>
 
-        <!-- 요약 카드 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-white p-5 rounded-3xl border border-amber-200 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">₩</div>
-            <div>
-              <p class="text-xs font-bold text-stone-400" id="billing-summary-label">1분기 청구 총 합계액 (1~3차)</p>
-              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-amount">0원</h3>
-            </div>
-          </div>
-          <div class="bg-white p-5 rounded-3xl border border-emerald-200 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-              <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-stone-400">등록 완료된 차수</p>
-              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-count">0 / 3 차수</h3>
-            </div>
-          </div>
-        </div>
-
-        <!-- 청구서 테이블 (1차, 2차, 3차 고정 슬롯 뷰) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
           <div class="p-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
             <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">1분기 청구서 내역 (1차 · 2차 · 3차)</h3>
-            <span class="text-xs text-stone-400">순서대로 확인하고 바로 등록 및 수정할 수 있습니다</span>
+            <span class="text-xs text-stone-400">차수별 1건 등록 및 엑셀 스마트 미리보기 지원</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -314,28 +322,26 @@
                   <th class="py-3 px-3 text-center">회기</th>
                   <th class="py-3 px-4 text-center">정산 차수</th>
                   <th class="py-3 px-4 text-right">청구 금액</th>
-                  <th class="py-3 px-4 text-center">청구서 엑셀 파일</th>
+                  <th class="py-3 px-4 text-center">청구서 파일</th>
                   <th class="py-3 px-3 text-center">미리보기</th>
                   <th class="py-3 px-3 text-center">다운</th>
                   <th class="py-3 px-3 text-center">수정</th>
                   <th class="py-3 px-3 text-center">삭제</th>
                 </tr>
               </thead>
-              <tbody id="billing-table-body" class="divide-y divide-stone-100">
-                <!-- JS 렌더링 -->
-              </tbody>
+              <tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE ================= -->
+      <!-- ================= VIEW 3: TIMETABLE & SUBSTITUTE ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-gradient-to-r from-sky-50 to-indigo-50 p-5 rounded-3xl border border-sky-200 shadow-xs">
           <div class="mb-3">
             <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-sky-200 text-sky-900">결강/보강 상황실</span>
             <h4 class="text-base font-brand text-stone-900 mt-1">시간표가 겹치지 않는 대체 강사 검색</h4>
-            <p class="text-xs text-stone-500">카톡 단톡방에 "누구 대신 가실 분?" 묻지 않고, 해당 시간 빈 강사를 실시간 매칭합니다.</p>
+            <p class="text-xs text-stone-500">카톡 단톡방에 묻지 않고, 해당 시간 빈 강사를 실시간 매칭합니다.</p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5">
@@ -412,7 +418,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 3: EXPENSE & ATTENDANCE ================= -->
+      <!-- ================= VIEW 4: EXPENSE & ATTENDANCE (사진/이미지 직접 등록 & 뷰어 지원) ================= -->
       <section id="view-expense" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2">
@@ -433,49 +439,34 @@
             </select>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 지출결의서 등록 (엑셀)
-            </button>
             <button onclick="openAddAttendanceModal()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 출근부 등록 (엑셀)
+              <i data-lucide="camera" class="w-3.5 h-3.5"></i> 출근부 등록 (사진·파일)
+            </button>
+            <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="receipt" class="w-3.5 h-3.5"></i> 지출결의서 등록 (사진·파일)
             </button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- 강사 출근부 (사진/서명) -->
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
             <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
-              <h4 class="font-bold text-stone-900 text-sm">지출결의서 (엑셀)</h4>
-              <p class="font-brand text-emerald-700 text-base" id="total-monthly-expense">0원</p>
+              <div>
+                <h4 class="font-bold text-stone-900 text-sm flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> 강사 출근부 서류
+                </h4>
+                <p class="text-[11px] text-stone-400">서명지 촬영 사진(JPG, PNG) 및 엑셀</p>
+              </div>
             </div>
-            <div class="overflow-y-auto max-h-80 custom-scroll">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-stone-50 text-stone-500 font-bold">
-                  <tr>
-                    <th class="p-2.5">기관명</th>
-                    <th class="p-2.5">내용</th>
-                    <th class="p-2.5 text-right">금액</th>
-                    <th class="p-2.5 text-center">보기</th>
-                    <th class="p-2.5 text-center">다운</th>
-                    <th class="p-2.5 text-center">삭제</th>
-                  </tr>
-                </thead>
-                <tbody id="expense-table-body" class="divide-y divide-stone-100"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-            <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
-              <h4 class="font-bold text-stone-900 text-sm">강사 출근부 (엑셀)</h4>
-            </div>
-            <div class="overflow-y-auto max-h-80 custom-scroll">
+            <div class="overflow-y-auto max-h-96 custom-scroll">
               <table class="w-full text-left text-xs">
                 <thead class="bg-stone-50 text-stone-500 font-bold">
                   <tr>
                     <th class="p-2.5">기관명</th>
                     <th class="p-2.5">강사(과목)</th>
                     <th class="p-2.5 text-center">출석일</th>
+                    <th class="p-2.5 text-center">파일 구분</th>
                     <th class="p-2.5 text-center">보기</th>
                     <th class="p-2.5 text-center">다운</th>
                     <th class="p-2.5 text-center">삭제</th>
@@ -485,10 +476,39 @@
               </table>
             </div>
           </div>
+
+          <!-- 지출결의서 (영수증 사진/엑셀) -->
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+            <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
+              <div>
+                <h4 class="font-bold text-stone-900 text-sm flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> 지출결의서 & 영수증
+                </h4>
+                <p class="text-[11px] text-stone-400">영수증 사진(JPG, PNG) 및 엑셀</p>
+              </div>
+              <p class="font-brand text-emerald-700 text-sm" id="total-monthly-expense">0원</p>
+            </div>
+            <div class="overflow-y-auto max-h-96 custom-scroll">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 text-stone-500 font-bold">
+                  <tr>
+                    <th class="p-2.5">기관명</th>
+                    <th class="p-2.5">내용</th>
+                    <th class="p-2.5 text-right">금액</th>
+                    <th class="p-2.5 text-center">파일 구분</th>
+                    <th class="p-2.5 text-center">보기</th>
+                    <th class="p-2.5 text-center">다운</th>
+                    <th class="p-2.5 text-center">삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="expense-table-body" class="divide-y divide-stone-100"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- ================= TAB 4: NOTICES ================= -->
+      <!-- ================= VIEW 5: NOTICES ================= -->
       <section id="view-notices" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2">
@@ -523,7 +543,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 5: MEMOS ================= -->
+      <!-- ================= VIEW 6: MEMOS ================= -->
       <section id="view-memos" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -538,59 +558,34 @@
         <div id="memo-list-container" class="space-y-3"></div>
       </section>
 
-      <!-- ================= TAB 6: FORMS VAULT ================= -->
-      <section id="view-vault" class="space-y-5 hidden">
-        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
-          <h4 class="font-bold text-stone-900 text-base">공용 행정 서식 자료실</h4>
-          <p class="text-xs text-stone-400 mt-0.5">각 기관 관리자가 언제든 내려받아 쓸 수 있는 공식 표준 양식 모음입니다.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-emerald-100 text-emerald-800 inline-block mb-3"><i data-lucide="file-spreadsheet" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">4주 청구서 & 출근부 표준 서식</h5>
-              <p class="text-xs text-stone-500 mt-1">시수 계산 및 4주 정산 수식이 포함된 공식 엑셀 템플릿입니다.</p>
-            </div>
-            <button onclick="downloadSampleExcel()" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">서식 다운로드 (.xlsx)</button>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-sky-100 text-sky-800 inline-block mb-3"><i data-lucide="file-text" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">강사 청렴서약서 및 계약 양식</h5>
-              <p class="text-xs text-stone-500 mt-1">학교 및 센터 행정실 제출용 필수 강사 구비 서류 모음 PDF 양식입니다.</p>
-            </div>
-            <button onclick="alert('표준 강사 서약서 양식이 준비되었습니다.')" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">양식 다운로드 (.pdf)</button>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-rose-100 text-rose-800 inline-block mb-3"><i data-lucide="alert-triangle" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">안전사고 보고서 & 결강확인서</h5>
-              <p class="text-xs text-stone-500 mt-1">긴급 상황 및 결강·보강 시 본사에 제출하는 표준 보고 양식입니다.</p>
-            </div>
-            <button onclick="alert('안전사고 보고서 양식이 준비되었습니다.')" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">서식 다운로드 (.hwp)</button>
-          </div>
-        </div>
-      </section>
-
     </div>
   </main>
 
-  <!-- ================= M O D A L S ================= -->
+  <!-- ================= 4. UNIVERSAL MODALS ================= -->
 
-  <!-- 1. 파일 미리보기 모달 -->
-  <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 md:p-6 z-50 hidden">
+  <!-- 1. 파일 미리보기 모달 (이미지 사진 / 엑셀 / PDF 뷰어 통합) -->
+  <div id="modal-file-preview" class="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center p-2 md:p-6 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-7xl w-full h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
+      <!-- 팝업 헤더 -->
       <div class="px-5 py-3 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3 bg-stone-50">
         <div class="flex items-center gap-2.5 truncate max-w-md">
-          <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 shrink-0">엑셀 시트</span>
+          <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 shrink-0">문서 뷰어</span>
           <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate font-mono">파일 미리보기</h3>
         </div>
 
+        <!-- 툴바 -->
         <div class="flex items-center gap-2">
-          <div id="excel-zoom-controls" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold">
+          <!-- 엑셀 파서 모드 스위처 (스마트 서식 vs 원본) -->
+          <div id="excel-mode-switcher" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold hidden">
+            <button onclick="switchExcelPreviewMode('smart')" id="btn-view-smart" class="px-2.5 py-1 rounded-lg bg-amber-500 text-white shadow-2xs">
+              ✨ 표준 정산서
+            </button>
+            <button onclick="switchExcelPreviewMode('raw')" id="btn-view-raw" class="px-2.5 py-1 rounded-lg text-stone-700 hover:bg-stone-300">
+              📄 원본 엑셀
+            </button>
+          </div>
+
+          <div id="excel-zoom-controls" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold hidden">
             <button onclick="setExcelZoom('fit')" class="px-2.5 py-1 rounded-lg bg-white text-stone-800 shadow-2xs hover:bg-stone-50">
               한 화면 맞춤
             </button>
@@ -615,8 +610,10 @@
         </div>
       </div>
 
+      <!-- 엑셀 시트 탭 바 -->
       <div id="preview-sheet-tabs" class="px-5 py-2 bg-stone-200/70 border-b border-stone-300 flex items-center gap-1.5 overflow-x-auto custom-scroll hidden"></div>
 
+      <!-- 뷰포트 본문 -->
       <div id="preview-viewport" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4 flex justify-center items-start">
         <div id="preview-scale-wrapper" class="origin-top transition-transform duration-150">
           <div id="preview-body" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200 inline-block min-w-max"></div>
@@ -668,7 +665,7 @@
     </div>
   </div>
 
-  <!-- 4. 청구서 등록 모달 (원클릭 해당 차수 지정 등록) -->
+  <!-- 4. 청구서 등록 모달 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
@@ -688,7 +685,7 @@
             <span id="add-billing-school-name" class="font-extrabold text-stone-900 text-sm">경원초</span>
             <span id="add-billing-cat-name" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold">강사료</span>
           </div>
-          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm">1분기 1차 (1~4주)</span>
+          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm">1분기 1차</span>
         </div>
 
         <div>
@@ -738,7 +735,6 @@
           </div>
           <label class="block font-bold text-stone-700 mb-1">새 엑셀 파일로 교체 (선택)</label>
           <input type="file" id="edit-billing-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
-          <p class="text-[11px] text-stone-400 mt-1">※ 파일을 다시 올리지 않으면 기존 엑셀 파일이 그대로 유지됩니다.</p>
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -749,7 +745,87 @@
     </div>
   </div>
 
-  <!-- 5. 시간표 등록 모달 -->
+  <!-- 5. 출근부 등록 모달 (사진/이미지 + 엑셀 + PDF 지원) -->
+  <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-sky-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="camera" class="w-5 h-5 text-sky-600"></i> 강사 출근부 등록
+        </h3>
+        <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveAttendance(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
+          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">강사명</label>
+            <input type="text" id="att-input-teacher" required placeholder="강사 성함" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">과목(강좌)</label>
+            <input type="text" id="att-input-course" required placeholder="예: 바둑" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">당월 출석일수</label>
+          <input type="number" id="att-input-days" required value="4" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">
+            출근부 사진 또는 파일 첨부 
+            <span class="text-sky-600 text-[10px] font-normal">(스마트폰 사진 / 엑셀 / PDF)</span>
+          </label>
+          <input type="file" id="att-input-file" accept="image/*,.pdf,.xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. 지출결의서 등록 모달 (영수증 사진/이미지 + 엑셀 + PDF 지원) -->
+  <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-emerald-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 text-emerald-600"></i> 지출결의서 등록
+        </h3>
+        <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveExpense(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
+          <select id="exp-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">지출 내용</label>
+          <input type="text" id="exp-input-title" required placeholder="예: 3월 교구재 키트 구매" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">지출 금액(원)</label>
+          <input type="number" id="exp-input-amount" required placeholder="350000" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">
+            영수증 사진 또는 결의서 첨부
+            <span class="text-emerald-700 text-[10px] font-normal">(영수증 사진 / 엑셀 / PDF)</span>
+          </label>
+          <input type="file" id="exp-input-file" accept="image/*,.pdf,.xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. 시간표 등록 모달 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -802,76 +878,6 @@
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
           <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 6. 지출결의서 등록 모달 -->
-  <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900">지출결의서 엑셀 등록</h3>
-        <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
-      </div>
-      <form onsubmit="handleSaveExpense(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
-          <select id="exp-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">지출 내용</label>
-          <input type="text" id="exp-input-title" required placeholder="예: 3월 교구재 키트 구매" class="w-full p-2.5 rounded-xl border border-stone-200" />
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">지출 금액(원)</label>
-          <input type="number" id="exp-input-amount" required placeholder="350000" class="w-full p-2.5 rounded-xl border border-stone-200" />
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">엑셀 파일 첨부 (.xlsx, .xls)</label>
-          <input type="file" id="exp-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
-        </div>
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white">저장</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 7. 출근부 등록 모달 -->
-  <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900">출근부 엑셀 등록</h3>
-        <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
-      </div>
-      <form onsubmit="handleSaveAttendance(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
-          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">강사명</label>
-            <input type="text" id="att-input-teacher" required placeholder="강사 이름" class="w-full p-2.5 rounded-xl border border-stone-200" />
-          </div>
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">과목</label>
-            <input type="text" id="att-input-course" required placeholder="예: 바둑" class="w-full p-2.5 rounded-xl border border-stone-200" />
-          </div>
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">출석일수</label>
-          <input type="number" id="att-input-days" required value="4" class="w-full p-2.5 rounded-xl border border-stone-200" />
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">출근부 엑셀 첨부 (.xlsx, .xls)</label>
-          <input type="file" id="att-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
-        </div>
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white">저장</button>
         </div>
       </form>
     </div>
@@ -955,13 +961,13 @@
     </div>
   </div>
 
-  <!-- ================= J A V A S C R I P T ================= -->
+  <!-- ================= 5. JAVASCRIPT CORE ================= -->
   <script>
     // ---------- 1. IndexedDB File Engine ----------
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v3', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v4', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1055,17 +1061,19 @@
     let attendances = load('attendances', []);
     let notices = load('notices', []);
     let memos = load('memos', []);
-    let bannerNotice = load('bannerNotice', '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!');
+    let bannerNotice = load('bannerNotice', '📢 [공지] 이번 달 강사 출근부(사진/엑셀) 및 4주 청구서 등록을 25일까지 완료해 주세요!');
 
     let currentSchoolId = 'all';
     let currentQuarter = 1;
     let currentMonth = 3;
     let currentNoticeQuarter = 'all';
-    let currentBillingCategory = 'instructor';
+    let currentBillingCategory = 'instructor'; // 'instructor' or 'materials'
 
-    // 엑셀 뷰어 캐시 및 줌 레벨
+    // 엑셀 뷰어 캐시 및 줌
     let currentWorkbook = null;
+    let currentParsedData = null;
     let currentZoomScale = 1.0;
+    let currentExcelViewMode = 'smart'; // 'smart' or 'raw'
 
     // ---------- 3. Lifecycle Initialization ----------
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1098,7 +1106,7 @@
 
     // ---------- 4. Tab Switcher ----------
     function switchTab(tId) {
-      ['checklist', 'billing', 'timetable', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
+      ['overview', 'billing', 'timetable', 'expense', 'notices', 'memos'].forEach(t => {
         const v = document.getElementById(`view-${t}`);
         const b = document.getElementById(`tab-btn-${t}`);
         if (!v || !b) return;
@@ -1113,7 +1121,7 @@
       lucide.createIcons();
     }
 
-    // ---------- 5. School List ----------
+    // ---------- 5. School List (사이드바) ----------
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
@@ -1172,21 +1180,23 @@
       const editBtn = document.getElementById('hero-edit-school-btn');
 
       if (id === 'all') {
-        titleEl.textContent = '(주)밝은생각 협업룸';
+        titleEl.textContent = '(주)밝은생각 통합 관리실';
         badgeEl.textContent = '전체 위탁기관 통합';
         heroName.textContent = '전체 위탁기관 종합 현황';
-        heroDesc.textContent = '현장 관리자와 본사 간 청구서·출근부·결강 대체 및 업무 메모를 공유합니다.';
-        heroTag.textContent = '본사 총괄 모드';
+        heroDesc.textContent = '분기별 강사료 총액과 교재비 총액을 간단히 확인하고 관리합니다.';
+        heroTag.textContent = '본사 통합 요약 모드';
         editBtn.classList.add('hidden');
+        switchTab('overview');
       } else {
         const sch = schools.find(s => s.id === id);
         const name = sch ? sch.name : '기관 전용';
-        titleEl.textContent = `${name} 협업룸`;
+        titleEl.textContent = `${name} 협업 관리실`;
         badgeEl.textContent = name;
         heroName.textContent = `${name} 위탁운영`;
-        heroDesc.textContent = `${name} 전담 관리자와 본사가 청구서, 출근부, 시간표 및 공문을 전용으로 공유합니다.`;
+        heroDesc.textContent = `${name} 전담 관리자와 본사가 청구서(1~3차), 출근부·지출서(사진/엑셀), 시간표를 공유합니다.`;
         heroTag.textContent = `${name} 전담실`;
         editBtn.classList.remove('hidden');
+        switchTab('billing');
       }
 
       renderAllViews();
@@ -1251,7 +1261,7 @@
     }
 
     function renderAllViews() {
-      renderChecklist();
+      renderOverviewDashboard();
       renderBilling();
       renderTimetable();
       renderExpenseAndAttendance();
@@ -1259,81 +1269,84 @@
       renderMemos();
     }
 
-    // ---------- 6. TAB 0: CHECKLIST BOARD ----------
-    function renderChecklist() {
-      const tbody = document.getElementById('checklist-table-body');
+    // ---------- 6. VIEW 1: 정산 요약 대시보드 (통합화면 간단 보기 핵심) ----------
+    function renderOverviewDashboard() {
+      const q = currentQuarter;
+      
+      // 분기 뱃지 및 안내문 업데이트
+      document.getElementById('overview-quarter-notice').textContent = `${q}분기 (1차~3차) 누적 정산 현황`;
+      document.getElementById('overview-inst-quarter-badge').textContent = `${q}분기`;
+      document.getElementById('overview-mat-quarter-badge').textContent = `${q}분기`;
+      document.getElementById('overview-table-quarter-name').textContent = `${q}분기`;
+
+      // 전체 기관에 대한 분기 총액 합산
+      let totalInst = 0;
+      let totalMat = 0;
+      let instCount = 0;
+      let matCount = 0;
+
+      const tbody = document.getElementById('overview-table-body');
       tbody.innerHTML = '';
 
-      let readyCount = 0;
-      let missingCount = 0;
-      const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
-
       schools.forEach(sch => {
-        const inst1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && (b.category || 'instructor') === 'instructor');
-        const inst2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && (b.category || 'instructor') === 'instructor');
-        const inst3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && (b.category || 'instructor') === 'instructor');
+        // 해당 학교의 해당 분기 1~3차 강사료 합산
+        const schInstBillings = billings.filter(b => b.schoolId === sch.id && b.quarter === q && (b.category || 'instructor') === 'instructor');
+        const schMatBillings = billings.filter(b => b.schoolId === sch.id && b.quarter === q && b.category === 'materials');
 
-        const mat1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && b.category === 'materials');
-        const mat2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && b.category === 'materials');
-        const mat3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && b.category === 'materials');
+        const schInstTotal = schInstBillings.reduce((sum, b) => sum + (b.amount || 0), 0);
+        const schMatTotal = schMatBillings.reduce((sum, b) => sum + (b.amount || 0), 0);
+        const schSum = schInstTotal + schMatTotal;
 
+        totalInst += schInstTotal;
+        totalMat += schMatTotal;
+        instCount += schInstBillings.length;
+        matCount += schMatBillings.length;
+
+        // 출근부 / 지출서 등록 여부 간단 체크
         const hasAtt = attendances.some(a => a.schoolId === sch.id);
         const hasExp = expenses.some(e => e.schoolId === sch.id);
-
-        const instDoneCount = [inst1, inst2, inst3].filter(Boolean).length;
-        let badgeHtml = '';
-
-        if (instDoneCount === 3) {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs inline-flex items-center gap-1">🟢 3차완료</span>';
-          readyCount++;
-        } else if (instDoneCount > 0) {
-          badgeHtml = `<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-800 font-bold text-xs inline-flex items-center gap-1">🟡 ${instDoneCount}/3차</span>`;
-        } else {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-800 font-bold text-xs inline-flex items-center gap-1">🔴 미제출</span>';
-          missingCount++;
-        }
 
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-amber-50/30 transition-colors";
+        tr.className = "hover:bg-amber-50/40 transition-colors";
         tr.innerHTML = `
-          <td class="py-3 px-4 font-bold text-stone-900 flex items-center gap-2">
-            <span class="text-base">${isCenter ? '🏡' : '🎒'}</span>
-            ${sch.name}
+          <td class="py-3.5 px-6 font-bold text-stone-900 cursor-pointer" onclick="selectSchool('${sch.id}')">
+            <div class="flex items-center gap-2">
+              <span>${isCenter ? '🏡' : '🎒'}</span>
+              <span class="hover:underline text-sm font-extrabold">${sch.name}</span>
+            </div>
           </td>
-          <td class="py-3 px-4 text-center font-mono text-xs">
-            <span class="${inst1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
-            <span class="${inst2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
-            <span class="${inst3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
+          <td class="py-3.5 px-4 text-right font-mono font-bold text-amber-900">
+            ${schInstTotal > 0 ? schInstTotal.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}
           </td>
-          <td class="py-3 px-4 text-center font-mono text-xs">
-            <span class="${mat1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
-            <span class="${mat2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
-            <span class="${mat3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
+          <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-800">
+            ${schMatTotal > 0 ? schMatTotal.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}
           </td>
-          <td class="py-3 px-4 text-center">
-            ${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}
+          <td class="py-3.5 px-4 text-right font-mono font-extrabold text-stone-900 text-sm">
+            ${schSum > 0 ? schSum.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}
           </td>
-          <td class="py-3 px-4 text-center">
-            ${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}
+          <td class="py-3.5 px-4 text-center font-bold text-xs">
+            <span class="${hasAtt ? 'text-sky-600' : 'text-stone-300'}">출근부</span> · 
+            <span class="${hasExp ? 'text-emerald-600' : 'text-stone-300'}">지출서</span>
           </td>
-          <td class="py-3 px-4 text-center">${badgeHtml}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">
-              이동 →
+          <td class="py-3.5 px-6 text-center">
+            <button onclick="selectSchool('${sch.id}')" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-amber-400 text-stone-800 hover:text-stone-900 font-bold text-xs transition-colors">
+              관리실 이동 →
             </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
 
-      document.getElementById('stat-ready-count').textContent = readyCount;
-      document.getElementById('stat-pending-count').textContent = schools.length - readyCount - missingCount;
-      document.getElementById('stat-missing-count').textContent = missingCount;
+      // 메인 카드 텍스트 반영
+      document.getElementById('overview-total-instructor').textContent = totalInst.toLocaleString() + '원';
+      document.getElementById('overview-total-materials').textContent = totalMat.toLocaleString() + '원';
+      document.getElementById('overview-inst-count').textContent = instCount + '건 등록';
+      document.getElementById('overview-mat-count').textContent = matCount + '건 등록';
     }
 
-    // ---------- 7. TAB 1: BILLING (1~3차 순서대로 고정 노출 및 등록/수정) ----------
+    // ---------- 7. VIEW 2: BILLING (1~3차 순서대로 고정 노출 및 등록/수정) ----------
     function switchBillingCategory(cat) {
       currentBillingCategory = cat;
       const instBtn = document.getElementById('sub-billing-btn-instructor');
@@ -1353,15 +1366,16 @@
     function changeQuarter(q) {
       currentQuarter = q;
       for (let i = 1; i <= 4; i++) {
-        const b = document.getElementById(`btn-q-${i}`);
-        if (b) {
-          b.className = (i === q) 
-            ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" 
-            : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
-        }
+        const oBtn = document.getElementById(`btn-oq-${i}`);
+        const bBtn = document.getElementById(`btn-bq-${i}`);
+        const activeClass = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs";
+        const inactiveClass = "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
+
+        if (oBtn) oBtn.className = (i === q) ? activeClass : inactiveClass;
+        if (bBtn) bBtn.className = (i === q) ? activeClass : inactiveClass;
       }
+      renderOverviewDashboard();
       renderBilling();
-      renderChecklist();
     }
 
     function renderBilling() {
@@ -1371,12 +1385,7 @@
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
       const targetSchools = (currentSchoolId === 'all') ? schools : schools.filter(s => s.id === currentSchoolId);
 
-      let totalQuarterAmount = 0;
-      let registeredCount = 0;
-      let totalSlots = targetSchools.length * 3;
-
       targetSchools.forEach(sch => {
-        // 각 학교별로 1차, 2차, 3차 고정 루프
         [1, 2, 3].forEach(period => {
           const periodLabel = `${period}차 (${(period-1)*4 + 1}~${period*4}주)`;
           const item = billings.find(b => 
@@ -1390,9 +1399,6 @@
           tr.className = item ? "hover:bg-amber-50/40 transition-colors" : "hover:bg-stone-50 transition-colors opacity-90";
 
           if (item) {
-            totalQuarterAmount += (item.amount || 0);
-            registeredCount++;
-
             tr.innerHTML = `
               <td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td>
               <td class="py-3 px-3 text-center">
@@ -1402,14 +1408,14 @@
               </td>
               <td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td>
               <td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${periodLabel}</td>
-              <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td>
+              <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm font-mono">${(item.amount || 0).toLocaleString()}원</td>
               <td class="py-3 px-4 text-center">
-                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono">
-                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}
+                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono truncate max-w-[200px]">
+                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i> ${item.fileName || '청구서.xlsx'}
                 </span>
               </td>
               <td class="py-3 px-3 text-center">
-                <button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
+                <button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold transition-colors">
                   미리보기
                 </button>
               </td>
@@ -1419,7 +1425,7 @@
                 </button>
               </td>
               <td class="py-3 px-3 text-center">
-                <button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200" title="수정">
+                <button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold border border-stone-200" title="수정">
                   수정
                 </button>
               </td>
@@ -1430,7 +1436,6 @@
               </td>
             `;
           } else {
-            // 아직 등록되지 않은 빈 차수 슬롯 (원클릭 등록 버튼 제공)
             tr.innerHTML = `
               <td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td>
               <td class="py-3 px-3 text-center text-stone-400 font-medium">${catName}</td>
@@ -1453,9 +1458,6 @@
         });
       });
 
-      document.getElementById('billing-summary-label').textContent = `${currentQuarter}분기 ${catName} 청구 총 합계액 (1~3차)`;
-      document.getElementById('total-billing-amount').textContent = totalQuarterAmount.toLocaleString() + '원';
-      document.getElementById('total-billing-count').textContent = `${registeredCount} / ${totalSlots} 등록 완료`;
       document.getElementById('billing-table-title').textContent = `${currentQuarter}분기 ${catName} 청구서 내역 (1차 · 2차 · 3차)`;
       lucide.createIcons();
     }
@@ -1464,12 +1466,11 @@
       if (confirm('해당 청구서를 삭제하시겠습니까? (삭제 시 빈 슬롯으로 복구됩니다)')) {
         billings = billings.filter(b => b.id !== id);
         save('billings', billings);
+        renderOverviewDashboard();
         renderBilling();
-        renderChecklist();
       }
     }
 
-    // 특정 학교의 특정 차수 슬롯에 바로 등록 모달 열기
     function openAddBillingModalForSlot(schoolId, period) {
       const sch = schools.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
@@ -1491,7 +1492,6 @@
       openModal('modal-add-billing');
     }
 
-    // 청구서 저장 (차수 슬롯에 1개 저장)
     async function handleSaveBilling(e) {
       e.preventDefault();
       const schoolId = document.getElementById('billing-input-school').value;
@@ -1511,7 +1511,6 @@
 
       if (file) await storeFile(fileId, file);
 
-      // 기존에 해당 차수가 있으면 교체, 없으면 추가
       const existingIdx = billings.findIndex(b => 
         b.schoolId === schoolId && 
         (b.category || 'instructor') === category && 
@@ -1527,11 +1526,10 @@
 
       save('billings', billings);
       closeModal('modal-add-billing');
+      renderOverviewDashboard();
       renderBilling();
-      renderChecklist();
     }
 
-    // 청구서 단독 수정 모달 열기
     function openEditBillingModal(billingId) {
       const item = billings.find(b => b.id === billingId);
       if (!item) return;
@@ -1543,7 +1541,7 @@
       document.getElementById('edit-billing-id').value = item.id;
       document.getElementById('edit-billing-school-badge').textContent = schName;
       document.getElementById('edit-billing-cat-badge').textContent = catName;
-      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차 (${(item.period-1)*4 + 1}~${item.period*4}주)`;
+      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차`;
       document.getElementById('edit-billing-amount').value = item.amount || '';
       document.getElementById('edit-billing-current-filename').textContent = item.fileName || '등록된 파일 없음';
       document.getElementById('edit-billing-file').value = '';
@@ -1551,7 +1549,6 @@
       openModal('modal-edit-billing');
     }
 
-    // 청구서 수정 내용 저장
     async function handleUpdateBilling(e) {
       e.preventDefault();
       const id = document.getElementById('edit-billing-id').value;
@@ -1570,11 +1567,11 @@
 
       save('billings', billings);
       closeModal('modal-edit-billing');
+      renderOverviewDashboard();
       renderBilling();
-      renderChecklist();
     }
 
-    // ---------- 8. TAB 2: TIMETABLE & SUBSTITUTE FINDER ----------
+    // ---------- 8. VIEW 3: TIMETABLE & SUBSTITUTE FINDER ----------
     function renderTimetable() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       days.forEach(d => {
@@ -1697,11 +1694,10 @@
       alert('강사 연락처가 복사되었습니다: ' + text);
     }
 
-    // ---------- 9. TAB 3: EXPENSE & ATTENDANCE ----------
+    // ---------- 9. VIEW 4: EXPENSE & ATTENDANCE (사진·이미지 지원) ----------
     function changeMonth(m) {
       currentMonth = parseInt(m, 10);
       renderExpenseAndAttendance();
-      renderChecklist();
     }
 
     function renderExpenseAndAttendance() {
@@ -1713,22 +1709,33 @@
 
       let totalExp = 0;
       if (expList.length === 0) {
-        expBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 지출 내역이 없습니다.</td></tr>`;
+        expBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-400">등록된 지출 내역이 없습니다. (영수증 사진/엑셀 등록)</td></tr>`;
       } else {
         expList.forEach(e => {
           const sch = schools.find(s => s.id === e.schoolId);
           totalExp += (e.amount || 0);
+          const isImg = isImageFileName(e.fileName);
+          const isPdf = isPdfFileName(e.fileName);
+          const typeBadge = isImg 
+            ? '<span class="px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px]">📷 사진</span>'
+            : (isPdf ? '<span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-bold text-[10px]">PDF</span>' : '<span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[10px]">엑셀</span>');
+
           const tr = document.createElement('tr');
           tr.className = "hover:bg-emerald-50/30";
           tr.innerHTML = `
             <td class="p-2.5 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
             <td class="p-2.5 font-semibold text-stone-700">${e.title}</td>
-            <td class="p-2.5 text-right font-bold text-emerald-800">${(e.amount || 0).toLocaleString()}원</td>
+            <td class="p-2.5 text-right font-bold text-emerald-800 font-mono">${(e.amount || 0).toLocaleString()}원</td>
+            <td class="p-2.5 text-center">${typeBadge}</td>
             <td class="p-2.5 text-center">
-              <button onclick="previewFile('${e.id}', 'excel', '${e.fileName || '지출결의서.xlsx'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
+              <button onclick="previewFile('${e.id}', '${isImg ? 'image' : (isPdf ? 'pdf' : 'excel')}', '${e.fileName}')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-[11px] font-bold">
+                보기
+              </button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.xlsx'}')" class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
+              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName}')" class="px-2 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-[11px] font-bold border border-emerald-200">
+                다운
+              </button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1746,21 +1753,32 @@
       if (currentSchoolId !== 'all') attList = attList.filter(a => a.schoolId === currentSchoolId);
 
       if (attList.length === 0) {
-        attBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 강사 출근부가 없습니다.</td></tr>`;
+        attBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-400">등록된 강사 출근부가 없습니다. (서명 사진/엑셀 등록)</td></tr>`;
       } else {
         attList.forEach(a => {
           const sch = schools.find(s => s.id === a.schoolId);
+          const isImg = isImageFileName(a.fileName);
+          const isPdf = isPdfFileName(a.fileName);
+          const typeBadge = isImg 
+            ? '<span class="px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px]">📷 사진</span>'
+            : (isPdf ? '<span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-bold text-[10px]">PDF</span>' : '<span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 font-bold text-[10px]">엑셀</span>');
+
           const tr = document.createElement('tr');
           tr.className = "hover:bg-sky-50/30";
           tr.innerHTML = `
             <td class="p-2.5 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
             <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
-            <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
+            <td class="p-2.5 text-center font-bold text-sky-700 font-mono">${a.days}일</td>
+            <td class="p-2.5 text-center">${typeBadge}</td>
             <td class="p-2.5 text-center">
-              <button onclick="previewFile('${a.id}', 'excel', '${a.fileName || '출근부.xlsx'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
+              <button onclick="previewFile('${a.id}', '${isImg ? 'image' : (isPdf ? 'pdf' : 'excel')}', '${a.fileName}')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-[11px] font-bold">
+                보기
+              </button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.xlsx'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
+              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName}')" class="px-2 py-1 bg-sky-50 text-sky-800 rounded-lg text-[11px] font-bold border border-sky-200">
+                다운
+              </button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1772,12 +1790,21 @@
       lucide.createIcons();
     }
 
+    function isImageFileName(name) {
+      if (!name) return false;
+      return /\.(jpg|jpeg|png|webp|gif|bmp)$/i.test(name);
+    }
+    function isPdfFileName(name) {
+      if (!name) return false;
+      return /\.pdf$/i.test(name);
+    }
+
     function deleteExpense(id) {
       if (confirm('해당 지출 내역을 삭제하시겠습니까?')) {
         expenses = expenses.filter(e => e.id !== id);
         save('expenses', expenses);
         renderExpenseAndAttendance();
-        renderChecklist();
+        renderOverviewDashboard();
       }
     }
     function deleteAttendance(id) {
@@ -1785,11 +1812,11 @@
         attendances = attendances.filter(a => a.id !== id);
         save('attendances', attendances);
         renderExpenseAndAttendance();
-        renderChecklist();
+        renderOverviewDashboard();
       }
     }
 
-    // ---------- 10. TAB 4: NOTICES ----------
+    // ---------- 10. VIEW 5: NOTICES ----------
     function filterNoticeQuarter(q) {
       currentNoticeQuarter = q;
       ['all', '1', '2', '3', '4'].forEach(n => {
@@ -1824,12 +1851,12 @@
             <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 font-bold">${n.type}</span></td>
             <td class="py-3 px-4 font-semibold text-stone-900">${n.title}</td>
             <td class="py-3 px-3 text-center">
-              <button onclick="previewFile('${n.id}', 'pdf', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
+              <button onclick="previewFile('${n.id}', 'pdf', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-lg text-xs font-bold">
                 미리보기
               </button>
             </td>
             <td class="py-3 px-3 text-center">
-              <button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">
+              <button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
                 다운
               </button>
             </td>
@@ -1848,11 +1875,10 @@
         notices = notices.filter(n => n.id !== id);
         save('notices', notices);
         renderNotices();
-        renderChecklist();
       }
     }
 
-    // ---------- 11. TAB 5: MEMOS ----------
+    // ---------- 11. VIEW 6: MEMOS ----------
     function renderMemos() {
       const container = document.getElementById('memo-list-container');
       container.innerHTML = '';
@@ -1896,7 +1922,7 @@
       }
     }
 
-    // ---------- 12. ADVANCED FILE PREVIEW VIEWER ----------
+    // ---------- 12. ADVANCED FILE PREVIEW VIEWER (사진 이미지 / 스마트 엑셀 / PDF) ----------
     async function previewFile(fileId, fileType, fileName) {
       const fileData = await getFileFromDB(fileId);
       const modal = document.getElementById('modal-file-preview');
@@ -1905,6 +1931,7 @@
       const bodyEl = document.getElementById('preview-body');
       const tabsEl = document.getElementById('preview-sheet-tabs');
       const zoomControls = document.getElementById('excel-zoom-controls');
+      const excelModeSwitcher = document.getElementById('excel-mode-switcher');
       const downBtn = document.getElementById('preview-download-btn');
 
       titleEl.textContent = fileName;
@@ -1913,25 +1940,51 @@
       if (!fileData || !fileData.data) {
         tabsEl.classList.add('hidden');
         zoomControls.classList.add('hidden');
+        excelModeSwitcher.classList.add('hidden');
         bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-stone-500">저장된 파일 원본이 없어 미리보기를 불러올 수 없습니다.</div>`;
         modal.classList.remove('hidden');
         return;
       }
 
-      if (fileType === 'pdf') {
+      const isImg = fileType === 'image' || isImageFileName(fileName);
+      const isPdf = fileType === 'pdf' || isPdfFileName(fileName);
+
+      if (isImg) {
+        // 1. 고화질 사진 이미지 뷰어
         tabsEl.classList.add('hidden');
         zoomControls.classList.add('hidden');
+        excelModeSwitcher.classList.add('hidden');
+        badgeEl.textContent = '사진 이미지';
+        badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-purple-100 text-purple-800';
+        bodyEl.innerHTML = `
+          <div class="flex flex-col items-center justify-center p-2">
+            <img src="${fileData.data}" alt="${fileName}" class="max-w-full max-h-[78vh] object-contain rounded-xl shadow-md border border-stone-200" />
+            <p class="mt-3 text-xs text-stone-400 font-mono">${fileName}</p>
+          </div>
+        `;
+      } else if (isPdf) {
+        // 2. PDF 문서 뷰어
+        tabsEl.classList.add('hidden');
+        zoomControls.classList.add('hidden');
+        excelModeSwitcher.classList.add('hidden');
         badgeEl.textContent = 'PDF 문서';
         badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-100 text-rose-800';
         bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-[85vw] max-w-5xl h-[75vh] rounded-2xl border border-stone-200"></iframe>`;
       } else {
+        // 3. 엑셀 스프레드시트 (스마트 파서 & 원본)
         zoomControls.classList.remove('hidden');
-        badgeEl.textContent = '엑셀 시트';
+        excelModeSwitcher.classList.remove('hidden');
+        badgeEl.textContent = '엑셀 청구서';
         badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800';
+
         try {
           const base64 = fileData.data.split(',')[1];
           currentWorkbook = XLSX.read(base64, { type: 'base64', cellStyles: true, cellNF: true });
           
+          // 스마트 7대 항목 파싱 수행
+          currentParsedData = parseExcelSmartColumns(currentWorkbook);
+
+          // 엑셀 시트 탭 목록 구성
           tabsEl.innerHTML = '';
           tabsEl.classList.remove('hidden');
 
@@ -1947,11 +2000,14 @@
             tabsEl.appendChild(tabBtn);
           });
 
-          renderExcelSheet(currentWorkbook.SheetNames[0], tabsEl.firstChild);
+          // 기본 스마트 표준 정산서 모드로 렌더링
+          currentExcelViewMode = 'smart';
+          switchExcelPreviewMode('smart');
         } catch (err) {
           tabsEl.classList.add('hidden');
           zoomControls.classList.add('hidden');
-          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (다운로드 버튼을 눌러 확인해 주세요)</div>`;
+          excelModeSwitcher.classList.add('hidden');
+          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (다운로드하여 확인해 주세요)</div>`;
         }
       }
 
@@ -1959,6 +2015,179 @@
       lucide.createIcons();
     }
 
+    // 엑셀 뷰 모드 전환 (스마트 표준 정산서 vs 원본 엑셀)
+    function switchExcelPreviewMode(mode) {
+      currentExcelViewMode = mode;
+      const smartBtn = document.getElementById('btn-view-smart');
+      const rawBtn = document.getElementById('btn-view-raw');
+
+      if (mode === 'smart') {
+        smartBtn.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-white shadow-2xs";
+        rawBtn.className = "px-2.5 py-1 rounded-lg text-stone-700 hover:bg-stone-300";
+        renderSmartExtractedTable();
+      } else {
+        rawBtn.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-white shadow-2xs";
+        smartBtn.className = "px-2.5 py-1 rounded-lg text-stone-700 hover:bg-stone-300";
+        if (currentWorkbook) {
+          renderExcelSheet(currentWorkbook.SheetNames[0], document.getElementById('preview-sheet-tabs').firstChild);
+        }
+      }
+    }
+
+    // 스마트 엑셀 파서 엔진 (7대 핵심 항목 지능형 추출)
+    function parseExcelSmartColumns(workbook) {
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+      let headerRowIndex = -1;
+      let colMap = {
+        course: -1,
+        teacher: -1,
+        students: -1,
+        classes: -1,
+        unitPrice: -1,
+        fee: -1,
+        total: -1
+      };
+
+      for (let r = 0; r < Math.min(rawData.length, 25); r++) {
+        const row = rawData[r].map(c => String(c).trim().replace(/\s+/g, ''));
+        
+        let foundCols = 0;
+        row.forEach((cellText, colIdx) => {
+          if (/강좌|프로그램|부서|과목/i.test(cellText) && colMap.course === -1) { colMap.course = colIdx; foundCols++; }
+          else if (/강사|지도강사|교사|성명|이름/i.test(cellText) && colMap.teacher === -1) { colMap.teacher = colIdx; foundCols++; }
+          else if (/수강생|인원|학생수|인원수/i.test(cellText) && colMap.students === -1) { colMap.students = colIdx; foundCols++; }
+          else if (/수업횟수|시수|횟수|차시|수업시수/i.test(cellText) && colMap.classes === -1) { colMap.classes = colIdx; foundCols++; }
+          else if (/수강료단가|1인단가|단가/i.test(cellText) && colMap.unitPrice === -1) { colMap.unitPrice = colIdx; foundCols++; }
+          else if (/수용비|관리비|학교수용비/i.test(cellText) && colMap.fee === -1) { colMap.fee = colIdx; foundCols++; }
+          else if (/최종단가|청구액|지급액|합계|총액/i.test(cellText) && colMap.total === -1) { colMap.total = colIdx; foundCols++; }
+        });
+
+        if (foundCols >= 2) {
+          headerRowIndex = r;
+          break;
+        }
+      }
+
+      const rows = [];
+      if (headerRowIndex > -1) {
+        for (let r = headerRowIndex + 1; r < rawData.length; r++) {
+          const row = rawData[r];
+          if (!row || row.length === 0) continue;
+
+          const courseVal = colMap.course > -1 ? row[colMap.course] : '';
+          const teacherVal = colMap.teacher > -1 ? row[colMap.teacher] : '';
+          const studentsVal = colMap.students > -1 ? row[colMap.students] : '';
+          const classesVal = colMap.classes > -1 ? row[colMap.classes] : '';
+          const unitPriceVal = colMap.unitPrice > -1 ? row[colMap.unitPrice] : '';
+          const feeVal = colMap.fee > -1 ? row[colMap.fee] : '';
+          const totalVal = colMap.total > -1 ? row[colMap.total] : '';
+
+          if (!courseVal && !teacherVal && !totalVal) continue;
+          if (String(courseVal).includes('합계') || String(teacherVal).includes('합계')) continue;
+
+          rows.push({
+            course: String(courseVal).trim() || '-',
+            teacher: String(teacherVal).trim() || '-',
+            students: parseInt(studentsVal, 10) || 0,
+            classes: parseInt(classesVal, 10) || 0,
+            unitPrice: parseInt(unitPriceVal, 10) || 0,
+            fee: parseInt(feeVal, 10) || 0,
+            total: parseInt(totalVal, 10) || 0
+          });
+        }
+      }
+
+      return { headerRowIndex, colMap, rows };
+    }
+
+    // 스마트 표준 정산서 렌더링 (7대 항목 일목요연 출력)
+    function renderSmartExtractedTable() {
+      const bodyEl = document.getElementById('preview-body');
+      const data = currentParsedData;
+
+      if (!data || !data.rows || data.rows.length === 0) {
+        bodyEl.innerHTML = `
+          <div class="p-8 text-center text-stone-500 text-xs">
+            <p class="font-bold text-amber-900 mb-1">스마트 추출 항목을 자동으로 매칭하지 못했습니다.</p>
+            <p>상단의 <span class="font-bold">[📄 원본 엑셀]</span> 버튼을 누르면 원본 시트 그대로 확인하실 수 있습니다.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let totalStudents = 0;
+      let grandTotal = 0;
+
+      data.rows.forEach(r => {
+        totalStudents += r.students;
+        grandTotal += r.total;
+      });
+
+      let html = `
+        <div class="max-w-5xl mx-auto space-y-4">
+          <div class="border-b-2 border-stone-800 pb-3 flex justify-between items-end">
+            <div>
+              <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-amber-400 text-stone-900">(주)밝은생각 공식 표준</span>
+              <h2 class="text-2xl font-brand text-stone-900 mt-1">방과후학교 정산 내역서</h2>
+            </div>
+            <div class="text-right text-xs text-stone-500 font-mono">
+              총 ${data.rows.length}개 강좌 / 수강생 ${totalStudents}명
+            </div>
+          </div>
+
+          <table class="excel-paper-table w-full text-xs">
+            <thead>
+              <tr class="bg-stone-100 text-stone-800 font-bold border-b border-stone-300">
+                <th class="p-2.5 text-center">NO</th>
+                <th class="p-2.5 text-left">강좌(부서명)</th>
+                <th class="p-2.5 text-center">강사명</th>
+                <th class="p-2.5 text-center">수강생수</th>
+                <th class="p-2.5 text-center">수업횟수</th>
+                <th class="p-2.5 text-right">수강료단가</th>
+                <th class="p-2.5 text-right">수용비</th>
+                <th class="p-2.5 text-right font-extrabold text-stone-900 bg-amber-50/50">최종단가(청구액)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200">
+      `;
+
+      data.rows.forEach((r, idx) => {
+        html += `
+          <tr class="hover:bg-amber-50/30">
+            <td class="p-2 text-center text-stone-400 font-mono">${idx + 1}</td>
+            <td class="p-2 font-bold text-stone-900">${r.course}</td>
+            <td class="p-2 text-center font-semibold text-stone-700">${r.teacher}</td>
+            <td class="p-2 text-center font-mono">${r.students > 0 ? r.students + '명' : '-'}</td>
+            <td class="p-2 text-center font-mono">${r.classes > 0 ? r.classes + '회' : '-'}</td>
+            <td class="p-2 text-right font-mono">${r.unitPrice > 0 ? r.unitPrice.toLocaleString() + '원' : '-'}</td>
+            <td class="p-2 text-right font-mono text-stone-500">${r.fee > 0 ? r.fee.toLocaleString() + '원' : '-'}</td>
+            <td class="p-2 text-right font-mono font-bold text-amber-900 bg-amber-50/30">${r.total > 0 ? r.total.toLocaleString() + '원' : '-'}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            <tr class="bg-stone-100 font-bold text-stone-900 border-t-2 border-stone-800">
+              <td class="p-3 text-center" colspan="3">합 계</td>
+              <td class="p-3 text-center font-mono text-amber-950">${totalStudents}명</td>
+              <td class="p-3 text-center font-mono">-</td>
+              <td class="p-3 text-right font-mono">-</td>
+              <td class="p-3 text-right font-mono">-</td>
+              <td class="p-3 text-right font-mono text-base font-extrabold text-amber-900 bg-amber-100/50">${grandTotal.toLocaleString()}원</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      `;
+
+      bodyEl.innerHTML = html;
+      setTimeout(() => setExcelZoom('fit'), 50);
+    }
+
+    // 원본 엑셀 시트 렌더러
     function renderExcelSheet(sheetName, activeTabBtn) {
       if (!currentWorkbook) return;
       const sheet = currentWorkbook.Sheets[sheetName];
@@ -2030,9 +2259,6 @@
           let customClasses = '';
           if (String(value).includes('청구서') || String(value).includes('합계') || String(value).includes('총액') || R < 6) {
             customClasses = 'font-bold';
-            if (String(value).includes('청구서')) {
-              customClasses += ' text-base tracking-wide bg-amber-50/50';
-            }
           }
 
           html += `<td${mergeAttrs} class="${customClasses}" style="text-align: ${alignStyle};">${value}</td>`;
@@ -2042,10 +2268,7 @@
 
       html += '</tbody></table>';
       bodyEl.innerHTML = html;
-
-      setTimeout(() => {
-        setExcelZoom('fit');
-      }, 50);
+      setTimeout(() => setExcelZoom('fit'), 50);
     }
 
     function setExcelZoom(mode) {
@@ -2085,7 +2308,7 @@
       win.document.write(`
         <html>
           <head>
-            <title>청구서 인쇄 미리보기</title>
+            <title>인쇄 미리보기</title>
             <style>
               body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; }
               table { border-collapse: collapse; width: 100%; font-size: 11px; }
@@ -2170,7 +2393,7 @@
 
       const sch = schools.find(s => s.id === schoolId);
       const fileId = 'e_' + Date.now();
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_지출결의서.xlsx`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_지출결의서.jpg`;
 
       if (file) await storeFile(fileId, file);
 
@@ -2178,7 +2401,7 @@
       save('expenses', expenses);
       closeModal('modal-add-expense');
       renderExpenseAndAttendance();
-      renderChecklist();
+      renderOverviewDashboard();
     }
 
     function openAddAttendanceModal() {
@@ -2201,7 +2424,7 @@
 
       const sch = schools.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.xlsx`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.jpg`;
 
       if (file) await storeFile(fileId, file);
 
@@ -2209,7 +2432,7 @@
       save('attendances', attendances);
       closeModal('modal-add-attendance');
       renderExpenseAndAttendance();
-      renderChecklist();
+      renderOverviewDashboard();
     }
 
     function openAddNoticeModal() {
@@ -2239,7 +2462,6 @@
       save('notices', notices);
       closeModal('modal-add-notice');
       renderNotices();
-      renderChecklist();
     }
 
     function openAddMemoModal() {
@@ -2269,19 +2491,12 @@
     function downloadSampleExcel() {
       const wb = XLSX.utils.book_new();
       const billingData = [
-        ['기관명', '구분(강사료/교재비)', '회기(분기)', '차수', '청구금액', '비고'],
-        ['경원초', '강사료', '1분기', '1차', 4850000, '3월 1~4주 정산분'],
-        ['온동네돌봄센터', '교재비', '1분기', '1차', 640000, '늘봄 프로그램 교구재']
+        ['NO', '강좌명', '강사명', '수강생수', '수업횟수', '수강료단가', '수용비', '최종단가(청구액)'],
+        [1, '창의로봇코딩', '이민호', 20, 12, 100000, 5000, 1900000],
+        [2, '키즈토탈미술', '박서연', 15, 12, 90000, 4500, 1282500]
       ];
       const wsBilling = XLSX.utils.aoa_to_sheet(billingData);
-      XLSX.utils.book_append_sheet(wb, wsBilling, '청구서_양식');
-
-      const scheduleData = [
-        ['기관명', '요일', '교시', '강좌명', '강사명', '연락처', '강의실'],
-        ['경원초', '월요일', '1교시 (13:00~14:20)', '창의 로봇코딩', '이민호', '010-3456-7890', '과학실']
-      ];
-      const wsSched = XLSX.utils.aoa_to_sheet(scheduleData);
-      XLSX.utils.book_append_sheet(wb, wsSched, '시간표_양식');
+      XLSX.utils.book_append_sheet(wb, wsBilling, '표준청구서_양식');
 
       XLSX.writeFile(wb, '밝은생각_위탁운영_표준서식.xlsx');
     }

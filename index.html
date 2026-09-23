@@ -11,7 +11,7 @@
   <!-- SheetJS (Excel Engine) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   
-  <!-- 가독성 최우선 웹폰트: 나눔스퀘어라운드 & GmarketSans -->
+  <!-- 가독성 웹폰트: 나눔스퀘어라운드 & GmarketSans -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
 
@@ -37,8 +37,44 @@
     .font-brand {
       font-family: 'GmarketSansBold', 'NanumSquareRound', sans-serif;
     }
-    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
+
+    /* 엑셀 실제 스프레드시트 스타일링 */
+    .excel-sheet-table {
+      border-collapse: collapse;
+      table-layout: auto;
+      white-space: nowrap;
+      font-family: 'Malgun Gothic', '맑은 고딕', Dotum, sans-serif;
+      font-size: 12px;
+      color: #111827;
+      background-color: #ffffff;
+    }
+    .excel-sheet-table th, .excel-sheet-table td {
+      border: 1px solid #d1d5db;
+      padding: 4px 8px;
+      min-width: 50px;
+      height: 22px;
+      box-sizing: border-box;
+    }
+    .excel-row-header {
+      background-color: #f3f4f6;
+      color: #6b7280;
+      font-weight: bold;
+      text-align: center;
+      width: 40px;
+      user-select: none;
+      border: 1px solid #d1d5db;
+    }
+    .excel-col-header {
+      background-color: #f3f4f6;
+      color: #6b7280;
+      font-weight: bold;
+      text-align: center;
+      user-select: none;
+      border: 1px solid #d1d5db;
+    }
+
     @media print {
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
@@ -51,10 +87,8 @@
 
   <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
-    <!-- Brand Header : 선명한 로고 대비 & 굵고 시원한 폰트 -->
     <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/80 flex items-center">
       <div class="flex items-center gap-3.5">
-        <!-- 배경과 별 아이콘 색상 대비를 강화하여 선명하게 돋보이는 로고 -->
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 text-white flex items-center justify-center font-bold text-2xl shadow-md shadow-amber-200/80 ring-2 ring-white shrink-0">
           ⭐
         </div>
@@ -68,7 +102,6 @@
 
     <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
-      <!-- 전체 위탁기관 버튼 -->
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
           <span class="text-lg">🏫</span>
@@ -77,7 +110,6 @@
         <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/90 text-amber-950 font-extrabold">0개소</span>
       </button>
 
-      <!-- 기관 목록 헤더 및 추가 버튼 -->
       <div class="flex items-center justify-between px-2 mb-2">
         <span class="text-xs font-bold text-stone-400 tracking-wider">위탁 기관 목록</span>
         <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors">
@@ -85,13 +117,11 @@
         </button>
       </div>
 
-      <!-- 기관 리스트 (🎒 / 🏡 단일 이모티콘) -->
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- JS 렌더링 -->
       </div>
     </div>
 
-    <!-- 서류 제출 현황 요약 위젯 -->
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
@@ -120,7 +150,6 @@
 
   <!-- ================= M A I N   C O N T E N T ================= -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scroll min-w-0">
-    <!-- 전사 긴급 공지 띠 배너 -->
     <div class="bg-amber-400 px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between shadow-xs">
       <div class="flex items-center gap-2 truncate">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase">Notice</span>
@@ -129,7 +158,6 @@
       <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold">공지 수정</button>
     </div>
 
-    <!-- Top Bar -->
     <header class="bg-white sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
@@ -153,7 +181,6 @@
       </div>
     </header>
 
-    <!-- School Banner -->
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
@@ -200,7 +227,7 @@
       </nav>
     </div>
 
-    <!-- Container for dynamic views -->
+    <!-- Content Sections -->
     <div id="printArea" class="p-6 space-y-6">
 
       <!-- ================= TAB 0: CHECKLIST BOARD ================= -->
@@ -245,9 +272,8 @@
         </div>
       </section>
 
-      <!-- ================= TAB 1: BILLING (청구서 - 강사료 / 교재비) ================= -->
+      <!-- ================= TAB 1: BILLING ================= -->
       <section id="view-billing" class="space-y-5">
-        <!-- Sub Tabs: 강사료 vs 교재비 -->
         <div class="bg-amber-50/60 p-2 rounded-2xl border border-amber-200 inline-flex gap-2">
           <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
             <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 강사료 청구서
@@ -257,7 +283,6 @@
           </button>
         </div>
 
-        <!-- Quarter & Period Selector -->
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
@@ -282,7 +307,6 @@
           </div>
         </div>
 
-        <!-- Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white p-5 rounded-3xl border border-amber-200 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">₩</div>
@@ -302,11 +326,10 @@
           </div>
         </div>
 
-        <!-- Billing Table -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
           <div class="p-4 border-b border-stone-100 flex items-center justify-between">
             <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">강사료 청구서 내역</h3>
-            <span class="text-xs text-stone-400">모든 파일 미리보기 & 다운로드 지원</span>
+            <span class="text-xs text-stone-400">실제 엑셀 격자 서식 그대로 미리보기 지원</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -330,7 +353,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE & SUBSTITUTE FINDER ================= -->
+      <!-- ================= TAB 2: TIMETABLE ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-gradient-to-r from-sky-50 to-indigo-50 p-5 rounded-3xl border border-sky-200 shadow-xs">
           <div class="mb-3">
@@ -489,7 +512,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 4: NOTICES (분기별 안내장) ================= -->
+      <!-- ================= TAB 4: NOTICES ================= -->
       <section id="view-notices" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2">
@@ -524,7 +547,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 5: MEMOS (기관별 1:1 업무소통) ================= -->
+      <!-- ================= TAB 5: MEMOS ================= -->
       <section id="view-memos" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -581,24 +604,34 @@
 
   <!-- ================= M O D A L S ================= -->
 
-  <!-- 1. 파일 미리보기 모달 -->
-  <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
-      <div class="p-4 border-b border-stone-200 flex items-center justify-between bg-stone-50">
-        <div class="flex items-center gap-2 truncate">
-          <span id="preview-badge" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">엑셀</span>
-          <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate">파일 미리보기</h3>
+  <!-- 1. 파일 미리보기 모달 (진짜 엑셀 스프레드시트 뷰어) -->
+  <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 md:p-6 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-6xl w-full h-[90vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
+      <!-- 팝업 헤더 -->
+      <div class="px-5 py-3.5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+        <div class="flex items-center gap-2.5 truncate">
+          <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800">엑셀 시트</span>
+          <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate font-mono">파일 미리보기</h3>
         </div>
         <div class="flex items-center gap-2">
-          <button id="preview-download-btn" class="px-3 py-1 bg-amber-400 hover:bg-amber-500 text-stone-900 rounded-xl text-xs font-bold flex items-center gap-1">
+          <button id="preview-download-btn" class="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-stone-900 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
             <i data-lucide="download" class="w-3.5 h-3.5"></i> 다운로드
           </button>
-          <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1">
+          <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-200">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
       </div>
-      <div id="preview-body" class="p-4 flex-1 overflow-auto custom-scroll bg-stone-100"></div>
+
+      <!-- 엑셀 시트 탭 바 (시트가 여러 개일 때) -->
+      <div id="preview-sheet-tabs" class="px-5 py-2 bg-stone-200/70 border-b border-stone-300 flex items-center gap-1.5 overflow-x-auto custom-scroll hidden">
+        <!-- JS 렌더링 -->
+      </div>
+
+      <!-- 엑셀 실제 표 본문 (격자선 + 스크롤) -->
+      <div id="preview-body" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4">
+        <!-- JS 동적 렌더링 -->
+      </div>
     </div>
   </div>
 
@@ -1016,7 +1049,10 @@
     let currentPeriod = 1;
     let currentMonth = 3;
     let currentNoticeQuarter = 'all';
-    let currentBillingCategory = 'instructor'; // 'instructor' or 'materials'
+    let currentBillingCategory = 'instructor';
+
+    // 엑셀 뷰어 캐시
+    let currentWorkbook = null;
 
     // ---------- 3. Lifecycle Initialization ----------
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1210,7 +1246,7 @@
       renderMemos();
     }
 
-    // ---------- 6. TAB 0: CHECKLIST BOARD (신호등) ----------
+    // ---------- 6. TAB 0: CHECKLIST BOARD ----------
     function renderChecklist() {
       const tbody = document.getElementById('checklist-table-body');
       tbody.innerHTML = '';
@@ -1609,7 +1645,7 @@
       }
     }
 
-    // ---------- 10. TAB 4: NOTICES (분기별 안내장) ----------
+    // ---------- 10. TAB 4: NOTICES ----------
     function filterNoticeQuarter(q) {
       currentNoticeQuarter = q;
       ['all', '1', '2', '3', '4'].forEach(n => {
@@ -1672,7 +1708,7 @@
       }
     }
 
-    // ---------- 11. TAB 5: MEMOS (기관별 1:1 업무소통) ----------
+    // ---------- 11. TAB 5: MEMOS ----------
     function renderMemos() {
       const container = document.getElementById('memo-list-container');
       container.innerHTML = '';
@@ -1716,47 +1752,161 @@
       }
     }
 
-    // ---------- 12. FILE PREVIEW VIEWER (엑셀 & PDF) ----------
+    // ---------- 12. ADVANCED FILE PREVIEW VIEWER (실제 엑셀 격자 서식 복원) ----------
     async function previewFile(fileId, fileType, fileName) {
       const fileData = await getFileFromDB(fileId);
       const modal = document.getElementById('modal-file-preview');
       const titleEl = document.getElementById('preview-title');
       const badgeEl = document.getElementById('preview-badge');
       const bodyEl = document.getElementById('preview-body');
+      const tabsEl = document.getElementById('preview-sheet-tabs');
       const downBtn = document.getElementById('preview-download-btn');
 
       titleEl.textContent = fileName;
       downBtn.onclick = () => downloadFileFromDB(fileId, fileName);
 
       if (!fileData || !fileData.data) {
-        bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-stone-500">저장된 파일 원본이 없어 미리보기를 불러올 수 없습니다. 파일을 새로 등록해 보세요.</div>`;
+        tabsEl.classList.add('hidden');
+        bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-stone-500">저장된 파일 원본이 없어 미리보기를 불러올 수 없습니다.</div>`;
         modal.classList.remove('hidden');
         return;
       }
 
       if (fileType === 'pdf') {
+        tabsEl.classList.add('hidden');
         badgeEl.textContent = 'PDF 문서';
-        badgeEl.className = 'px-2 py-0.5 rounded-lg text-xs font-bold bg-rose-100 text-rose-800';
-        bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-full h-[65vh] rounded-xl border border-stone-200"></iframe>`;
+        badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-100 text-rose-800';
+        bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-full h-full rounded-2xl border border-stone-200"></iframe>`;
       } else {
         badgeEl.textContent = '엑셀 시트';
-        badgeEl.className = 'px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800';
+        badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800';
         try {
           const base64 = fileData.data.split(',')[1];
-          const workbook = XLSX.read(base64, { type: 'base64' });
-          const firstSheet = workbook.SheetNames[0];
-          const html = XLSX.utils.sheet_to_html(workbook.Sheets[firstSheet], { editable: false });
-          bodyEl.innerHTML = `
-            <div class="mb-2 text-xs font-bold text-stone-500">시트명: [${firstSheet}]</div>
-            <div class="overflow-x-auto bg-white p-4 rounded-xl border border-stone-200 text-xs shadow-2xs">${html}</div>
-          `;
+          // 원본 셀 서식, 병합, 스타일 보존하여 파싱
+          currentWorkbook = XLSX.read(base64, { type: 'base64', cellStyles: true, cellNF: true });
+          
+          // 시트 탭 구성
+          tabsEl.innerHTML = '';
+          tabsEl.classList.remove('hidden');
+
+          currentWorkbook.SheetNames.forEach((sheetName, index) => {
+            const tabBtn = document.createElement('button');
+            tabBtn.className = `px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              index === 0 
+                ? 'bg-white text-emerald-800 shadow-xs border border-stone-300' 
+                : 'text-stone-600 hover:bg-stone-300/60'
+            }`;
+            tabBtn.textContent = sheetName;
+            tabBtn.onclick = () => renderExcelSheet(sheetName, tabBtn);
+            tabsEl.appendChild(tabBtn);
+          });
+
+          // 첫 번째 시트 렌더링
+          renderExcelSheet(currentWorkbook.SheetNames[0], tabsEl.firstChild);
         } catch (err) {
-          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (파일 다운로드를 이용해 주세요)</div>`;
+          tabsEl.classList.add('hidden');
+          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (다운로드 버튼을 눌러 확인해 주세요)</div>`;
         }
       }
 
       modal.classList.remove('hidden');
       lucide.createIcons();
+    }
+
+    // 실제 엑셀 테이블 표 렌더러 (격자선 + 병합 셀 + 너비/정렬 복원)
+    function renderExcelSheet(sheetName, activeTabBtn) {
+      if (!currentWorkbook) return;
+      const sheet = currentWorkbook.Sheets[sheetName];
+      const bodyEl = document.getElementById('preview-body');
+
+      // 탭 활성화 상태 변경
+      const tabs = document.getElementById('preview-sheet-tabs').children;
+      for (let t of tabs) {
+        t.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-stone-600 hover:bg-stone-300/60';
+      }
+      if (activeTabBtn) {
+        activeTabBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-emerald-800 shadow-xs border border-stone-300';
+      }
+
+      if (!sheet || !sheet['!ref']) {
+        bodyEl.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">선택한 시트에 표시할 데이터가 없습니다.</div>`;
+        return;
+      }
+
+      const range = XLSX.utils.decode_range(sheet['!ref']);
+      const merges = sheet['!merges'] || [];
+
+      // 병합 셀 맵핑 (시작셀과 스킵할 셀 정의)
+      const mergeMap = {};
+      const skipCells = new Set();
+
+      merges.forEach(m => {
+        const startKey = `${m.s.r}_${m.s.c}`;
+        const rowspan = m.e.r - m.s.r + 1;
+        const colspan = m.e.c - m.s.c + 1;
+        mergeMap[startKey] = { rowspan, colspan };
+
+        for (let R = m.s.r; R <= m.e.r; ++R) {
+          for (let C = m.s.c; C <= m.e.c; ++C) {
+            if (R === m.s.r && C === m.s.c) continue;
+            skipCells.add(`${R}_${C}`);
+          }
+        }
+      });
+
+      // HTML 표 생성
+      let html = '<div class="inline-block min-w-full bg-white p-6 rounded-2xl shadow-sm border border-stone-200">';
+      html += '<table class="excel-sheet-table w-full">';
+
+      // 열 헤더 (A, B, C...)
+      html += '<thead><tr><th class="excel-row-header"></th>';
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const colLetter = XLSX.utils.encode_col(C);
+        html += `<th class="excel-col-header">${colLetter}</th>`;
+      }
+      html += '</tr></thead><tbody>';
+
+      // 행 렌더링
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        html += `<tr><td class="excel-row-header">${R + 1}</td>`;
+
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellKey = `${R}_${C}`;
+          if (skipCells.has(cellKey)) continue;
+
+          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+          const cell = sheet[cellAddress];
+
+          let mergeAttrs = '';
+          if (mergeMap[cellKey]) {
+            mergeAttrs = ` rowspan="${mergeMap[cellKey].rowspan}" colspan="${mergeMap[cellKey].colspan}"`;
+          }
+
+          let value = '';
+          let alignStyle = 'left';
+
+          if (cell) {
+            value = (cell.w !== undefined) ? cell.w : (cell.v !== undefined ? cell.v : '');
+            if (typeof cell.v === 'number') {
+              alignStyle = 'right';
+            } else if (cell.t === 's' && cell.v && String(cell.v).length <= 4 && !isNaN(Number(cell.v))) {
+              alignStyle = 'center';
+            }
+          }
+
+          // 제목 또는 특정 텍스트 볼드 감지
+          let customClasses = '';
+          if (String(value).includes('청구서') || String(value).includes('합계') || R < 5) {
+            customClasses = 'font-bold';
+          }
+
+          html += `<td${mergeAttrs} class="${customClasses}" style="text-align: ${alignStyle};">${value}</td>`;
+        }
+        html += '</tr>';
+      }
+
+      html += '</tbody></table></div>';
+      bodyEl.innerHTML = html;
     }
 
     // ---------- 13. MODAL HANDLERS ----------

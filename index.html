@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>밝은생각 | 초등방과후·늘봄학교 위탁운영 인트라넷</title>
-  
-  <!-- Tailwind CSS & FontAwesome & Google Fonts -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>밝은생각 | 초등 방과후 위탁운영</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Gaegu & Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Round:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            round: ['"Nanum Round"', '"Noto Sans KR"', 'sans-serif'],
-            cute: ['"Gaegu"', 'cursive', 'sans-serif'],
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+            cute: ['"Gaegu"', 'cursive', 'sans-serif']
           },
           colors: {
-            brand: {
+            pastel: {
               cream: '#FFFDF9',
-              warm: '#FFF6EC',
-              yellow: '#FDE047',
-              butter: '#FEF08A',
-              orange: '#FB923C',
-              coral: '#F97316',
-              peach: '#FFEDD5',
-              mint: '#A7F3D0',
-              leaf: '#10B981',
-              sky: '#BAE6FD',
-              blue: '#0284C7',
-              pink: '#FBCFE8',
-              lavender: '#E9D5FF'
+              yellow: '#FEF3C7',
+              yellowDark: '#F59E0B',
+              peach: '#FFE4E6',
+              peachDark: '#F43F5E',
+              mint: '#D1FAE5',
+              mintDark: '#10B981',
+              blue: '#E0F2FE',
+              blueDark: '#0284C7',
+              purple: '#F3E8FF',
+              purpleDark: '#9333EA',
+              border: '#F3E8D6'
             }
-          },
-          boxShadow: {
-            'cute': '0 8px 24px -4px rgba(249, 115, 22, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
-            'bubble': '0 10px 25px -3px rgba(251, 146, 60, 0.22)',
-            'card-hover': '0 14px 28px -4px rgba(251, 146, 60, 0.18)'
           }
         }
       }
@@ -49,1679 +44,1218 @@
 
   <style>
     body {
-      font-family: 'Nanum Round', 'Noto Sans KR', sans-serif;
-      background-color: #FFF9F2;
-      background-image: 
-        radial-gradient(#FDBA74 0.75px, transparent 0.75px), 
-        radial-gradient(#93C5FD 0.75px, #FFF9F2 0.75px);
-      background-size: 28px 28px;
-      background-position: 0 0, 14px 14px;
+      background-color: #FBF9F5;
+      font-family: 'Noto Sans KR', sans-serif;
     }
-
-    .font-cute-title {
-      font-family: 'Gaegu', cursive;
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    ::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: #E2D9C8;
+      border-radius: 9999px;
     }
-    ::-webkit-scrollbar-track {
-      background: #FFF1E4;
-      border-radius: 999px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #FDBA74;
-      border-radius: 999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #FB923C;
-    }
-    
-    .badge-soft {
-      box-shadow: 2px 2px 0px rgba(0,0,0,0.04);
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+      }
+      .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
-<body class="text-stone-700 min-h-screen flex flex-col antialiased selection:bg-amber-200 selection:text-amber-900">
+<body class="text-stone-700 min-h-screen flex flex-col md:flex-row antialiased">
 
-  <!-- Top Info Ribbon -->
-  <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-pink-400 text-white text-xs sm:text-sm py-1.5 px-4 text-center font-bold shadow-xs flex items-center justify-center gap-2">
-    <span>✨</span>
-    <span><strong>[초등 방과후 위탁운영 '밝은생각']</strong> 학교별 4주단위 청구정산 및 지출결의서 통합 업무포털</span>
-    <span class="hidden md:inline bg-white/20 px-2 py-0.5 rounded-full text-xs ml-2">정산 마감일: 매 분기/월말 25일</span>
-  </div>
-
-  <div class="flex-1 flex flex-col lg:flex-row w-full max-w-[1720px] mx-auto">
-    
-    <!-- LEFT SIDEBAR: 위탁 학교 목록 & 밝은생각 브랜딩 -->
-    <aside class="w-full lg:w-72 bg-white/95 backdrop-blur-md border-r-2 border-orange-100 p-4 sm:p-5 flex flex-col justify-between shrink-0 shadow-sm z-20">
-      <div class="space-y-6">
-        
-        <!-- Logo & Branding -->
-        <div class="flex items-center gap-3 pb-4 border-b-2 border-orange-100">
-          <div class="w-12 h-12 rounded-3xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center text-2xl shadow-inner shadow-amber-200">
-            🌱
-          </div>
-          <div>
-            <div class="flex items-center gap-1">
-              <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-200 text-amber-900">방과후·늘봄</span>
-              <span class="text-[11px] text-orange-600 font-bold">위탁운영사</span>
-            </div>
-            <h1 class="text-xl font-bold text-stone-800 font-cute-title text-2xl tracking-tight leading-tight">
-              밝은생각 <span class="text-orange-500 font-sans text-sm font-semibold">BrightMind</span>
-            </h1>
-          </div>
+  <!-- ================= L E F T   S I D E B A R ================= -->
+  <aside class="w-full md:w-72 bg-white border-r border-amber-100 flex flex-col shrink-0 shadow-sm z-20">
+    <!-- Brand Header -->
+    <div class="p-5 border-b border-amber-50 flex items-center justify-between bg-amber-50/40">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
         </div>
-
-        <!-- Dashboard Shortcut -->
         <div>
-          <button onclick="selectSchool('ALL')" id="school-btn-ALL" 
-                  class="w-full school-nav-btn text-left p-3 rounded-2xl border-2 transition-all flex items-center justify-between font-bold text-xs sm:text-sm bg-orange-100/70 border-orange-300 text-orange-950 shadow-xs">
-            <span class="flex items-center gap-2">
-              <span class="text-lg">📊</span>
-              <span>전체 위탁학교 통합 현황</span>
-            </span>
-            <span id="all-schools-count-badge" class="bg-orange-200 text-orange-900 text-[11px] px-2 py-0.5 rounded-full font-extrabold">5개교</span>
-          </button>
+          <h1 class="text-2xl font-bold font-cute text-amber-900 tracking-tight leading-none">밝은생각</h1>
+          <p class="text-xs text-amber-700 font-medium mt-1">방과후 위탁운영 허브</p>
         </div>
-
-        <!-- Schools List -->
-        <div>
-          <div class="flex items-center justify-between mb-2.5 px-1">
-            <span class="text-xs font-bold text-stone-500 flex items-center gap-1.5">
-              <span>🏫</span> 위탁 운영 학교 목록
-            </span>
-            <button onclick="openAddSchoolModal()" class="text-orange-600 hover:text-orange-700 text-xs font-bold flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-2 py-1 rounded-xl transition">
-              <i class="fa-solid fa-plus text-[10px]"></i> 학교추가
-            </button>
-          </div>
-
-          <div id="school-list-container" class="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">
-            <!-- Rendered dynamically -->
-          </div>
-        </div>
-
-        <!-- Quick Summary Box -->
-        <div class="p-3.5 rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 text-xs space-y-2">
-          <div class="flex items-center justify-between font-bold text-stone-700">
-            <span>📢 이번 주 행정 알림</span>
-            <span class="text-[10px] text-amber-700 bg-amber-200 px-1.5 py-0.2 rounded font-semibold">D-3</span>
-          </div>
-          <p class="text-[11px] text-stone-600 leading-relaxed">
-            각 학교별 <strong class="text-orange-600 font-bold">4주단위 청구내역서</strong>와 <strong class="text-orange-600 font-bold">강사 출근부 원본</strong> 서명 확인을 완료해 주세요!
-          </p>
-        </div>
-
       </div>
+    </div>
 
-      <!-- Coordinator Support Profile -->
-      <div class="pt-4 border-t border-orange-100 mt-4 flex items-center justify-between">
+    <!-- School List & Switcher -->
+    <div class="p-4 flex-1 flex flex-col overflow-hidden">
+      <!-- 전체 위탁학교 선택 버튼 -->
+      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-4 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-semibold transition-all border border-amber-200 bg-amber-100/70 text-amber-900 shadow-sm">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-2xl bg-pink-100 border border-pink-300 flex items-center justify-center text-base">
-            👩‍💼
-          </div>
-          <div class="text-left text-xs">
-            <p class="font-bold text-stone-800">김서현 팀장</p>
-            <p class="text-[10px] text-stone-400">행정정산 총괄관리자</p>
-          </div>
+          <span class="text-lg">🏫</span>
+          <span class="text-sm">전체 위탁학교 통합</span>
         </div>
-        <button onclick="showQuickAlert('정산시스템 지원본부: 02-334-5890 (평일 09:00~18:00)')" class="text-stone-400 hover:text-stone-600 text-xs p-1" title="관리자 문의">
-          <i class="fa-solid fa-circle-question text-base"></i>
+        <span id="badge-total-schools" class="text-xs px-2 py-0.5 rounded-full bg-amber-200 text-amber-800 font-bold">0개교</span>
+      </button>
+
+      <!-- 학교 목록 헤더 및 추가 버튼 -->
+      <div class="flex items-center justify-between px-2 mb-2">
+        <span class="text-xs font-bold text-stone-500 tracking-wider">위탁 운영 학교 목록</span>
+        <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold flex items-center gap-1 transition-colors">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> 학교 추가
         </button>
       </div>
 
-    </aside>
+      <!-- 개별 학교 리스트 -->
+      <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
+        <!-- JS 렌더링 -->
+      </div>
+    </div>
 
-    <!-- MAIN WORKSPACE -->
-    <main class="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 min-w-0">
-      
-      <!-- Top Dynamic Header Bar -->
-      <div class="bg-white rounded-3xl border-2 border-orange-100 p-5 shadow-cute mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+    <!-- 안내 메시지 박스 -->
+    <div class="p-4 border-t border-amber-100 bg-amber-50/30">
+      <div class="p-3 bg-white rounded-2xl border border-amber-200/70 shadow-xs">
+        <div class="flex items-center gap-2 text-amber-800 text-xs font-bold mb-1">
+          <i data-lucide="bell" class="w-3.5 h-3.5 text-amber-600"></i> 이번 주 정산 안내
+        </div>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          각 학교별 <b class="text-amber-800">4주 단위 청구서</b> 및 <b class="text-amber-800">강사 출근부</b> 서류 점검 기간입니다.
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= M A I N   C O N T E N T ================= -->
+  <main class="flex-1 flex flex-col overflow-y-auto custom-scroll">
+    <!-- Top Bar -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 border-b border-amber-100 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span id="current-school-badge" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+            전체 위탁학교 통합
+          </span>
+          <span class="text-xs text-stone-400 font-mono" id="realtime-clock"></span>
+        </div>
+        <h2 id="current-school-title" class="text-xl md:text-2xl font-bold text-stone-800 mt-1 flex items-center gap-2">
+          위탁운영 통합 행정 관리
+        </h2>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
+          <i data-lucide="printer" class="w-4 h-4"></i> 정산서 인쇄
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white">
+      <nav class="flex gap-2 overflow-x-auto custom-scroll">
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-amber-500 text-white shadow-sm">
+          <i data-lucide="calculator" class="w-4 h-4"></i> 1~4분기 4주단위 청구정산
+        </button>
+        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+          <i data-lucide="receipt" class="w-4 h-4"></i> 월별 지출결의서 & 출근부
+        </button>
+        <button onclick="switchTab('instructors')" id="tab-btn-instructors" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i> 강사 현황 & 안내장
+        </button>
+      </nav>
+    </div>
+
+    <!-- Container for dynamic views -->
+    <div id="printArea" class="p-6 space-y-6">
+
+      <!-- ================= 1. BILLING TAB ================= -->
+      <section id="view-billing" class="space-y-6">
+        <!-- Quarter & Period Selector -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
-            <span id="current-school-tag" class="text-xs px-2.5 py-1 rounded-full font-extrabold bg-orange-100 text-orange-800 border border-orange-200">
-              전체 위탁학교 통합
-            </span>
-            <span class="text-xs text-stone-400 font-medium">초등 방과후학교 행정 통합지원</span>
+            <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
+            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">4분기 (12~2월)</button>
           </div>
-          <h2 id="current-school-title" class="text-xl sm:text-2xl font-bold text-stone-800 font-cute-title text-3xl mt-1 flex items-center gap-2">
-            <span>🏫</span> 전체 위탁운영 현황 종합 대시보드
-          </h2>
+
+          <div class="flex items-center gap-2">
+            <select id="select-period" onchange="changePeriod(this.value)" class="text-xs font-bold bg-amber-50 border border-amber-200 text-amber-900 rounded-xl px-3 py-2 outline-none">
+              <option value="1">1차 (1주~4주 정산)</option>
+              <option value="2">2차 (5주~8주 정산)</option>
+              <option value="3">3차 (9주~12주 정산)</option>
+            </select>
+            <button onclick="openAddBillingModal()" class="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> 강좌 청구내역 추가
+            </button>
+          </div>
         </div>
 
-        <!-- Quick Switch & Status Badge -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <div class="bg-amber-50 border border-amber-200 rounded-2xl px-3.5 py-1.5 text-xs text-left">
-            <span class="text-stone-400 text-[10px] block">현재 정산 회기</span>
-            <span class="font-bold text-stone-800" id="current-period-text">2026학년도 1분기 (1~4차)</span>
-          </div>
-          <button onclick="openExportSummaryModal()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold text-xs px-3.5 py-2.5 rounded-2xl transition shadow-xs flex items-center gap-1.5 whitespace-nowrap">
-            <i class="fa-solid fa-print"></i>
-            <span>정산서 종합출력</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- MAIN TABS NAVIGATION -->
-      <div class="mb-6 overflow-x-auto scrollbar-none">
-        <nav class="flex space-x-2 pb-1" id="workspace-tabs">
-          <button onclick="switchTab('billing')" class="main-tab-btn active px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl bg-amber-100 text-amber-900 border-2 border-amber-300 flex items-center gap-2 whitespace-nowrap transition-all shadow-xs">
-            <span>📑</span> 1~4분기 4주단위 청구정산
-          </button>
-          <button onclick="switchTab('expense-attendance')" class="main-tab-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl bg-white text-stone-600 border border-stone-200 hover:bg-orange-50 flex items-center gap-2 whitespace-nowrap transition-all">
-            <span>💰</span> 매달 지출결의서 & 출근부
-          </button>
-          <button onclick="switchTab('teachers')" class="main-tab-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl bg-white text-stone-600 border border-stone-200 hover:bg-orange-50 flex items-center gap-2 whitespace-nowrap transition-all">
-            <span>👩‍🏫</span> 학교별 강사 현황
-          </button>
-          <button onclick="switchTab('notices')" class="main-tab-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-2xl bg-white text-stone-600 border border-stone-200 hover:bg-orange-50 flex items-center gap-2 whitespace-nowrap transition-all">
-            <span>💌</span> 학교 안내장 & 가정통신문
-          </button>
-        </nav>
-      </div>
-
-      <!-- TAB 1: 1~4분기 4주단위 청구정산 -->
-      <section id="tab-billing" class="tab-panel space-y-6">
-        
-        <!-- Quarter & 4-Week Block Selector Pill Bar -->
-        <div class="bg-white rounded-3xl border-2 border-amber-100 p-5 shadow-cute">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-100">
-            
-            <!-- Quarter Selection -->
-            <div class="flex items-center gap-2 overflow-x-auto">
-              <span class="text-xs font-bold text-stone-500 shrink-0">분기 선택:</span>
-              <div class="flex items-center gap-1.5" id="quarter-selector-buttons">
-                <button onclick="setQuarter('1분기')" class="quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-400 text-amber-950 shadow-xs">1분기 (3~5월)</button>
-                <button onclick="setQuarter('2분기')" class="quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-stone-100 text-stone-600 hover:bg-amber-50">2분기 (6~8월)</button>
-                <button onclick="setQuarter('3분기')" class="quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-stone-100 text-stone-600 hover:bg-amber-50">3분기 (9~11월)</button>
-                <button onclick="setQuarter('4분기')" class="quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-stone-100 text-stone-600 hover:bg-amber-50">4분기 (12~2월)</button>
-              </div>
+        <!-- Summary Metric Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-gradient-to-br from-amber-50 to-white p-5 rounded-3xl border border-amber-200 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-400 text-white flex items-center justify-center font-bold text-xl shadow-sm">
+              ₩
             </div>
+            <div>
+              <p class="text-xs font-bold text-stone-500">선택 회차 총 청구금액</p>
+              <h3 class="text-xl md:text-2xl font-bold text-stone-800" id="total-billing-amount">0원</h3>
+            </div>
+          </div>
 
-            <!-- 4-Week Unit Sub-Cycle Filter -->
+          <div class="bg-gradient-to-br from-emerald-50 to-white p-5 rounded-3xl border border-emerald-200 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-400 text-white flex items-center justify-center shadow-sm">
+              <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-stone-500">총 수강 학생 수</p>
+              <h3 class="text-xl md:text-2xl font-bold text-stone-800" id="total-student-count">0명</h3>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-sky-50 to-white p-5 rounded-3xl border border-sky-200 shadow-xs flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-sky-400 text-white flex items-center justify-center shadow-sm">
+              <i data-lucide="book-open" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-stone-500">개설 강좌 수</p>
+              <h3 class="text-xl md:text-2xl font-bold text-stone-800" id="total-course-count">0개 강좌</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Table -->
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
+          <div class="p-5 border-b border-stone-100 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-stone-500 shrink-0">정산 주기:</span>
-              <select id="cycle-select" onchange="renderBillingList()" class="bg-amber-50 border border-amber-200 text-stone-800 text-xs rounded-xl px-3 py-1.5 font-bold focus:outline-none">
-                <option value="ALL">전체 4주단위 통합</option>
-                <option value="1차(1~4주)">1차 (1~4주차 청구)</option>
-                <option value="2차(5~8주)">2차 (5~8주차 청구)</option>
-                <option value="3차(9~12주)">3차 (9~12주차 청구)</option>
-              </select>
-              <button onclick="openBillingModal()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition shadow-xs flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-file-circle-plus"></i> 새 4주 청구서 등록
-              </button>
+              <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+              <h3 class="font-bold text-stone-800 text-base" id="billing-table-title">4주단위 청구 정산서 내역</h3>
             </div>
-
+            <span class="text-xs text-stone-400">수강료 = 수강인원 × 4주 수강료</span>
           </div>
 
-          <!-- Billing Stat Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-            <div class="p-3.5 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between">
-              <div>
-                <span class="text-[11px] text-stone-500 font-bold block">해당 분기 총 청구 강좌</span>
-                <span id="stat-billing-courses" class="text-lg font-extrabold text-stone-800 font-cute-title text-2xl">0개 강좌</span>
-              </div>
-              <span class="w-10 h-10 rounded-2xl bg-amber-200 text-amber-900 flex items-center justify-center text-lg">📚</span>
-            </div>
-
-            <div class="p-3.5 bg-orange-50/70 border border-orange-200 rounded-2xl flex items-center justify-between">
-              <div>
-                <span class="text-[11px] text-stone-500 font-bold block">4주단위 총 청구 합계액</span>
-                <span id="stat-billing-amount" class="text-lg font-extrabold text-orange-600 font-cute-title text-2xl">0 원</span>
-              </div>
-              <span class="w-10 h-10 rounded-2xl bg-orange-200 text-orange-900 flex items-center justify-center text-lg">💰</span>
-            </div>
-
-            <div class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-center justify-between">
-              <div>
-                <span class="text-[11px] text-stone-500 font-bold block">학교 행정실 승인율</span>
-                <span id="stat-billing-approval" class="text-lg font-extrabold text-emerald-600 font-cute-title text-2xl">0%</span>
-              </div>
-              <span class="w-10 h-10 rounded-2xl bg-emerald-200 text-emerald-900 flex items-center justify-center text-lg">✅</span>
-            </div>
-          </div>
-
-          <!-- Billing Table -->
-          <div class="mt-5 overflow-x-auto rounded-2xl border border-stone-200">
+          <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-amber-50/90 text-stone-700 font-bold border-b border-stone-200">
+              <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold">
                 <tr>
-                  <th class="py-3 px-3.5 whitespace-nowrap">학교명</th>
-                  <th class="py-3 px-3 whitespace-nowrap">분기/주차</th>
-                  <th class="py-3 px-3.5">강좌명</th>
-                  <th class="py-3 px-3">강사명</th>
-                  <th class="py-3 px-2 text-center whitespace-nowrap">수강생</th>
-                  <th class="py-3 px-2 text-center whitespace-nowrap">주당시수</th>
-                  <th class="py-3 px-3 text-right whitespace-nowrap">1인/4주 수강료</th>
-                  <th class="py-3 px-3.5 text-right whitespace-nowrap">4주 총 청구액</th>
-                  <th class="py-3 px-3 text-center whitespace-nowrap">행정실 승인</th>
-                  <th class="py-3 px-3 text-center whitespace-nowrap">관리</th>
+                  <th class="py-3.5 px-4">학교명</th>
+                  <th class="py-3.5 px-4">강좌명</th>
+                  <th class="py-3.5 px-4">담당 강사</th>
+                  <th class="py-3.5 px-4 text-center">4주 시수</th>
+                  <th class="py-3.5 px-4 text-center">수강 인원</th>
+                  <th class="py-3.5 px-4 text-right">1인 수강료 (4주)</th>
+                  <th class="py-3.5 px-4 text-right">총 청구액</th>
+                  <th class="py-3.5 px-4 text-center">관리</th>
                 </tr>
               </thead>
-              <tbody id="billing-table-body" class="divide-y divide-stone-100 bg-white">
-                <!-- Rendered dynamically -->
+              <tbody id="billing-table-body" class="divide-y divide-stone-100">
+                <!-- JS 렌더링 -->
               </tbody>
             </table>
           </div>
-          <div id="billing-empty-state" class="py-12 text-center text-stone-400 text-xs hidden">
-            선택된 조건의 4주단위 청구서 내역이 없습니다 🌱
-          </div>
         </div>
-
       </section>
 
-      <!-- TAB 2: 매달 지출결의서 & 출근부 관리 -->
-      <section id="tab-expense-attendance" class="tab-panel hidden space-y-6">
-        
-        <!-- Month Navigation Bar -->
-        <div class="bg-white rounded-3xl border-2 border-orange-100 p-4 shadow-cute flex items-center justify-between gap-3 overflow-x-auto">
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="text-xs font-bold text-stone-500">📅 해당 월 선택:</span>
-            <div class="flex items-center gap-1" id="month-pills-container">
-              <!-- 3월 ~ 12월, 1월, 2월 -->
-            </div>
+      <!-- ================= 2. EXPENSE & ATTENDANCE TAB ================= -->
+      <section id="view-expense" class="space-y-6 hidden">
+        <!-- Month Selector Bar -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <i data-lucide="calendar" class="w-5 h-5 text-amber-500"></i>
+            <span class="font-bold text-sm text-stone-800">월별 서류 정산:</span>
+            <select id="select-month" onchange="changeMonth(this.value)" class="text-xs font-bold bg-amber-50 border border-amber-200 text-amber-900 rounded-xl px-3 py-1.5 outline-none">
+              <option value="3">2026년 3월</option>
+              <option value="4">2026년 4월</option>
+              <option value="5">2026년 5월</option>
+              <option value="6">2026년 6월</option>
+              <option value="7">2026년 7월</option>
+              <option value="8">2026년 8월</option>
+              <option value="9">2026년 9월</option>
+              <option value="10">2026년 10월</option>
+              <option value="11">2026년 11월</option>
+              <option value="12">2026년 12월</option>
+              <option value="1">2027년 1월</option>
+              <option value="2">2027년 2월</option>
+            </select>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="text-xs text-orange-600 font-bold bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-xl">
-              매달 말일 25일 정산·제출 마감
-            </span>
+
+          <div class="flex items-center gap-2">
+            <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="plus" class="w-4 h-4"></i> 지출결의서 등록
+            </button>
+            <button onclick="openAddAttendanceModal()" class="px-3.5 py-2 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="upload" class="w-4 h-4"></i> 강사 출근부 등록
+            </button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Box 1: 매달 지출결의서 -->
-          <div class="bg-white rounded-3xl border-2 border-amber-100 p-5 shadow-cute flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between pb-3 border-b border-amber-100">
-                <div class="flex items-center gap-2">
-                  <span class="text-xl">🧾</span>
-                  <div>
-                    <h3 class="font-bold text-stone-800 text-sm sm:text-base">매달 지출결의서 내역</h3>
-                    <p class="text-[11px] text-stone-500">교구재, 소모품, 인쇄비, 간식비 결의 및 영수증 등록</p>
-                  </div>
-                </div>
-                <button onclick="openExpenseModal()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-xs flex items-center gap-1">
-                  <i class="fa-solid fa-plus text-[10px]"></i> 결의서 등록
-                </button>
-              </div>
-
-              <!-- Expense List -->
-              <div class="mt-4 space-y-2.5 max-h-[480px] overflow-y-auto pr-1" id="expense-items-list">
-                <!-- Rendered dynamically -->
-              </div>
-            </div>
-
-            <!-- Expense Summary Footer -->
-            <div class="mt-4 pt-3 border-t border-amber-100 bg-amber-50/50 p-3 rounded-2xl flex items-center justify-between text-xs">
-              <span class="text-stone-600 font-bold">당월 총 지출 합계:</span>
-              <span id="expense-total-amount" class="text-sm font-extrabold text-orange-600">0 원</span>
-            </div>
-          </div>
-
-          <!-- Box 2: 매달 강사 출근부 관리 -->
-          <div class="bg-white rounded-3xl border-2 border-sky-100 p-5 shadow-cute flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between pb-3 border-b border-sky-100">
-                <div class="flex items-center gap-2">
-                  <span class="text-xl">📋</span>
-                  <div>
-                    <h3 class="font-bold text-stone-800 text-sm sm:text-base">매달 강사 출근부 서명 관리</h3>
-                    <p class="text-[11px] text-stone-500">출강 일수/시수 검증 및 자필 서명부 파일 첨부</p>
-                  </div>
-                </div>
-                <button onclick="openAttendanceModal()" class="bg-sky-400 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-xs flex items-center gap-1">
-                  <i class="fa-solid fa-file-arrow-up text-[10px]"></i> 출근부 등록
-                </button>
-              </div>
-
-              <!-- Attendance List -->
-              <div class="mt-4 space-y-2.5 max-h-[480px] overflow-y-auto pr-1" id="attendance-items-list">
-                <!-- Rendered dynamically -->
-              </div>
-            </div>
-
-            <!-- Attendance Summary Footer -->
-            <div class="mt-4 pt-3 border-t border-sky-100 bg-sky-50/50 p-3 rounded-2xl flex items-center justify-between text-xs">
-              <span class="text-stone-600 font-bold">출근부 제출 완료율:</span>
-              <span id="attendance-submission-rate" class="text-sm font-extrabold text-sky-700">0% (0/0명)</span>
-            </div>
-          </div>
-
-        </div>
-
-      </section>
-
-      <!-- TAB 3: 학교별 강사현황 -->
-      <section id="tab-teachers" class="tab-panel hidden space-y-6">
-        <div class="bg-white rounded-3xl border-2 border-pink-100 p-5 sm:p-6 shadow-cute">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-pink-100">
-            <div>
+          <!-- 1) 지출결의서 카드 -->
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5 flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
               <div class="flex items-center gap-2">
-                <span class="text-2xl">👩‍🏫</span>
-                <h3 class="text-lg font-bold text-stone-800 font-cute-title text-2xl">학교별 출강 강사 및 과목 현황</h3>
+                <span class="p-2 rounded-xl bg-emerald-100 text-emerald-700">
+                  <i data-lucide="receipt" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <h4 class="font-bold text-stone-800 text-sm">월별 지출결의서 내역</h4>
+                  <p class="text-xs text-stone-400">교구재, 재료비, 인쇄비 및 운영비</p>
+                </div>
               </div>
-              <p class="text-xs text-stone-500 mt-0.5">선택된 학교에 출강 중인 전문 강사님들의 강의실, 요일 및 연락처입니다.</p>
+              <div class="text-right">
+                <span class="text-xs text-stone-400">당월 총 지출액</span>
+                <p class="font-bold text-emerald-600 text-base" id="total-monthly-expense">0원</p>
+              </div>
             </div>
 
-            <div class="flex items-center gap-2">
-              <button onclick="openTeacherModal()" class="bg-pink-400 hover:bg-pink-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5">
-                <i class="fa-solid fa-user-plus text-[11px]"></i> 새 강사 등록
-              </button>
+            <div class="overflow-y-auto max-h-96 custom-scroll">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 text-stone-500">
+                  <tr>
+                    <th class="p-2.5">일자</th>
+                    <th class="p-2.5">항목 / 내용</th>
+                    <th class="p-2.5">지출처</th>
+                    <th class="p-2.5 text-right">금액</th>
+                    <th class="p-2.5 text-center">삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="expense-table-body" class="divide-y divide-stone-100">
+                  <!-- JS 렌더링 -->
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <!-- Teachers Grid -->
-          <div id="teachers-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-5">
-            <!-- Rendered dynamically -->
-          </div>
+          <!-- 2) 강사 출근부 서류 카드 -->
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5 flex flex-col">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+              <div class="flex items-center gap-2">
+                <span class="p-2 rounded-xl bg-sky-100 text-sky-700">
+                  <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <h4 class="font-bold text-stone-800 text-sm">강사 출근부 및 시수 확인서</h4>
+                  <p class="text-xs text-stone-400">서명 날인 완료 출근부 제출 현황</p>
+                </div>
+              </div>
+            </div>
 
+            <div class="overflow-y-auto max-h-96 custom-scroll">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 text-stone-500">
+                  <tr>
+                    <th class="p-2.5">학교 / 강사</th>
+                    <th class="p-2.5">과목</th>
+                    <th class="p-2.5 text-center">총 출석일</th>
+                    <th class="p-2.5 text-center">출근부 파일</th>
+                    <th class="p-2.5 text-center">삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-table-body" class="divide-y divide-stone-100">
+                  <!-- JS 렌더링 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- TAB 4: 학교 안내장 & 가정통신문 -->
-      <section id="tab-notices" class="tab-panel hidden space-y-6">
-        <div class="bg-white rounded-3xl border-2 border-orange-100 p-5 sm:p-6 shadow-cute">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-orange-100">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-2xl">💌</span>
-                <h3 class="text-lg font-bold text-stone-800 font-cute-title text-2xl">학교 안내장 & 방과후 가정통신문</h3>
-              </div>
-              <p class="text-xs text-stone-500 mt-0.5">학부모 수강신청 안내문, 재료비 납부 통지서, 분기별 만족도 설문 안내 내역입니다.</p>
-            </div>
-
-            <button onclick="openNoticeModal()" class="bg-orange-400 hover:bg-orange-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-feather-pointed"></i> 새 안내장 발송 등록
+      <!-- ================= 3. INSTRUCTORS & NOTICES TAB ================= -->
+      <section id="view-instructors" class="space-y-6 hidden">
+        <!-- Action Header -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h4 class="font-bold text-stone-800 text-base">학교별 출강 강사 현황 및 가정통신문</h4>
+            <p class="text-xs text-stone-400">각 학교별 배정 강사 명단과 학교 안내장·공문 발송 기록</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openAddNoticeModal()" class="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all">
+              <i data-lucide="file-text" class="w-4 h-4"></i> 안내장/공문 등록
+            </button>
+            <button onclick="openAddInstructorModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="user-plus" class="w-4 h-4"></i> 새 강사 등록
             </button>
           </div>
+        </div>
 
-          <!-- Notices Stream -->
-          <div id="notices-list-container" class="space-y-3 mt-5">
-            <!-- Rendered dynamically -->
+        <!-- Instructor Card Grid -->
+        <div>
+          <h5 class="text-sm font-bold text-stone-700 mb-3 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> 배정 강사 명단 (<span id="count-instructors">0</span>명)
+          </h5>
+          <div id="instructors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- JS 렌더링 -->
           </div>
+        </div>
 
+        <!-- Notices & Circulars Table -->
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+          <h5 class="text-sm font-bold text-stone-700 mb-3 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> 안내장 및 학교 발송 공문
+          </h5>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-50 text-stone-500 font-bold">
+                <tr>
+                  <th class="py-3 px-4">발송일</th>
+                  <th class="py-3 px-4">대상 학교</th>
+                  <th class="py-3 px-4">구분</th>
+                  <th class="py-3 px-4">제목 및 내용</th>
+                  <th class="py-3 px-4 text-center">첨부 서식</th>
+                  <th class="py-3 px-4 text-center">삭제</th>
+                </tr>
+              </thead>
+              <tbody id="notices-table-body" class="divide-y divide-stone-100">
+                <!-- JS 렌더링 -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-    </main>
-  </div>
+    </div>
+  </main>
 
-  <!-- MODALS SECTION -->
-  
-  <!-- 1. MODAL: 학교 추가 모달 -->
-  <div id="modal-add-school" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-5 border-2 border-orange-200">
-      <div class="flex items-center justify-between pb-2 border-b border-stone-100">
-        <h4 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-          <span>🏫</span> 새 위탁운영 학교 추가
-        </h4>
-        <button onclick="closeModal('modal-add-school')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
+  <!-- ================= M O D A L S ================= -->
+
+  <!-- 1. 학교 추가 모달 (수동 직접 입력) -->
+  <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100 animate-in fade-in zoom-in-95">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800 flex items-center gap-2">
+          <i data-lucide="school" class="w-5 h-5 text-amber-500"></i> 새 위탁학교 추가
+        </h3>
+        <button onclick="closeModal('modal-add-school')" class="text-stone-400 hover:text-stone-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <form onsubmit="handleAddSchool(event)" class="mt-4 space-y-3">
+      <form onsubmit="handleSaveSchool(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">학교명</label>
-          <input type="text" id="new-school-name" required placeholder="예: 무지개초등학교" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-400">
+          <label class="block text-xs font-bold text-stone-600 mb-1">학교 이름</label>
+          <input type="text" id="new-school-name" required placeholder="예: 햇살초등학교" class="w-full text-xs p-3 rounded-xl border border-stone-200 focus:border-amber-400 outline-none" />
         </div>
-        <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">지역 / 교육지원청</label>
-          <input type="text" id="new-school-district" placeholder="예: 서울 강남서초지원청" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-400">
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-add-school')" class="px-3 py-1.5 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600">추가하기</button>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200">취소</button>
+          <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-600 text-white">등록하기</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 2. MODAL: 4주단위 청구서 등록 모달 -->
-  <div id="modal-billing" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-6 border-2 border-amber-200 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-2 border-b border-amber-100">
-        <h4 class="font-bold text-stone-800 text-sm sm:text-base flex items-center gap-2">
-          <span>📑</span> 4주단위 청구정산서 등록
-        </h4>
-        <button onclick="closeModal('modal-billing')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
+  <!-- 2. 청구 내역 추가 모달 -->
+  <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800 flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5 text-amber-500"></i> 4주 청구 내역 추가
+        </h3>
+        <button onclick="closeModal('modal-add-billing')" class="text-stone-400 hover:text-stone-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-
-      <form onsubmit="handleBillingSubmit(event)" class="mt-4 space-y-3.5">
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">위탁 학교</label>
-            <select id="modal-billing-school" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
-              <!-- Options populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">분기 및 4주 차수</label>
-            <div class="grid grid-cols-2 gap-1.5">
-              <select id="modal-billing-quarter" class="bg-stone-50 border border-stone-200 rounded-xl px-2 py-2 text-xs">
-                <option value="1분기">1분기</option>
-                <option value="2분기">2분기</option>
-                <option value="3분기">3분기</option>
-                <option value="4분기">4분기</option>
-              </select>
-              <select id="modal-billing-cycle" class="bg-stone-50 border border-stone-200 rounded-xl px-2 py-2 text-xs">
-                <option value="1차(1~4주)">1차(1~4주)</option>
-                <option value="2차(5~8주)">2차(5~8주)</option>
-                <option value="3차(9~12주)">3차(9~12주)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">강좌 프로그램명</label>
-            <input type="text" id="modal-billing-course" required placeholder="예: 창의로봇과학 A반" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">담당 강사명</label>
-            <input type="text" id="modal-billing-teacher" required placeholder="예: 김도윤 강사" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">수강 학생수 (명)</label>
-            <input type="number" id="modal-billing-students" required min="1" value="18" oninput="calculateBillingTotal()"
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">주당 시수</label>
-            <input type="number" id="modal-billing-hours" required min="1" value="2" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">1인/4주 수강료 (원)</label>
-            <input type="number" id="modal-billing-unit-price" required min="1000" step="1000" value="45000" oninput="calculateBillingTotal()"
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
-          </div>
-        </div>
-
-        <!-- Auto Calculated Total -->
-        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 flex items-center justify-between text-xs">
-          <span class="font-bold text-stone-700">4주 합계 청구 예정액:</span>
-          <span id="modal-billing-calc-display" class="font-extrabold text-orange-600 text-sm">810,000 원</span>
-        </div>
-
+      <form onsubmit="handleSaveBilling(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">행정실 승인 상태</label>
-          <select id="modal-billing-status" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold">
-            <option value="제출완료">제출완료 (검토대기)</option>
-            <option value="검토중">검토중</option>
-            <option value="승인완료">승인완료 (지급확정)</option>
+          <label class="block font-bold text-stone-600 mb-1">해당 학교</label>
+          <select id="billing-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 outline-none">
+            <!-- JS 동적 주입 -->
           </select>
         </div>
-
-        <div class="pt-3 border-t border-stone-100 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-billing')" class="px-4 py-2 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600">청구서 등록</button>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">강좌명</label>
+          <input type="text" id="billing-input-course" required placeholder="예: 창의 로봇 코딩 A반" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-600 mb-1">강사명</label>
+            <input type="text" id="billing-input-teacher" required placeholder="강사 이름" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-600 mb-1">4주 총 시수</label>
+            <input type="number" id="billing-input-hours" required value="8" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-600 mb-1">수강 학생 수(명)</label>
+            <input type="number" id="billing-input-students" required value="15" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-600 mb-1">1인 수강료(원)</label>
+            <input type="number" id="billing-input-fee" required value="35000" step="1000" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none" />
+          </div>
+        </div>
+        <div class="flex gap-2 pt-3">
+          <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">추가하기</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 3. MODAL: 지출결의서 등록 모달 -->
-  <div id="modal-expense" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-5 border-2 border-amber-200">
-      <div class="flex items-center justify-between pb-2 border-b border-amber-100">
-        <h4 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-          <span>🧾</span> 매달 지출결의서 등록
-        </h4>
-        <button onclick="closeModal('modal-expense')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+  <!-- 3. 지출결의서 추가 모달 -->
+  <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800">지출결의서 등록</h3>
+        <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
-
-      <form onsubmit="handleExpenseSubmit(event)" class="mt-4 space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">해당 학교</label>
-            <select id="modal-expense-school" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <!-- populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">비목/항목 분류</label>
-            <select id="modal-expense-cat" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <option value="교구재·재료구입비">교구재·재료구입비</option>
-              <option value="인쇄·교재비">인쇄·교재비</option>
-              <option value="간식비">간식비</option>
-              <option value="안전·소모품비">안전·소모품비</option>
-              <option value="행정우편·운반비">행정우편·운반비</option>
-            </select>
-          </div>
-        </div>
-
+      <form onsubmit="handleSaveExpense(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">지출 내역 적요</label>
-          <input type="text" id="modal-expense-desc" required placeholder="예: 4월 과학실험용 모터 및 키트 18세트" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
+          <label class="block font-bold text-stone-600 mb-1">지출 일자</label>
+          <input type="date" id="expense-input-date" required class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">지출 금액 (원)</label>
-          <input type="number" id="modal-expense-amount" required min="100" step="100" placeholder="예: 125000" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
+          <label class="block font-bold text-stone-600 mb-1">비목 및 항목</label>
+          <input type="text" id="expense-input-title" required placeholder="예: 과학실험 1호 키트 구매" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">영수증 첨부 파일명/상태</label>
-          <input type="text" id="modal-expense-receipt" placeholder="예: 영수증_20260401.pdf 첨부완료" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
+          <label class="block font-bold text-stone-600 mb-1">지출처 / 거래처</label>
+          <input type="text" id="expense-input-vendor" required placeholder="예: (주)에듀사이언스" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
-
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-expense')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600">등록 완료</button>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">지출 금액(원)</label>
+          <input type="number" id="expense-input-amount" required placeholder="150000" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-500 text-white">저장</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 4. MODAL: 강사 출근부 등록 모달 -->
-  <div id="modal-attendance" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-5 border-2 border-sky-200">
-      <div class="flex items-center justify-between pb-2 border-b border-sky-100">
-        <h4 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-          <span>📋</span> 매달 강사 출근부 등록
-        </h4>
-        <button onclick="closeModal('modal-attendance')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+  <!-- 4. 출근부 등록 모달 -->
+  <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800">강사 출근부 등록</h3>
+        <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
-
-      <form onsubmit="handleAttendanceSubmit(event)" class="mt-4 space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">출강 학교</label>
-            <select id="modal-att-school" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <!-- populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">강사명</label>
-            <input type="text" id="modal-att-teacher" required placeholder="예: 한예린 강사" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs">
-          </div>
-        </div>
-
+      <form onsubmit="handleSaveAttendance(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">담당 과목명</label>
-          <input type="text" id="modal-att-subject" required placeholder="예: 창의미술놀이터" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
+          <label class="block font-bold text-stone-600 mb-1">학교 선택</label>
+          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200"></select>
         </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">출근일수 / 총시수</label>
-            <input type="text" id="modal-att-hours" required placeholder="예: 8일 (16시수)" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">서명부 파일명</label>
-            <input type="text" id="modal-att-file" placeholder="예: 4월출근부_한예린_서명.pdf" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          </div>
-        </div>
-
         <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">행정실 확인 여부</label>
-          <select id="modal-att-verified" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold">
-            <option value="확인완료">확인완료 (서명 대조 완료)</option>
-            <option value="미확인">미확인 (검토중)</option>
+          <label class="block font-bold text-stone-600 mb-1">강사명</label>
+          <input type="text" id="att-input-teacher" required placeholder="강사 이름" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">담당 과목</label>
+          <input type="text" id="att-input-course" required placeholder="예: 바둑교실" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">당월 총 출석일수</label>
+          <input type="number" id="att-input-days" required value="4" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-500 text-white">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. 강사 등록 모달 -->
+  <div id="modal-add-instructor" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800">새 강사 등록</h3>
+        <button onclick="closeModal('modal-add-instructor')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveInstructor(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">배정 학교</label>
+          <select id="ins-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">강사명</label>
+          <input type="text" id="ins-input-name" required placeholder="강사 성함" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">담당 과목</label>
+          <input type="text" id="ins-input-subject" required placeholder="예: 드론항공 / 창의미술" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">수업 시간표</label>
+          <input type="text" id="ins-input-schedule" required placeholder="예: 화/목 13:30 ~ 15:00" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">연락처</label>
+          <input type="text" id="ins-input-phone" required placeholder="010-0000-0000" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-instructor')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. 안내장 등록 모달 -->
+  <div id="modal-add-notice" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-800">안내장 / 공문 등록</h3>
+        <button onclick="closeModal('modal-add-notice')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveNotice(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">발송 학교</label>
+          <select id="notice-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">서류 구분</label>
+          <select id="notice-input-type" class="w-full p-2.5 rounded-xl border border-stone-200">
+            <option value="가정통신문">가정통신문 (학부모)</option>
+            <option value="행정공문">학교 행정실 공문</option>
+            <option value="수강신청서">수강신청 및 설문지</option>
           </select>
         </div>
-
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-attendance')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-sky-500 hover:bg-sky-600">출근부 저장</button>
+        <div>
+          <label class="block font-bold text-stone-600 mb-1">제목</label>
+          <input type="text" id="notice-input-title" required placeholder="안내장 제목 입력" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-800 text-white">등록</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 5. MODAL: 신규 강사 등록 모달 -->
-  <div id="modal-teacher" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-5 border-2 border-pink-200">
-      <div class="flex items-center justify-between pb-2 border-b border-pink-100">
-        <h4 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-          <span>👩‍🏫</span> 출강 강사 신규 등록
-        </h4>
-        <button onclick="closeModal('modal-teacher')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <form onsubmit="handleTeacherSubmit(event)" class="mt-4 space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">소속 학교</label>
-            <select id="modal-teacher-school" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <!-- populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">강사 성함</label>
-            <input type="text" id="modal-teacher-name" required placeholder="예: 윤서아" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">담당 과목</label>
-            <input type="text" id="modal-teacher-subject" required placeholder="예: 창의보드게임/늘봄" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">연락처</label>
-            <input type="text" id="modal-teacher-phone" required placeholder="010-0000-0000" 
-                   class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">출강 일정 및 강의실</label>
-          <input type="text" id="modal-teacher-schedule" placeholder="예: 매주 화,목 13:30~15:00 (늘봄1실)" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">현재 상태</label>
-          <select id="modal-teacher-status" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold">
-            <option value="수업중">수업중</option>
-            <option value="출강대기">출강대기</option>
-            <option value="휴강/보강예정">휴강/보강예정</option>
-          </select>
-        </div>
-
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-teacher')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-pink-500 hover:bg-pink-600">강사 등록</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 6. MODAL: 새 안내장 / 가정통신문 등록 모달 -->
-  <div id="modal-notice" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-5 border-2 border-orange-200">
-      <div class="flex items-center justify-between pb-2 border-b border-orange-100">
-        <h4 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-          <span>💌</span> 새 안내장 & 가정통신문 등록
-        </h4>
-        <button onclick="closeModal('modal-notice')" class="text-stone-400 hover:text-stone-600 text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <form onsubmit="handleNoticeSubmit(event)" class="mt-4 space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">해당 학교</label>
-            <select id="modal-notice-school" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <!-- populated by JS -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">분류</label>
-            <select id="modal-notice-type" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-              <option value="가정통신문">가정통신문 (학부모)</option>
-              <option value="행정실공문">학교 행정실 공문</option>
-              <option value="강사안내">강사 공지사항</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">안내장 제목</label>
-          <input type="text" id="modal-notice-title" required placeholder="예: [햇살초] 2026학년도 1분기 방과후 만족도 설문 안내문" 
-                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-400">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-stone-700 mb-1">상세 내용 요약</label>
-          <textarea id="modal-notice-content" rows="3" required placeholder="안내문의 주요 일정, 링크, 배부 일자 등을 적어주세요..." 
-                    class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-400 resize-none"></textarea>
-        </div>
-
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modal-notice')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">취소</button>
-          <button type="submit" class="px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600">등록 완료</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 7. MODAL: 정산서 인쇄/종합 출력 미리보기 모달 -->
-  <div id="modal-export-summary" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl p-6 border-2 border-amber-300 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-3 border-b border-stone-200">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🖨️</span>
-          <div>
-            <h4 class="font-bold text-stone-800 text-base">방과후 위탁운영 정산서 출력 미리보기</h4>
-            <p class="text-xs text-stone-500">학교 행정실 제출용 공식 양식 미리보기</p>
-          </div>
-        </div>
-        <button onclick="closeModal('modal-export-summary')" class="text-stone-400 hover:text-stone-600 text-lg">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="mt-4 p-5 bg-amber-50/50 rounded-2xl border border-amber-200 text-xs text-stone-800 space-y-3 leading-relaxed font-sans">
-        <div class="text-center pb-2 border-b border-amber-200">
-          <h2 class="text-lg font-extrabold text-stone-900">방과후학교 4주단위 청구정산 확인서</h2>
-          <p class="text-xs text-stone-500 mt-0.5" id="summary-preview-sub">위탁업체: (주)밝은생각 / 대상교: 햇살초등학교</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 text-[11px]">
-          <div>• 정산 기준 회기: <strong id="summary-preview-quarter">1분기</strong></div>
-          <div>• 출력 일시: <strong id="summary-preview-date">2026.09.23</strong></div>
-        </div>
-
-        <div class="border rounded-xl border-amber-200 overflow-hidden bg-white">
-          <div class="p-2 bg-amber-100/70 font-bold flex justify-between">
-            <span>정산 항목 요약</span>
-            <span>합계 금액</span>
-          </div>
-          <div class="p-3 space-y-1.5" id="summary-preview-items">
-            <!-- Populated via JS -->
-          </div>
-        </div>
-
-        <div class="text-[11px] text-stone-500 text-center pt-2">
-          위와 같이 방과후학교 4주단위 강사료 및 운영비 청구정산 내역을 확인·제출합니다.<br>
-          <strong>초등방과후 위탁운영사 (주)밝은생각 대표이사 (직인생략)</strong>
-        </div>
-      </div>
-
-      <div class="mt-5 flex justify-end gap-2">
-        <button onclick="closeModal('modal-export-summary')" class="px-4 py-2 rounded-xl text-xs font-bold text-stone-600 bg-stone-100 hover:bg-stone-200">닫기</button>
-        <button onclick="window.print()" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-xs flex items-center gap-1.5">
-          <i class="fa-solid fa-print"></i> 브라우저 인쇄하기
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification Box -->
-  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <!-- ================= J A V A S C R I P T ================= -->
   <script>
-    /* Initial Mock Data Structures */
-    const DEFAULT_SCHOOLS = [
-      { id: 'S1', name: '햇살초등학교', district: '서울 강남서초', badge: '햇살' },
-      { id: 'S2', name: '꿈빛초등학교', district: '서울 송파강동', badge: '꿈빛' },
-      { id: 'S3', name: '푸른초등학교', district: '경기 성남분당', badge: '푸른' },
-      { id: 'S4', name: '새솔초등학교', district: '인천 연수송도', badge: '새솔' },
-      { id: 'S5', name: '다빛초등학교', district: '경기 수원영통', badge: '다빛' }
+    // ---------- DATA STORE (LocalStorage 연동) ----------
+    const defaultSchools = [
+      { id: 'sch_1', name: '햇살초등학교' },
+      { id: 'sch_2', name: '꿈빛초등학교' },
+      { id: 'sch_3', name: '푸른초등학교' }
     ];
 
-    const DEFAULT_BILLINGS = [
-      {
-        id: 1,
-        schoolId: 'S1',
-        quarter: '1분기',
-        cycle: '1차(1~4주)',
-        course: '창의로봇과학 A반',
-        teacher: '김도윤',
-        students: 18,
-        hours: 2,
-        unitPrice: 45000,
-        totalAmount: 810000,
-        status: '승인완료'
-      },
-      {
-        id: 2,
-        schoolId: 'S1',
-        quarter: '1분기',
-        cycle: '1차(1~4주)',
-        course: '창의미술놀이터',
-        teacher: '한예린',
-        students: 20,
-        hours: 2,
-        unitPrice: 42000,
-        totalAmount: 840000,
-        status: '검토중'
-      },
-      {
-        id: 3,
-        schoolId: 'S2',
-        quarter: '1분기',
-        cycle: '1차(1~4주)',
-        course: '두뇌쑥쑥 바둑교실',
-        teacher: '강태양',
-        students: 15,
-        hours: 2,
-        unitPrice: 40000,
-        totalAmount: 600000,
-        status: '승인완료'
-      },
-      {
-        id: 4,
-        schoolId: 'S3',
-        quarter: '1분기',
-        cycle: '2차(5~8주)',
-        course: '키즈 K-POP 댄스',
-        teacher: '송유진',
-        students: 22,
-        hours: 2,
-        unitPrice: 48000,
-        totalAmount: 1056000,
-        status: '제출완료'
-      }
+    const defaultBillings = [
+      { id: 'b_1', schoolId: 'sch_1', quarter: 1, period: 1, course: '창의 로봇코딩 A반', teacher: '이민호', hours: 8, students: 16, fee: 35000 },
+      { id: 'b_2', schoolId: 'sch_1', quarter: 1, period: 1, course: '키즈 토탈아트 미술', teacher: '박서연', hours: 8, students: 18, fee: 32000 },
+      { id: 'b_3', schoolId: 'sch_2', quarter: 1, period: 1, course: '신나는 드론 항공', teacher: '정태양', hours: 8, students: 14, fee: 38000 }
     ];
 
-    const DEFAULT_EXPENSES = [
-      { id: 1, schoolId: 'S1', month: '4월', category: '교구재·재료구입비', desc: '4주차 로봇 센서 및 부품 20세트', amount: 180000, receipt: '전자세금계산서_0412.pdf', status: '정산완료' },
-      { id: 2, schoolId: 'S1', month: '4월', category: '인쇄·교재비', desc: '방과후 1분기 4주단위 워크북 컬러 인쇄 60부', amount: 96000, receipt: '인쇄영수증_4월.pdf', status: '정산완료' },
-      { id: 3, schoolId: 'S2', month: '4월', category: '간식비', desc: '늘봄교실 긴급 돌봄 간식 (유기농 주스 및 빵)', amount: 45000, receipt: '카드영수증_마트.pdf', status: '승인대기' },
-      { id: 4, schoolId: 'S1', month: '5월', category: '교구재·재료구입비', desc: '미술 수채화 물감 및 지함 키트', amount: 135000, receipt: '영수증_미술나라.pdf', status: '정산완료' }
+    const defaultExpenses = [
+      { id: 'e_1', month: 3, schoolId: 'sch_1', date: '2026-03-05', title: '1분기 로봇교구 1호 세트 16인분', vendor: '(주)로보테크', amount: 320000 },
+      { id: 'e_2', month: 3, schoolId: 'sch_2', date: '2026-03-08', title: '미술 교재 및 켄트지 인쇄비', vendor: '을지로기획인쇄', amount: 145000 }
     ];
 
-    const DEFAULT_ATTENDANCES = [
-      { id: 1, schoolId: 'S1', month: '4월', teacher: '김도윤', subject: '창의로봇과학', hours: '8일 (16시수)', file: '출근부_김도윤_4월서명.pdf', status: '확인완료' },
-      { id: 2, schoolId: 'S1', month: '4월', teacher: '한예린', subject: '창의미술놀이터', hours: '8일 (16시수)', file: '출근부_한예린_4월서명.pdf', status: '확인완료' },
-      { id: 3, schoolId: 'S2', month: '4월', teacher: '강태양', subject: '바둑교실', hours: '8일 (16시수)', file: '출근부_강태양_4월서명.pdf', status: '미확인' }
+    const defaultAttendances = [
+      { id: 'a_1', month: 3, schoolId: 'sch_1', teacher: '이민호', course: '창의 로봇코딩', days: 4, fileName: '햇살초_3월_이민호_출근부.pdf' },
+      { id: 'a_2', month: 3, schoolId: 'sch_1', teacher: '박서연', course: '토탈아트 미술', days: 4, fileName: '햇살초_3월_박서연_출근부.pdf' },
+      { id: 'a_3', month: 3, schoolId: 'sch_2', teacher: '정태양', course: '드론 항공', days: 4, fileName: '꿈빛초_3월_정태양_출근부.pdf' }
     ];
 
-    const DEFAULT_TEACHERS = [
-      { id: 1, schoolId: 'S1', name: '김도윤', subject: '창의로봇과학', phone: '010-4421-9981', schedule: '월, 수 13:30~15:00 (과학2실)', status: '수업중' },
-      { id: 2, schoolId: 'S1', name: '한예린', subject: '창의미술놀이터', phone: '010-7731-0192', schedule: '화, 목 14:00~15:30 (미술실)', status: '수업중' },
-      { id: 3, schoolId: 'S2', name: '강태양', subject: '두뇌쑥쑥 바둑교실', phone: '010-5512-7788', schedule: '월, 금 14:00~15:30 (돌봄2실)', status: '출강대기' },
-      { id: 4, schoolId: 'S3', name: '송유진', subject: '키즈 K-POP 댄스', phone: '010-6671-8891', schedule: '화, 목 15:00~16:30 (체육관)', status: '출강대기' }
+    const defaultInstructors = [
+      { id: 'i_1', schoolId: 'sch_1', name: '이민호', subject: '창의 로봇코딩', schedule: '월/수 13:30~15:00', phone: '010-3456-7890' },
+      { id: 'i_2', schoolId: 'sch_1', name: '박서연', subject: '키즈 토탈아트', schedule: '화/목 14:00~15:30', phone: '010-8765-4321' },
+      { id: 'i_3', schoolId: 'sch_2', name: '정태양', subject: '신나는 드론 항공', schedule: '금 13:30~16:30', phone: '010-2345-6789' }
     ];
 
-    const DEFAULT_NOTICES = [
-      { id: 1, schoolId: 'S1', type: '가정통신문', title: '[햇살초] 2026학년도 1분기 4주차 수업공개 및 피드백 안내장', content: '학부모님 안녕하십니까. 4주간 성실히 참여한 학생들의 활동 결과물 전시 및 수업 참관 안내장입니다.', date: '2026.04.10' },
-      { id: 2, schoolId: 'S1', type: '행정실공문', title: '[햇살초] 5월 방과후 교실 단축수업 일정 협조 요청 건', content: '학교 학사일정(개교기념일 등)에 따른 보강 계획서를 행정실에 4월 25일까지 제출 바랍니다.', date: '2026.04.05' },
-      { id: 3, schoolId: 'S2', type: '가정통신문', title: '[꿈빛초] 2학기 재료비 납부 영수증 발급 안내문', content: '학부모 연말정산용 교육비 납입증명서 발급 절차 및 온라인 신청 안내문입니다.', date: '2026.04.02' }
+    const defaultNotices = [
+      { id: 'n_1', schoolId: 'sch_1', date: '2026-03-02', type: '가정통신문', title: '1분기 방과후학교 개강 안내 및 준비물 안내장' },
+      { id: 'n_2', schoolId: 'sch_2', date: '2026-03-04', type: '행정공문', title: '2026학년도 1분기 방과후 강사 채용서류 제출의 건' }
     ];
 
-    /* Storage Helpers */
-    const getStorage = (key, fallback) => {
-      const data = localStorage.getItem('bm_' + key);
+    // LocalStorage helper
+    function loadData(key, fallback) {
+      const data = localStorage.getItem('brightmind_' + key);
       return data ? JSON.parse(data) : fallback;
-    };
-    const setStorage = (key, val) => {
-      localStorage.setItem('bm_' + key, JSON.stringify(val));
-    };
-
-    /* State Variables */
-    let schools = getStorage('schools', DEFAULT_SCHOOLS);
-    let billings = getStorage('billings', DEFAULT_BILLINGS);
-    let expenses = getStorage('expenses', DEFAULT_EXPENSES);
-    let attendances = getStorage('attendances', DEFAULT_ATTENDANCES);
-    let teachers = getStorage('teachers', DEFAULT_TEACHERS);
-    let notices = getStorage('notices', DEFAULT_NOTICES);
-
-    let currentSchoolId = 'ALL'; // 'ALL' or specific school ID (e.g., 'S1')
-    let currentQuarter = '1분기';
-    let currentMonth = '4월';
-    let currentActiveTab = 'billing';
-
-    /* Toast Notification Helper */
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      const bgStyle = type === 'success' ? 'bg-amber-100 border-amber-300 text-amber-900' : 'bg-orange-100 border-orange-300 text-orange-900';
-      toast.className = `p-3 px-4 rounded-2xl shadow-bubble text-xs font-bold flex items-center gap-2 transform transition-all duration-300 translate-y-3 opacity-0 pointer-events-auto border ${bgStyle}`;
-      toast.innerHTML = `<span>${type === 'success' ? '🌱' : '📢'}</span> <span>${message}</span>`;
-      container.appendChild(toast);
-
-      setTimeout(() => toast.classList.remove('translate-y-3', 'opacity-0'), 20);
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-2');
-        setTimeout(() => toast.remove(), 350);
-      }, 3000);
+    }
+    function saveData(key, val) {
+      localStorage.setItem('brightmind_' + key, JSON.stringify(val));
     }
 
-    function showQuickAlert(text) {
-      showToast(text, 'info');
+    let schools = loadData('schools', defaultSchools);
+    let billings = loadData('billings', defaultBillings);
+    let expenses = loadData('expenses', defaultExpenses);
+    let attendances = loadData('attendances', defaultAttendances);
+    let instructors = loadData('instructors', defaultInstructors);
+    let notices = loadData('notices', defaultNotices);
+
+    // State Variables
+    let currentSchoolId = 'all'; // 'all' or schoolId
+    let currentQuarter = 1;
+    let currentPeriod = 1;
+    let currentMonth = 3;
+
+    // ---------- INITIALIZATION ----------
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      // Set today to expense date input
+      const today = new Date().toISOString().split('T')[0];
+      const expDate = document.getElementById('expense-input-date');
+      if (expDate) expDate.value = today;
+
+      renderSchoolsSidebar();
+      renderAllViews();
+    });
+
+    function updateClock() {
+      const now = new Date();
+      const str = now.getFullYear() + '.' + 
+                  String(now.getMonth()+1).padStart(2,'0') + '.' + 
+                  String(now.getDate()).padStart(2,'0') + ' ' + 
+                  String(now.getHours()).padStart(2,'0') + ':' + 
+                  String(now.getMinutes()).padStart(2,'0') + ':' + 
+                  String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('realtime-clock').textContent = str;
     }
 
-    /* Modal Helpers */
-    function openModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-      }
-    }
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+    // ---------- TAB SWITCHER ----------
+    function switchTab(tabId) {
+      ['billing', 'expense', 'instructors'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabId) {
+          view.classList.remove('hidden');
+          btn.classList.add('bg-amber-500', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-stone-100', 'text-stone-600');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('bg-amber-500', 'text-white', 'shadow-sm');
+          btn.classList.add('bg-stone-100', 'text-stone-600');
+        }
+      });
+      lucide.createIcons();
     }
 
-    /* Sidebar School Render & Selection */
-    function renderSchoolList() {
+    // ---------- SCHOOL SELECTION & SIDEBAR ----------
+    function renderSchoolsSidebar() {
       const container = document.getElementById('school-list-container');
-      const allCountBadge = document.getElementById('all-schools-count-badge');
-      if (allCountBadge) allCountBadge.textContent = `${schools.length}개교`;
+      container.innerHTML = '';
 
-      container.innerHTML = schools.map(sch => {
-        const isSelected = currentSchoolId === sch.id;
-        const activeClass = isSelected 
-          ? 'bg-amber-100/90 border-amber-300 text-amber-950 font-bold shadow-xs' 
-          : 'bg-stone-50/70 border-stone-200/80 text-stone-600 hover:bg-orange-50/60 font-medium';
+      document.getElementById('badge-total-schools').textContent = `${schools.length}개교`;
 
-        return `
-          <button onclick="selectSchool('${sch.id}')" id="school-btn-${sch.id}"
-                  class="w-full text-left p-2.5 rounded-2xl border transition-all flex items-center justify-between text-xs ${activeClass}">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-6 h-6 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[10px] shrink-0">
-                ${sch.badge || '초'}
-              </span>
-              <div class="truncate">
-                <p class="truncate font-bold">${sch.name}</p>
-                <p class="text-[10px] text-stone-400 truncate">${sch.district}</p>
-              </div>
-            </div>
-            <i class="fa-solid fa-angle-right text-[10px] ${isSelected ? 'text-amber-800' : 'text-stone-300'}"></i>
+      schools.forEach(sch => {
+        const isActive = currentSchoolId === sch.id;
+        const btn = document.createElement('div');
+        btn.className = `group flex items-center justify-between px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+          isActive 
+            ? 'bg-amber-400 text-stone-900 shadow-sm' 
+            : 'bg-stone-50 hover:bg-amber-50/70 text-stone-700'
+        }`;
+        
+        btn.innerHTML = `
+          <div class="flex items-center gap-2 truncate" onclick="selectSchool('${sch.id}')">
+            <span class="w-2 h-2 rounded-full ${isActive ? 'bg-stone-900' : 'bg-amber-400'}"></span>
+            <span class="truncate text-xs">${sch.name}</span>
+          </div>
+          <button onclick="deleteSchool('${sch.id}', event)" class="opacity-0 group-hover:opacity-100 text-stone-400 hover:text-red-500 p-1 transition-opacity">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           </button>
         `;
-      }).join('');
+        container.appendChild(btn);
+      });
 
-      // Refresh School Dropdowns in modals
+      // Update 'All' button style
+      const allBtn = document.getElementById('btn-school-all');
+      if (currentSchoolId === 'all') {
+        allBtn.className = "w-full mb-4 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm";
+      } else {
+        allBtn.className = "w-full mb-4 px-4 py-3 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-stone-50 hover:bg-amber-50 text-stone-700";
+      }
+
+      // Populate select dropdowns in modals
       populateSchoolSelects();
+      lucide.createIcons();
     }
 
     function selectSchool(schoolId) {
       currentSchoolId = schoolId;
-      
-      // Update sidebar visual button states
-      const allBtn = document.getElementById('school-btn-ALL');
-      if (allBtn) {
-        if (schoolId === 'ALL') {
-          allBtn.className = "w-full school-nav-btn text-left p-3 rounded-2xl border-2 transition-all flex items-center justify-between font-bold text-xs sm:text-sm bg-orange-100/70 border-orange-300 text-orange-950 shadow-xs";
-        } else {
-          allBtn.className = "w-full school-nav-btn text-left p-3 rounded-2xl border transition-all flex items-center justify-between font-medium text-xs sm:text-sm bg-stone-50 border-stone-200 text-stone-600 hover:bg-orange-50";
-        }
-      }
+      renderSchoolsSidebar();
 
-      renderSchoolList();
+      const titleEl = document.getElementById('current-school-title');
+      const badgeEl = document.getElementById('current-school-badge');
 
-      // Update Header Text
-      const tag = document.getElementById('current-school-tag');
-      const title = document.getElementById('current-school-title');
-      if (schoolId === 'ALL') {
-        tag.textContent = '전체 위탁학교 통합';
-        title.innerHTML = `<span>📊</span> 전체 위탁운영 현황 종합 대시보드`;
+      if (schoolId === 'all') {
+        titleEl.textContent = '위탁운영 통합 행정 관리';
+        badgeEl.textContent = '전체 위탁학교 통합';
       } else {
-        const found = schools.find(s => s.id === schoolId);
-        const name = found ? found.name : '선택된 학교';
-        tag.textContent = `${name} 전용실`;
-        title.innerHTML = `<span>🏫</span> ${name} 방과후 위탁운영 및 정산실`;
+        const sch = schools.find(s => s.id === schoolId);
+        titleEl.textContent = sch ? sch.name : '학교 상세';
+        badgeEl.textContent = sch ? sch.name : '학교 전용 관리';
       }
 
-      // Re-render current tab contents
-      refreshCurrentView();
+      renderAllViews();
+    }
+
+    function deleteSchool(schoolId, e) {
+      e.stopPropagation();
+      const sch = schools.find(s => s.id === schoolId);
+      if (confirm(`'${sch ? sch.name : ''}' 학교를 삭제하시겠습니까?\n해당 학교의 서류가 목록에서 숨겨집니다.`)) {
+        schools = schools.filter(s => s.id !== schoolId);
+        saveData('schools', schools);
+        if (currentSchoolId === schoolId) currentSchoolId = 'all';
+        renderSchoolsSidebar();
+        renderAllViews();
+      }
     }
 
     function populateSchoolSelects() {
-      const selects = [
-        'modal-billing-school',
-        'modal-expense-school',
-        'modal-att-school',
-        'modal-teacher-school',
-        'modal-notice-school'
+      const selectIds = [
+        'billing-input-school',
+        'att-input-school',
+        'ins-input-school',
+        'notice-input-school'
       ];
-
-      selects.forEach(selectId => {
-        const el = document.getElementById(selectId);
-        if (el) {
-          el.innerHTML = schools.map(s => `
-            <option value="${s.id}" ${currentSchoolId === s.id ? 'selected' : ''}>${s.name}</option>
-          `).join('');
-        }
+      selectIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '';
+        schools.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.name;
+          el.appendChild(opt);
+        });
       });
     }
 
-    /* Modal Form Submissions */
-    function openAddSchoolModal() {
-      openModal('modal-add-school');
+    // ---------- RENDER VIEWS ----------
+    function renderAllViews() {
+      renderBillingTable();
+      renderExpenseAndAttendance();
+      renderInstructorsAndNotices();
     }
 
-    function handleAddSchool(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-school-name').value.trim();
-      const district = document.getElementById('new-school-district').value.trim() || '교육지원청 관할';
-
-      if (!name) return;
-
-      const newId = 'S' + (Date.now() % 10000);
-      const newSchool = {
-        id: newId,
-        name,
-        district,
-        badge: name.substring(0, 2)
-      };
-
-      schools.push(newSchool);
-      setStorage('schools', schools);
-      renderSchoolList();
-      closeModal('modal-add-school');
-      e.target.reset();
-      selectSchool(newId);
-      showToast(`${name}이(가) 위탁목록에 등록되었습니다! 🏫`, 'success');
-    }
-
-    /* Tab Switcher Logic */
-    function switchTab(tabId) {
-      currentActiveTab = tabId;
-      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
-      const target = document.getElementById(`tab-${tabId}`);
-      if (target) target.classList.remove('hidden');
-
-      const tabs = document.querySelectorAll('.main-tab-btn');
-      tabs.forEach(btn => {
-        btn.classList.remove('active', 'bg-amber-100', 'text-amber-900', 'border-amber-300', 'shadow-xs');
-        btn.classList.add('bg-white', 'text-stone-600', 'border-stone-200');
-      });
-
-      const currentBtn = [...tabs].find(b => b.getAttribute('onclick')?.includes(tabId));
-      if (currentBtn) {
-        currentBtn.classList.remove('bg-white', 'text-stone-600', 'border-stone-200');
-        currentBtn.classList.add('active', 'bg-amber-100', 'text-amber-900', 'border-amber-300', 'shadow-xs');
-      }
-
-      refreshCurrentView();
-    }
-
-    function refreshCurrentView() {
-      if (currentActiveTab === 'billing') {
-        renderBillingList();
-      } else if (currentActiveTab === 'expense-attendance') {
-        renderExpenses();
-        renderAttendances();
-      } else if (currentActiveTab === 'teachers') {
-        renderTeachers();
-      } else if (currentActiveTab === 'notices') {
-        renderNotices();
-      }
-    }
-
-    /* TAB 1: 4-Week Billing Management */
-    function setQuarter(q) {
+    // 1. BILLING TAB RENDER
+    function changeQuarter(q) {
       currentQuarter = q;
-      document.querySelectorAll('.quarter-pill').forEach(btn => {
-        if (btn.textContent.includes(q)) {
-          btn.className = "quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-400 text-amber-950 shadow-xs";
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById(`btn-q-${i}`);
+        if (i === q) {
+          b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white";
         } else {
-          btn.className = "quarter-pill px-3 py-1.5 rounded-xl text-xs font-extrabold bg-stone-100 text-stone-600 hover:bg-amber-50";
+          b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600";
         }
-      });
-      document.getElementById('current-period-text').textContent = `2026학년도 ${currentQuarter} (4주단위)`;
-      renderBillingList();
+      }
+      renderBillingTable();
     }
 
-    function renderBillingList() {
+    function changePeriod(p) {
+      currentPeriod = parseInt(p, 10);
+      renderBillingTable();
+    }
+
+    function renderBillingTable() {
       const tbody = document.getElementById('billing-table-body');
-      const emptyState = document.getElementById('billing-empty-state');
-      const cycleFilter = document.getElementById('cycle-select')?.value || 'ALL';
+      tbody.innerHTML = '';
 
-      let filtered = billings.filter(b => b.quarter === currentQuarter);
-      if (currentSchoolId !== 'ALL') {
-        filtered = filtered.filter(b => b.schoolId === currentSchoolId);
-      }
-      if (cycleFilter !== 'ALL') {
-        filtered = filtered.filter(b => b.cycle === cycleFilter);
+      let list = billings.filter(b => b.quarter === currentQuarter && b.period === currentPeriod);
+      if (currentSchoolId !== 'all') {
+        list = list.filter(b => b.schoolId === currentSchoolId);
       }
 
-      // Compute statistics
-      const totalCount = filtered.length;
-      const totalSum = filtered.reduce((acc, cur) => acc + cur.totalAmount, 0);
-      const approvedCount = filtered.filter(b => b.status === '승인완료').length;
-      const approvalRate = totalCount > 0 ? Math.round((approvedCount / totalCount) * 100) : 0;
+      let totalAmount = 0;
+      let totalStudents = 0;
 
-      document.getElementById('stat-billing-courses').textContent = `${totalCount}개 강좌`;
-      document.getElementById('stat-billing-amount').textContent = `${totalSum.toLocaleString()} 원`;
-      document.getElementById('stat-billing-approval').textContent = `${approvalRate}% (${approvedCount}/${totalCount})`;
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-stone-400">등록된 4주 청구 내역이 없습니다. [+ 강좌 청구내역 추가]를 눌러 등록해 보세요.</td></tr>`;
+      } else {
+        list.forEach(b => {
+          const sch = schools.find(s => s.id === b.schoolId);
+          const schoolName = sch ? sch.name : '-';
+          const subtotal = (b.students || 0) * (b.fee || 0);
+          totalAmount += subtotal;
+          totalStudents += (b.students || 0);
 
-      if (filtered.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
-      }
-
-      emptyState.classList.add('hidden');
-      tbody.innerHTML = filtered.map(b => {
-        const sch = schools.find(s => s.id === b.schoolId);
-        const schoolName = sch ? sch.name : '학교';
-
-        const statusBadge = 
-          b.status === '승인완료' ? '<span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">승인완료</span>' :
-          b.status === '검토중' ? '<span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 font-bold border border-sky-200">검토중</span>' :
-          '<span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-800 font-bold border border-amber-200">제출완료</span>';
-
-        return `
-          <tr class="hover:bg-amber-50/40 transition">
-            <td class="py-3 px-3.5 font-bold text-stone-800">
-              <span class="px-2 py-0.5 rounded-lg text-[10px] bg-orange-100 text-orange-800 mr-1">${schoolName}</span>
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-amber-50/40 transition-colors";
+          tr.innerHTML = `
+            <td class="py-3.5 px-4 font-bold text-stone-800">${schoolName}</td>
+            <td class="py-3.5 px-4 font-semibold text-amber-950">${b.course}</td>
+            <td class="py-3.5 px-4 text-stone-600">${b.teacher} 강사</td>
+            <td class="py-3.5 px-4 text-center text-stone-600">${b.hours}시간</td>
+            <td class="py-3.5 px-4 text-center font-bold text-stone-800">${b.students}명</td>
+            <td class="py-3.5 px-4 text-right text-stone-600">${(b.fee || 0).toLocaleString()}원</td>
+            <td class="py-3.5 px-4 text-right font-bold text-amber-700 text-sm">${subtotal.toLocaleString()}원</td>
+            <td class="py-3.5 px-4 text-center">
+              <button onclick="deleteBilling('${b.id}')" class="text-stone-300 hover:text-red-500 p-1 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
             </td>
-            <td class="py-3 px-3 text-stone-500 font-medium">${b.quarter} <span class="font-bold text-stone-700">${b.cycle}</span></td>
-            <td class="py-3 px-3.5 font-bold text-stone-800">${b.course}</td>
-            <td class="py-3 px-3 text-stone-600 font-semibold">${b.teacher} 강사</td>
-            <td class="py-3 px-2 text-center font-bold text-stone-700">${b.students}명</td>
-            <td class="py-3 px-2 text-center text-stone-600">${b.hours}시수</td>
-            <td class="py-3 px-3 text-right text-stone-600">${b.unitPrice.toLocaleString()}원</td>
-            <td class="py-3 px-3.5 text-right font-extrabold text-orange-600">${b.totalAmount.toLocaleString()}원</td>
-            <td class="py-3 px-3 text-center">${statusBadge}</td>
-            <td class="py-3 px-3 text-center">
-              <div class="flex items-center justify-center gap-1">
-                <button onclick="toggleBillingStatus(${b.id})" class="text-stone-400 hover:text-emerald-600 p-1" title="상태변경">
-                  <i class="fa-solid fa-rotate text-xs"></i>
-                </button>
-                <button onclick="deleteBilling(${b.id})" class="text-stone-300 hover:text-rose-500 p-1" title="삭제">
-                  <i class="fa-regular fa-trash-can text-xs"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function calculateBillingTotal() {
-      const students = parseInt(document.getElementById('modal-billing-students')?.value || 0);
-      const unitPrice = parseInt(document.getElementById('modal-billing-unit-price')?.value || 0);
-      const total = students * unitPrice;
-      const display = document.getElementById('modal-billing-calc-display');
-      if (display) display.textContent = `${total.toLocaleString()} 원`;
-    }
-
-    function openBillingModal() {
-      calculateBillingTotal();
-      openModal('modal-billing');
-    }
-
-    function handleBillingSubmit(e) {
-      e.preventDefault();
-      const schoolId = document.getElementById('modal-billing-school').value;
-      const quarter = document.getElementById('modal-billing-quarter').value;
-      const cycle = document.getElementById('modal-billing-cycle').value;
-      const course = document.getElementById('modal-billing-course').value.trim();
-      const teacher = document.getElementById('modal-billing-teacher').value.trim();
-      const students = parseInt(document.getElementById('modal-billing-students').value || 1);
-      const hours = parseInt(document.getElementById('modal-billing-hours').value || 1);
-      const unitPrice = parseInt(document.getElementById('modal-billing-unit-price').value || 0);
-      const status = document.getElementById('modal-billing-status').value;
-      const totalAmount = students * unitPrice;
-
-      const newBilling = {
-        id: Date.now(),
-        schoolId,
-        quarter,
-        cycle,
-        course,
-        teacher,
-        students,
-        hours,
-        unitPrice,
-        totalAmount,
-        status
-      };
-
-      billings.unshift(newBilling);
-      setStorage('billings', billings);
-      renderBillingList();
-      closeModal('modal-billing');
-      e.target.reset();
-      showToast('4주단위 청구정산서가 정상 등록되었습니다! 📑', 'success');
-    }
-
-    function toggleBillingStatus(id) {
-      const item = billings.find(b => b.id === id);
-      if (item) {
-        if (item.status === '제출완료') item.status = '검토중';
-        else if (item.status === '검토중') item.status = '승인완료';
-        else item.status = '제출완료';
-
-        setStorage('billings', billings);
-        renderBillingList();
-        showToast(`청구서 승인상태가 '${item.status}'(으)로 갱신되었습니다.`, 'info');
+          `;
+          tbody.appendChild(tr);
+        });
       }
+
+      document.getElementById('total-billing-amount').textContent = totalAmount.toLocaleString() + '원';
+      document.getElementById('total-student-count').textContent = totalStudents + '명';
+      document.getElementById('total-course-count').textContent = list.length + '개 강좌';
+      document.getElementById('billing-table-title').textContent = `${currentQuarter}분기 ${currentPeriod}차 (4주 단위) 정산 청구서`;
+      lucide.createIcons();
     }
 
     function deleteBilling(id) {
-      billings = billings.filter(b => b.id !== id);
-      setStorage('billings', billings);
-      renderBillingList();
-      showToast('청구서 항목이 삭제되었습니다.', 'info');
+      if (confirm('해당 청구 항목을 삭제하시겠습니까?')) {
+        billings = billings.filter(b => b.id !== id);
+        saveData('billings', billings);
+        renderBillingTable();
+      }
     }
 
-    /* TAB 2: Expense & Attendance Month Management */
-    const MONTHS = ['3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', '1월', '2월'];
-
-    function renderMonthPills() {
-      const container = document.getElementById('month-pills-container');
-      if (!container) return;
-
-      container.innerHTML = MONTHS.map(m => `
-        <button onclick="setMonth('${m}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition ${
-          currentMonth === m ? 'bg-orange-500 text-white shadow-xs' : 'bg-stone-100 text-stone-600 hover:bg-orange-100'
-        }">
-          ${m}
-        </button>
-      `).join('');
+    // 2. EXPENSE & ATTENDANCE RENDER
+    function changeMonth(m) {
+      currentMonth = parseInt(m, 10);
+      renderExpenseAndAttendance();
     }
 
-    function setMonth(m) {
-      currentMonth = m;
-      renderMonthPills();
-      renderExpenses();
-      renderAttendances();
-    }
-
-    function renderExpenses() {
-      const container = document.getElementById('expense-items-list');
-      const totalAmountEl = document.getElementById('expense-total-amount');
-
-      let filtered = expenses.filter(e => e.month === currentMonth);
-      if (currentSchoolId !== 'ALL') {
-        filtered = filtered.filter(e => e.schoolId === currentSchoolId);
+    function renderExpenseAndAttendance() {
+      // Expenses
+      const expBody = document.getElementById('expense-table-body');
+      expBody.innerHTML = '';
+      let expList = expenses.filter(e => e.month === currentMonth);
+      if (currentSchoolId !== 'all') {
+        expList = expList.filter(e => e.schoolId === currentSchoolId);
       }
 
-      const total = filtered.reduce((acc, c) => acc + c.amount, 0);
-      if (totalAmountEl) totalAmountEl.textContent = `${total.toLocaleString()} 원`;
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="py-10 text-center text-stone-400 text-xs">선택된 월/학교의 지출결의서 내역이 없습니다 🌱</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(ex => {
-        const sch = schools.find(s => s.id === ex.schoolId);
-        return `
-          <div class="p-3 bg-amber-50/50 rounded-2xl border border-amber-100 flex items-start justify-between gap-3 text-xs">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5 mb-1">
-                <span class="text-[10px] bg-orange-100 text-orange-800 px-1.5 py-0.2 rounded font-bold">${sch ? sch.name : ''}</span>
-                <span class="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.2 rounded font-semibold">${ex.category}</span>
-                <span class="text-[10px] text-stone-400">${ex.status}</span>
-              </div>
-              <p class="font-bold text-stone-800 truncate">${ex.desc}</p>
-              <p class="text-[11px] text-stone-500 mt-0.5 flex items-center gap-1">
-                <i class="fa-regular fa-file-pdf text-rose-500"></i> ${ex.receipt || '영수증 첨부'}
-              </p>
-            </div>
-            <div class="text-right shrink-0 flex flex-col items-end">
-              <span class="font-extrabold text-orange-600 text-sm">${ex.amount.toLocaleString()}원</span>
-              <button onclick="deleteExpense(${ex.id})" class="text-stone-300 hover:text-rose-500 text-xs mt-1 p-1">
-                <i class="fa-regular fa-trash-can"></i>
+      let totalExp = 0;
+      if (expList.length === 0) {
+        expBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-stone-400">등록된 지출 내역이 없습니다.</td></tr>`;
+      } else {
+        expList.forEach(e => {
+          totalExp += (e.amount || 0);
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-emerald-50/30";
+          tr.innerHTML = `
+            <td class="p-2.5 text-stone-500 font-mono">${e.date}</td>
+            <td class="p-2.5 font-bold text-stone-800">${e.title}</td>
+            <td class="p-2.5 text-stone-600">${e.vendor}</td>
+            <td class="p-2.5 text-right font-bold text-emerald-700">${(e.amount || 0).toLocaleString()}원</td>
+            <td class="p-2.5 text-center">
+              <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
+            </td>
+          `;
+          expBody.appendChild(tr);
+        });
+      }
+      document.getElementById('total-monthly-expense').textContent = totalExp.toLocaleString() + '원';
 
-    function openExpenseModal() {
-      openModal('modal-expense');
-    }
+      // Attendances
+      const attBody = document.getElementById('attendance-table-body');
+      attBody.innerHTML = '';
+      let attList = attendances.filter(a => a.month === currentMonth);
+      if (currentSchoolId !== 'all') {
+        attList = attList.filter(a => a.schoolId === currentSchoolId);
+      }
 
-    function handleExpenseSubmit(e) {
-      e.preventDefault();
-      const schoolId = document.getElementById('modal-expense-school').value;
-      const category = document.getElementById('modal-expense-cat').value;
-      const desc = document.getElementById('modal-expense-desc').value.trim();
-      const amount = parseInt(document.getElementById('modal-expense-amount').value || 0);
-      const receipt = document.getElementById('modal-expense-receipt').value.trim() || '전자세금계산서 첨부';
-
-      const newExpense = {
-        id: Date.now(),
-        schoolId,
-        month: currentMonth,
-        category,
-        desc,
-        amount,
-        receipt,
-        status: '정산완료'
-      };
-
-      expenses.unshift(newExpense);
-      setStorage('expenses', expenses);
-      renderExpenses();
-      closeModal('modal-expense');
-      e.target.reset();
-      showToast('지출결의서가 등록되었습니다 🧾', 'success');
+      if (attList.length === 0) {
+        attBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-stone-400">등록된 강사 출근부가 없습니다.</td></tr>`;
+      } else {
+        attList.forEach(a => {
+          const sch = schools.find(s => s.id === a.schoolId);
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-sky-50/30";
+          tr.innerHTML = `
+            <td class="p-2.5">
+              <span class="font-bold text-stone-800">${a.teacher} 강사</span>
+              <span class="text-xs text-stone-400 block">${sch ? sch.name : ''}</span>
+            </td>
+            <td class="p-2.5 text-stone-600">${a.course}</td>
+            <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일 출근</td>
+            <td class="p-2.5 text-center">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 text-xs font-mono">
+                <i data-lucide="file-check" class="w-3 h-3 text-emerald-600"></i> ${a.fileName}
+              </span>
+            </td>
+            <td class="p-2.5 text-center">
+              <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </td>
+          `;
+          attBody.appendChild(tr);
+        });
+      }
+      lucide.createIcons();
     }
 
     function deleteExpense(id) {
-      expenses = expenses.filter(e => e.id !== id);
-      setStorage('expenses', expenses);
-      renderExpenses();
-      showToast('지출결의서 항목이 삭제되었습니다.', 'info');
-    }
-
-    /* Attendance Logic */
-    function renderAttendances() {
-      const container = document.getElementById('attendance-items-list');
-      const rateEl = document.getElementById('attendance-submission-rate');
-
-      let filtered = attendances.filter(a => a.month === currentMonth);
-      if (currentSchoolId !== 'ALL') {
-        filtered = filtered.filter(a => a.schoolId === currentSchoolId);
-      }
-
-      const verifiedCount = filtered.filter(a => a.status === '확인완료').length;
-      const totalCount = filtered.length;
-      const rate = totalCount > 0 ? Math.round((verifiedCount / totalCount) * 100) : 0;
-      if (rateEl) rateEl.textContent = `${rate}% (${verifiedCount}/${totalCount}명)`;
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="py-10 text-center text-stone-400 text-xs">선택된 월/학교의 출근부 서명 내역이 없습니다 🌱</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(att => {
-        const sch = schools.find(s => s.id === att.schoolId);
-        return `
-          <div class="p-3 bg-sky-50/50 rounded-2xl border border-sky-100 flex items-start justify-between gap-3 text-xs">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5 mb-1">
-                <span class="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.2 rounded font-bold">${sch ? sch.name : ''}</span>
-                <span class="font-bold text-stone-800">${att.teacher} 강사</span>
-                <span class="text-[10px] ${att.status === '확인완료' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} px-1.5 py-0.2 rounded font-bold">${att.status}</span>
-              </div>
-              <p class="text-stone-700 font-semibold">${att.subject} (${att.hours})</p>
-              <p class="text-[11px] text-sky-700 mt-0.5 flex items-center gap-1">
-                <i class="fa-solid fa-signature"></i> ${att.file}
-              </p>
-            </div>
-            <div class="shrink-0 flex items-center gap-1.5">
-              <button onclick="toggleAttendanceStatus(${att.id})" class="text-xs px-2 py-1 rounded-xl bg-white border border-sky-200 text-sky-700 font-bold hover:bg-sky-100">
-                확인전환
-              </button>
-              <button onclick="deleteAttendance(${att.id})" class="text-stone-300 hover:text-rose-500 text-xs p-1">
-                <i class="fa-regular fa-trash-can"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openAttendanceModal() {
-      openModal('modal-attendance');
-    }
-
-    function handleAttendanceSubmit(e) {
-      e.preventDefault();
-      const schoolId = document.getElementById('modal-att-school').value;
-      const teacher = document.getElementById('modal-att-teacher').value.trim();
-      const subject = document.getElementById('modal-att-subject').value.trim();
-      const hours = document.getElementById('modal-att-hours').value.trim();
-      const file = document.getElementById('modal-att-file').value.trim() || `${currentMonth}_출근부서명.pdf`;
-      const status = document.getElementById('modal-att-verified').value;
-
-      const newAtt = {
-        id: Date.now(),
-        schoolId,
-        month: currentMonth,
-        teacher,
-        subject,
-        hours,
-        file,
-        status
-      };
-
-      attendances.unshift(newAtt);
-      setStorage('attendances', attendances);
-      renderAttendances();
-      closeModal('modal-attendance');
-      e.target.reset();
-      showToast('강사 출근부가 성공적으로 등록되었습니다 📋', 'success');
-    }
-
-    function toggleAttendanceStatus(id) {
-      const item = attendances.find(a => a.id === id);
-      if (item) {
-        item.status = item.status === '확인완료' ? '미확인' : '확인완료';
-        setStorage('attendances', attendances);
-        renderAttendances();
-        showToast(`출근부 상태가 '${item.status}'(으)로 변경되었습니다.`, 'info');
+      if (confirm('해당 지출 내역을 삭제하시겠습니까?')) {
+        expenses = expenses.filter(e => e.id !== id);
+        saveData('expenses', expenses);
+        renderExpenseAndAttendance();
       }
     }
 
     function deleteAttendance(id) {
-      attendances = attendances.filter(a => a.id !== id);
-      setStorage('attendances', attendances);
-      renderAttendances();
-      showToast('출근부 내역이 삭제되었습니다.', 'info');
+      if (confirm('해당 출근부 항목을 삭제하시겠습니까?')) {
+        attendances = attendances.filter(a => a.id !== id);
+        saveData('attendances', attendances);
+        renderExpenseAndAttendance();
+      }
     }
 
-    /* TAB 3: Teachers Directory */
-    function renderTeachers() {
-      const grid = document.getElementById('teachers-grid');
-      let filtered = teachers;
-      if (currentSchoolId !== 'ALL') {
-        filtered = filtered.filter(t => t.schoolId === currentSchoolId);
+    // 3. INSTRUCTORS & NOTICES RENDER
+    function renderInstructorsAndNotices() {
+      // Instructors Grid
+      const grid = document.getElementById('instructors-grid');
+      grid.innerHTML = '';
+      let insList = instructors;
+      if (currentSchoolId !== 'all') {
+        insList = insList.filter(i => i.schoolId === currentSchoolId);
       }
 
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">선택된 학교에 등록된 출강 강사 정보가 없습니다 🌸</div>`;
-        return;
-      }
+      document.getElementById('count-instructors').textContent = insList.length;
 
-      grid.innerHTML = filtered.map(t => {
-        const sch = schools.find(s => s.id === t.schoolId);
-        return `
-          <div class="bg-white border-2 border-pink-100 rounded-3xl p-4 shadow-cute hover:shadow-card-hover transition-all flex flex-col justify-between">
+      if (insList.length === 0) {
+        grid.innerHTML = `<div class="col-span-full p-6 text-center text-stone-400 bg-white rounded-3xl border border-stone-200">등록된 배정 강사가 없습니다.</div>`;
+      } else {
+        insList.forEach(ins => {
+          const sch = schools.find(s => s.id === ins.schoolId);
+          const card = document.createElement('div');
+          card.className = "bg-white p-5 rounded-3xl border border-stone-200/90 shadow-xs hover:border-amber-300 transition-all flex flex-col justify-between";
+          card.innerHTML = `
             <div>
-              <div class="flex items-start justify-between">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-11 h-11 rounded-2xl bg-pink-100 border border-pink-300 flex items-center justify-center text-xl">
-                    👩‍🏫
-                  </div>
-                  <div>
-                    <h4 class="font-bold text-stone-900 text-sm">${t.name} 강사</h4>
-                    <span class="text-[10px] bg-pink-100 text-pink-700 px-1.5 py-0.2 rounded font-bold">${t.subject}</span>
-                  </div>
-                </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                  t.status === '수업중' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                  t.status === '출강대기' ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-amber-50 text-amber-700 border-amber-200'
-                }">${t.status}</span>
+              <div class="flex items-start justify-between mb-2">
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold">${sch ? sch.name : '위탁교'}</span>
+                <button onclick="deleteInstructor('${ins.id}')" class="text-stone-300 hover:text-red-500">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
               </div>
-
-              <div class="mt-3.5 space-y-1 text-xs">
-                <p class="font-bold text-orange-600">🏫 ${sch ? sch.name : '출강교'}</p>
-                <p class="text-stone-600">⏰ ${t.schedule}</p>
-                <p class="text-stone-500">📞 ${t.phone}</p>
+              <h5 class="text-base font-bold text-stone-800">${ins.name} 선생님</h5>
+              <p class="text-xs font-semibold text-amber-700 mt-0.5">${ins.subject}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-stone-100 text-xs space-y-1 text-stone-500">
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-stone-400"></i> ${ins.schedule}
+              </div>
+              <div class="flex items-center gap-1.5 font-mono text-stone-700 font-semibold">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-amber-500"></i> ${ins.phone}
               </div>
             </div>
-
-            <div class="mt-4 pt-3 border-t border-pink-50 flex items-center justify-between">
-              <a href="tel:${t.phone}" class="text-pink-600 font-bold text-xs hover:underline flex items-center gap-1">
-                <i class="fa-solid fa-phone text-[10px]"></i> 바로 통화
-              </a>
-              <button onclick="deleteTeacher(${t.id})" class="text-stone-300 hover:text-rose-500 text-xs p-1" title="삭제">
-                <i class="fa-regular fa-trash-can"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openTeacherModal() {
-      openModal('modal-teacher');
-    }
-
-    function handleTeacherSubmit(e) {
-      e.preventDefault();
-      const schoolId = document.getElementById('modal-teacher-school').value;
-      const name = document.getElementById('modal-teacher-name').value.trim();
-      const subject = document.getElementById('modal-teacher-subject').value.trim();
-      const phone = document.getElementById('modal-teacher-phone').value.trim();
-      const schedule = document.getElementById('modal-teacher-schedule').value.trim();
-      const status = document.getElementById('modal-teacher-status').value;
-
-      const newTeacher = {
-        id: Date.now(),
-        schoolId,
-        name,
-        subject,
-        phone,
-        schedule,
-        status
-      };
-
-      teachers.push(newTeacher);
-      setStorage('teachers', teachers);
-      renderTeachers();
-      closeModal('modal-teacher');
-      e.target.reset();
-      showToast(`${name} 강사님이 등록되었습니다! 👩‍🏫`, 'success');
-    }
-
-    function deleteTeacher(id) {
-      teachers = teachers.filter(t => t.id !== id);
-      setStorage('teachers', teachers);
-      renderTeachers();
-      showToast('강사 정보가 삭제되었습니다.', 'info');
-    }
-
-    /* TAB 4: Newsletters & Official Letters */
-    function renderNotices() {
-      const container = document.getElementById('notices-list-container');
-      let filtered = notices;
-      if (currentSchoolId !== 'ALL') {
-        filtered = filtered.filter(n => n.schoolId === currentSchoolId);
+          `;
+          grid.appendChild(card);
+        });
       }
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="py-12 text-center text-stone-400 text-xs">등록된 학교 안내장 및 가정통신문이 없습니다 💌</div>`;
-        return;
+      // Notices Table
+      const noticeBody = document.getElementById('notices-table-body');
+      noticeBody.innerHTML = '';
+      let notList = notices;
+      if (currentSchoolId !== 'all') {
+        notList = notList.filter(n => n.schoolId === currentSchoolId);
       }
 
-      container.innerHTML = filtered.map(n => {
-        const sch = schools.find(s => s.id === n.schoolId);
-        return `
-          <div class="p-4 rounded-2xl border-2 border-stone-100 bg-white hover:border-orange-200 transition shadow-xs flex flex-col md:flex-row md:items-start justify-between gap-3 text-xs">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1.5">
-                <span class="font-bold px-2 py-0.5 rounded-lg bg-orange-100 text-orange-800">${sch ? sch.name : ''}</span>
-                <span class="font-bold px-2 py-0.5 rounded-lg ${n.type === '가정통신문' ? 'bg-pink-100 text-pink-800' : 'bg-amber-100 text-amber-800'}">${n.type}</span>
-                <span class="text-stone-400">${n.date}</span>
-              </div>
-              <h4 class="text-sm font-bold text-stone-800 mb-1">${n.title}</h4>
-              <p class="text-stone-600 leading-relaxed">${n.content}</p>
-            </div>
-            <div class="shrink-0 flex items-center gap-2">
-              <button onclick="showToast('안내장 PDF 문서가 열렸습니다.', 'info')" class="px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold border border-orange-200 flex items-center gap-1">
-                <i class="fa-solid fa-file-pdf text-rose-500"></i> 미리보기
+      if (notList.length === 0) {
+        noticeBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 발송 안내장이 없습니다.</td></tr>`;
+      } else {
+        notList.forEach(n => {
+          const sch = schools.find(s => s.id === n.schoolId);
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-amber-50/20";
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono text-stone-500">${n.date}</td>
+            <td class="py-3 px-4 font-bold text-stone-800">${sch ? sch.name : '-'}</td>
+            <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 font-bold">${n.type}</span></td>
+            <td class="py-3 px-4 font-semibold text-stone-800">${n.title}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center gap-1 text-stone-500 hover:text-amber-600 cursor-pointer">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> 서식 다운
+              </span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <button onclick="deleteNotice('${n.id}')" class="text-stone-300 hover:text-red-500">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="deleteNotice(${n.id})" class="text-stone-300 hover:text-rose-500 p-1">
-                <i class="fa-regular fa-trash-can"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+            </td>
+          `;
+          noticeBody.appendChild(tr);
+        });
+      }
+      lucide.createIcons();
     }
 
-    function openNoticeModal() {
-      openModal('modal-notice');
-    }
-
-    function handleNoticeSubmit(e) {
-      e.preventDefault();
-      const schoolId = document.getElementById('modal-notice-school').value;
-      const type = document.getElementById('modal-notice-type').value;
-      const title = document.getElementById('modal-notice-title').value.trim();
-      const content = document.getElementById('modal-notice-content').value.trim();
-
-      const now = new Date();
-      const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-
-      const newNotice = {
-        id: Date.now(),
-        schoolId,
-        type,
-        title,
-        content,
-        date: dateStr
-      };
-
-      notices.unshift(newNotice);
-      setStorage('notices', notices);
-      renderNotices();
-      closeModal('modal-notice');
-      e.target.reset();
-      showToast('새 안내장이 등록되었습니다! 💌', 'success');
+    function deleteInstructor(id) {
+      if (confirm('강사 정보를 삭제하시겠습니까?')) {
+        instructors = instructors.filter(i => i.id !== id);
+        saveData('instructors', instructors);
+        renderInstructorsAndNotices();
+      }
     }
 
     function deleteNotice(id) {
-      notices = notices.filter(n => n.id !== id);
-      setStorage('notices', notices);
-      renderNotices();
-      showToast('안내장이 삭제되었습니다.', 'info');
-    }
-
-    /* Print Preview Modal Logic */
-    function openExportSummaryModal() {
-      const sch = schools.find(s => s.id === currentSchoolId);
-      const schoolName = sch ? sch.name : '전체 위탁학교';
-      
-      document.getElementById('summary-preview-sub').textContent = `위탁업체: (주)밝은생각 / 대상교: ${schoolName}`;
-      document.getElementById('summary-preview-quarter').textContent = `${currentQuarter} (4주단위 청구분)`;
-      
-      const now = new Date();
-      document.getElementById('summary-preview-date').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
-
-      let filteredBills = billings.filter(b => b.quarter === currentQuarter);
-      if (currentSchoolId !== 'ALL') {
-        filteredBills = filteredBills.filter(b => b.schoolId === currentSchoolId);
+      if (confirm('안내장 기록을 삭제하시겠습니까?')) {
+        notices = notices.filter(n => n.id !== id);
+        saveData('notices', notices);
+        renderInstructorsAndNotices();
       }
-
-      const totalBill = filteredBills.reduce((acc, cur) => acc + cur.totalAmount, 0);
-
-      const itemsContainer = document.getElementById('summary-preview-items');
-      itemsContainer.innerHTML = `
-        <div class="flex justify-between py-1 border-b border-stone-100">
-          <span>• 4주단위 방과후 강사료 및 수강료 합계 (${filteredBills.length}개 반)</span>
-          <strong>${totalBill.toLocaleString()} 원</strong>
-        </div>
-        <div class="flex justify-between py-1 border-b border-stone-100">
-          <span>• 당월 교구재 및 필수 소모품 지출결의 합계</span>
-          <strong>정산서 첨부 참조</strong>
-        </div>
-        <div class="flex justify-between py-1 font-bold text-orange-600 text-xs pt-1">
-          <span>총 청구 정산 확정액</span>
-          <span>${totalBill.toLocaleString()} 원</span>
-        </div>
-      `;
-
-      openModal('modal-export-summary');
     }
 
-    /* System Boot */
-    window.addEventListener('DOMContentLoaded', () => {
-      renderSchoolList();
-      renderMonthPills();
-      refreshCurrentView();
-    });
+    // ---------- MODAL HANDLERS ----------
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function openAddSchoolModal() {
+      document.getElementById('new-school-name').value = '';
+      openModal('modal-add-school');
+    }
+
+    function handleSaveSchool(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-school-name').value.trim();
+      if (!name) return;
+
+      const newId = 'sch_' + Date.now();
+      schools.push({ id: newId, name: name });
+      saveData('schools', schools);
+      closeModal('modal-add-school');
+      renderSchoolsSidebar();
+      selectSchool(newId);
+    }
+
+    function openAddBillingModal() {
+      openModal('modal-add-billing');
+    }
+
+    function handleSaveBilling(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('billing-input-school').value;
+      const course = document.getElementById('billing-input-course').value.trim();
+      const teacher = document.getElementById('billing-input-teacher').value.trim();
+      const hours = parseInt(document.getElementById('billing-input-hours').value, 10);
+      const students = parseInt(document.getElementById('billing-input-students').value, 10);
+      const fee = parseInt(document.getElementById('billing-input-fee').value, 10);
+
+      const newItem = {
+        id: 'b_' + Date.now(),
+        schoolId,
+        quarter: currentQuarter,
+        period: currentPeriod,
+        course,
+        teacher,
+        hours,
+        students,
+        fee
+      };
+
+      billings.push(newItem);
+      saveData('billings', billings);
+      closeModal('modal-add-billing');
+      renderBillingTable();
+    }
+
+    function openAddExpenseModal() {
+      openModal('modal-add-expense');
+    }
+
+    function handleSaveExpense(e) {
+      e.preventDefault();
+      const date = document.getElementById('expense-input-date').value;
+      const title = document.getElementById('expense-input-title').value.trim();
+      const vendor = document.getElementById('expense-input-vendor').value.trim();
+      const amount = parseInt(document.getElementById('expense-input-amount').value, 10);
+
+      const newItem = {
+        id: 'e_' + Date.now(),
+        month: currentMonth,
+        schoolId: currentSchoolId === 'all' ? (schools[0] ? schools[0].id : 'sch_1') : currentSchoolId,
+        date,
+        title,
+        vendor,
+        amount
+      };
+
+      expenses.push(newItem);
+      saveData('expenses', expenses);
+      closeModal('modal-add-expense');
+      renderExpenseAndAttendance();
+    }
+
+    function openAddAttendanceModal() {
+      openModal('modal-add-attendance');
+    }
+
+    function handleSaveAttendance(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('att-input-school').value;
+      const teacher = document.getElementById('att-input-teacher').value.trim();
+      const course = document.getElementById('att-input-course').value.trim();
+      const days = parseInt(document.getElementById('att-input-days').value, 10);
+
+      const sch = schools.find(s => s.id === schoolId);
+      const schoolName = sch ? sch.name : '학교';
+      const fileName = `${schoolName}_${currentMonth}월_${teacher}_출근부.pdf`;
+
+      attendances.push({
+        id: 'a_' + Date.now(),
+        month: currentMonth,
+        schoolId,
+        teacher,
+        course,
+        days,
+        fileName
+      });
+
+      saveData('attendances', attendances);
+      closeModal('modal-add-attendance');
+      renderExpenseAndAttendance();
+    }
+
+    function openAddInstructorModal() {
+      openModal('modal-add-instructor');
+    }
+
+    function handleSaveInstructor(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('ins-input-school').value;
+      const name = document.getElementById('ins-input-name').value.trim();
+      const subject = document.getElementById('ins-input-subject').value.trim();
+      const schedule = document.getElementById('ins-input-schedule').value.trim();
+      const phone = document.getElementById('ins-input-phone').value.trim();
+
+      instructors.push({
+        id: 'i_' + Date.now(),
+        schoolId,
+        name,
+        subject,
+        schedule,
+        phone
+      });
+
+      saveData('instructors', instructors);
+      closeModal('modal-add-instructor');
+      renderInstructorsAndNotices();
+    }
+
+    function openAddNoticeModal() {
+      openModal('modal-add-notice');
+    }
+
+    function handleSaveNotice(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('notice-input-school').value;
+      const type = document.getElementById('notice-input-type').value;
+      const title = document.getElementById('notice-input-title').value.trim();
+      const today = new Date().toISOString().split('T')[0];
+
+      notices.push({
+        id: 'n_' + Date.now(),
+        schoolId,
+        date: today,
+        type,
+        title
+      });
+
+      saveData('notices', notices);
+      closeModal('modal-add-notice');
+      renderInstructorsAndNotices();
+    }
   </script>
 </body>
 </html>

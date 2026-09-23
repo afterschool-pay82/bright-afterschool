@@ -40,39 +40,23 @@
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
 
-    /* 엑셀 실제 스프레드시트 스타일링 */
-    .excel-sheet-table {
+    /* 정갈한 실제 엑셀 서식 스타일 */
+    .excel-paper-table {
       border-collapse: collapse;
       table-layout: auto;
-      white-space: nowrap;
       font-family: 'Malgun Gothic', '맑은 고딕', Dotum, sans-serif;
-      font-size: 12px;
+      font-size: 11.5px;
       color: #111827;
       background-color: #ffffff;
+      margin: 0 auto;
     }
-    .excel-sheet-table th, .excel-sheet-table td {
-      border: 1px solid #d1d5db;
-      padding: 4px 8px;
-      min-width: 50px;
+    .excel-paper-table th, .excel-paper-table td {
+      border: 1px solid #9ca3af;
+      padding: 5px 6px;
+      min-width: 32px;
       height: 22px;
       box-sizing: border-box;
-    }
-    .excel-row-header {
-      background-color: #f3f4f6;
-      color: #6b7280;
-      font-weight: bold;
-      text-align: center;
-      width: 40px;
-      user-select: none;
-      border: 1px solid #d1d5db;
-    }
-    .excel-col-header {
-      background-color: #f3f4f6;
-      color: #6b7280;
-      font-weight: bold;
-      text-align: center;
-      user-select: none;
-      border: 1px solid #d1d5db;
+      line-height: 1.35;
     }
 
     @media print {
@@ -122,6 +106,7 @@
       </div>
     </div>
 
+    <!-- 서류 제출 현황 요약 위젯 -->
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
@@ -329,7 +314,7 @@
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
           <div class="p-4 border-b border-stone-100 flex items-center justify-between">
             <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">강사료 청구서 내역</h3>
-            <span class="text-xs text-stone-400">실제 엑셀 격자 서식 그대로 미리보기 지원</span>
+            <span class="text-xs text-stone-400">실제 엑셀 서식 그대로 미리보기 지원</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -604,16 +589,34 @@
 
   <!-- ================= M O D A L S ================= -->
 
-  <!-- 1. 파일 미리보기 모달 (진짜 엑셀 스프레드시트 뷰어) -->
-  <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 md:p-6 z-50 hidden">
-    <div class="bg-white rounded-3xl max-w-6xl w-full h-[90vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
+  <!-- 1. 파일 미리보기 모달 (가로 스크롤 없는 '한 화면 자동 맞춤 뷰어') -->
+  <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 md:p-6 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-7xl w-full h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
       <!-- 팝업 헤더 -->
-      <div class="px-5 py-3.5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
-        <div class="flex items-center gap-2.5 truncate">
-          <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800">엑셀 시트</span>
+      <div class="px-5 py-3 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3 bg-stone-50">
+        <div class="flex items-center gap-2.5 truncate max-w-md">
+          <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 shrink-0">엑셀 시트</span>
           <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate font-mono">파일 미리보기</h3>
         </div>
+
+        <!-- 보기 옵션 툴바 (한 화면 맞춤 / 줌 인 / 줌 아웃) -->
         <div class="flex items-center gap-2">
+          <div id="excel-zoom-controls" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold">
+            <button onclick="setExcelZoom('fit')" class="px-2.5 py-1 rounded-lg bg-white text-stone-800 shadow-2xs hover:bg-stone-50">
+              한 화면 맞춤
+            </button>
+            <button onclick="changeExcelZoom(-0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="축소">
+              <i data-lucide="zoom-out" class="w-3.5 h-3.5"></i>
+            </button>
+            <span id="zoom-level-text" class="px-1 font-mono text-[11px] text-stone-600">100%</span>
+            <button onclick="changeExcelZoom(0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="확대">
+              <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <button onclick="printPreviewSheet()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i> 인쇄
+          </button>
           <button id="preview-download-btn" class="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-stone-900 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
             <i data-lucide="download" class="w-3.5 h-3.5"></i> 다운로드
           </button>
@@ -623,14 +626,16 @@
         </div>
       </div>
 
-      <!-- 엑셀 시트 탭 바 (시트가 여러 개일 때) -->
-      <div id="preview-sheet-tabs" class="px-5 py-2 bg-stone-200/70 border-b border-stone-300 flex items-center gap-1.5 overflow-x-auto custom-scroll hidden">
-        <!-- JS 렌더링 -->
-      </div>
+      <!-- 엑셀 시트 탭 바 -->
+      <div id="preview-sheet-tabs" class="px-5 py-2 bg-stone-200/70 border-b border-stone-300 flex items-center gap-1.5 overflow-x-auto custom-scroll hidden"></div>
 
-      <!-- 엑셀 실제 표 본문 (격자선 + 스크롤) -->
-      <div id="preview-body" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4">
-        <!-- JS 동적 렌더링 -->
+      <!-- 엑셀 실제 표 본문 (한 페이지 자동 맞춤 뷰포트) -->
+      <div id="preview-viewport" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4 flex justify-center items-start">
+        <div id="preview-scale-wrapper" class="origin-top transition-transform duration-150">
+          <div id="preview-body" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200 inline-block min-w-max">
+            <!-- 엑셀 표 주입 -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1051,8 +1056,9 @@
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
 
-    // 엑셀 뷰어 캐시
+    // 엑셀 뷰어 캐시 및 줌 레벨
     let currentWorkbook = null;
+    let currentZoomScale = 1.0;
 
     // ---------- 3. Lifecycle Initialization ----------
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1323,8 +1329,8 @@
         summaryLabel.textContent = "강사료 청구 총 합계액";
         tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 강사료 청구서 내역`;
       } else {
-        matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
-        instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
+        matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
+        instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
         summaryLabel.textContent = "교재비 청구 총 합계액";
         tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 교재비 청구서 내역`;
       }
@@ -1752,7 +1758,7 @@
       }
     }
 
-    // ---------- 12. ADVANCED FILE PREVIEW VIEWER (실제 엑셀 격자 서식 복원) ----------
+    // ---------- 12. ADVANCED FILE PREVIEW VIEWER (한 화면 자동 맞춤 뷰어) ----------
     async function previewFile(fileId, fileType, fileName) {
       const fileData = await getFileFromDB(fileId);
       const modal = document.getElementById('modal-file-preview');
@@ -1760,6 +1766,7 @@
       const badgeEl = document.getElementById('preview-badge');
       const bodyEl = document.getElementById('preview-body');
       const tabsEl = document.getElementById('preview-sheet-tabs');
+      const zoomControls = document.getElementById('excel-zoom-controls');
       const downBtn = document.getElementById('preview-download-btn');
 
       titleEl.textContent = fileName;
@@ -1767,6 +1774,7 @@
 
       if (!fileData || !fileData.data) {
         tabsEl.classList.add('hidden');
+        zoomControls.classList.add('hidden');
         bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-stone-500">저장된 파일 원본이 없어 미리보기를 불러올 수 없습니다.</div>`;
         modal.classList.remove('hidden');
         return;
@@ -1774,18 +1782,18 @@
 
       if (fileType === 'pdf') {
         tabsEl.classList.add('hidden');
+        zoomControls.classList.add('hidden');
         badgeEl.textContent = 'PDF 문서';
         badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-rose-100 text-rose-800';
-        bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-full h-full rounded-2xl border border-stone-200"></iframe>`;
+        bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-[85vw] max-w-5xl h-[75vh] rounded-2xl border border-stone-200"></iframe>`;
       } else {
+        zoomControls.classList.remove('hidden');
         badgeEl.textContent = '엑셀 시트';
         badgeEl.className = 'px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800';
         try {
           const base64 = fileData.data.split(',')[1];
-          // 원본 셀 서식, 병합, 스타일 보존하여 파싱
           currentWorkbook = XLSX.read(base64, { type: 'base64', cellStyles: true, cellNF: true });
           
-          // 시트 탭 구성
           tabsEl.innerHTML = '';
           tabsEl.classList.remove('hidden');
 
@@ -1801,10 +1809,10 @@
             tabsEl.appendChild(tabBtn);
           });
 
-          // 첫 번째 시트 렌더링
           renderExcelSheet(currentWorkbook.SheetNames[0], tabsEl.firstChild);
         } catch (err) {
           tabsEl.classList.add('hidden');
+          zoomControls.classList.add('hidden');
           bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (다운로드 버튼을 눌러 확인해 주세요)</div>`;
         }
       }
@@ -1813,13 +1821,12 @@
       lucide.createIcons();
     }
 
-    // 실제 엑셀 테이블 표 렌더러 (격자선 + 병합 셀 + 너비/정렬 복원)
+    // 엑셀 시트 렌더링 & 한 화면 자동 스케일링
     function renderExcelSheet(sheetName, activeTabBtn) {
       if (!currentWorkbook) return;
       const sheet = currentWorkbook.Sheets[sheetName];
       const bodyEl = document.getElementById('preview-body');
 
-      // 탭 활성화 상태 변경
       const tabs = document.getElementById('preview-sheet-tabs').children;
       for (let t of tabs) {
         t.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-stone-600 hover:bg-stone-300/60';
@@ -1836,7 +1843,7 @@
       const range = XLSX.utils.decode_range(sheet['!ref']);
       const merges = sheet['!merges'] || [];
 
-      // 병합 셀 맵핑 (시작셀과 스킵할 셀 정의)
+      // 병합 셀 맵핑
       const mergeMap = {};
       const skipCells = new Set();
 
@@ -1854,21 +1861,12 @@
         }
       });
 
-      // HTML 표 생성
-      let html = '<div class="inline-block min-w-full bg-white p-6 rounded-2xl shadow-sm border border-stone-200">';
-      html += '<table class="excel-sheet-table w-full">';
+      // A, B, C / 1, 2, 3 헤더 없이 실제 인쇄물 서식 생성
+      let html = '<table id="actual-excel-table" class="excel-paper-table">';
+      html += '<tbody>';
 
-      // 열 헤더 (A, B, C...)
-      html += '<thead><tr><th class="excel-row-header"></th>';
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const colLetter = XLSX.utils.encode_col(C);
-        html += `<th class="excel-col-header">${colLetter}</th>`;
-      }
-      html += '</tr></thead><tbody>';
-
-      // 행 렌더링
       for (let R = range.s.r; R <= range.e.r; ++R) {
-        html += `<tr><td class="excel-row-header">${R + 1}</td>`;
+        html += '<tr>';
 
         for (let C = range.s.c; C <= range.e.c; ++C) {
           const cellKey = `${R}_${C}`;
@@ -1883,21 +1881,24 @@
           }
 
           let value = '';
-          let alignStyle = 'left';
+          let alignStyle = 'center';
 
           if (cell) {
             value = (cell.w !== undefined) ? cell.w : (cell.v !== undefined ? cell.v : '');
             if (typeof cell.v === 'number') {
               alignStyle = 'right';
-            } else if (cell.t === 's' && cell.v && String(cell.v).length <= 4 && !isNaN(Number(cell.v))) {
-              alignStyle = 'center';
+            } else if (typeof cell.v === 'string' && cell.v.length > 10) {
+              alignStyle = 'left';
             }
           }
 
-          // 제목 또는 특정 텍스트 볼드 감지
           let customClasses = '';
-          if (String(value).includes('청구서') || String(value).includes('합계') || R < 5) {
+          // 주요 키워드 및 제목 강조
+          if (String(value).includes('청구서') || String(value).includes('합계') || String(value).includes('총액') || R < 6) {
             customClasses = 'font-bold';
+            if (String(value).includes('청구서')) {
+              customClasses += ' text-base tracking-wide bg-amber-50/50';
+            }
           }
 
           html += `<td${mergeAttrs} class="${customClasses}" style="text-align: ${alignStyle};">${value}</td>`;
@@ -1905,8 +1906,69 @@
         html += '</tr>';
       }
 
-      html += '</tbody></table></div>';
+      html += '</tbody></table>';
       bodyEl.innerHTML = html;
+
+      // 렌더 직후 화면 너비에 맞게 자동 축척(Fit-to-Width) 계산
+      setTimeout(() => {
+        setExcelZoom('fit');
+      }, 50);
+    }
+
+    // 엑셀 뷰어 줌 & 한 화면 맞춤 계산기
+    function setExcelZoom(mode) {
+      const wrapper = document.getElementById('preview-scale-wrapper');
+      const bodyEl = document.getElementById('preview-body');
+      const viewport = document.getElementById('preview-viewport');
+      const zoomText = document.getElementById('zoom-level-text');
+
+      if (!wrapper || !bodyEl || !viewport) return;
+
+      if (mode === 'fit') {
+        // 테이블 실제 너비와 팝업창 가로 너비 비교
+        const tableWidth = bodyEl.scrollWidth;
+        const availableWidth = viewport.clientWidth - 40; // 여백 고려
+
+        if (tableWidth > 0 && availableWidth > 0) {
+          if (tableWidth > availableWidth) {
+            currentZoomScale = Math.max(0.45, Math.min(1.0, availableWidth / tableWidth));
+          } else {
+            currentZoomScale = 1.0;
+          }
+        }
+      } else if (typeof mode === 'number') {
+        currentZoomScale = Math.max(0.3, Math.min(2.0, mode));
+      }
+
+      wrapper.style.transform = `scale(${currentZoomScale})`;
+      zoomText.textContent = `${Math.round(currentZoomScale * 100)}%`;
+    }
+
+    function changeExcelZoom(delta) {
+      setExcelZoom(currentZoomScale + delta);
+    }
+
+    // 미리보기 화면 직접 인쇄
+    function printPreviewSheet() {
+      const printContents = document.getElementById('preview-body').innerHTML;
+      const win = window.open('', '', 'width=900,height=700');
+      win.document.write(`
+        <html>
+          <head>
+            <title>청구서 인쇄 미리보기</title>
+            <style>
+              body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; }
+              table { border-collapse: collapse; width: 100%; font-size: 11px; }
+              th, td { border: 1px solid #333; padding: 4px 6px; }
+            </style>
+          </head>
+          <body>
+            ${printContents}
+            <script>window.onload = function() { window.print(); window.close(); }<\/script>
+          </body>
+        </html>
+      `);
+      win.document.close();
     }
 
     // ---------- 13. MODAL HANDLERS ----------

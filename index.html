@@ -179,9 +179,6 @@
         <button id="hero-edit-school-btn" onclick="openEditCurrentSchoolModal()" class="px-3 py-2 rounded-2xl bg-white hover:bg-stone-50 border border-amber-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs hidden">
           <i data-lucide="pencil" class="w-3.5 h-3.5 text-amber-600"></i> 기관명 수정
         </button>
-        <button onclick="openAddBillingModal()" class="px-4 py-2 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
-          <i data-lucide="upload" class="w-4 h-4"></i> 청구서 엑셀 올리기
-        </button>
       </div>
     </div>
 
@@ -225,14 +222,12 @@
             <p class="text-xs text-stone-500 mt-0.5">카톡으로 일일이 독촉하지 않고, 각 기관 전담 관리자의 제출 현황을 한눈에 점검합니다.</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold text-stone-400">점검 회차:</span>
+            <span class="text-xs font-bold text-stone-400">점검 분기:</span>
             <select id="checklist-period" onchange="renderChecklist()" class="text-xs font-bold bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5 outline-none font-mono text-amber-900">
-              <option value="1-1">1분기 1차 (3월)</option>
-              <option value="1-2">1분기 2차 (4월)</option>
-              <option value="1-3">1분기 3차 (5월)</option>
-              <option value="2-1">2분기 1차 (6월)</option>
-              <option value="2-2">2분기 2차 (7월)</option>
-              <option value="2-3">2분기 3차 (8월)</option>
+              <option value="1">1분기 (3~5월)</option>
+              <option value="2">2분기 (6~8월)</option>
+              <option value="3">3분기 (9~11월)</option>
+              <option value="4">4분기 (12~2월)</option>
             </select>
           </div>
         </div>
@@ -243,8 +238,8 @@
               <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold">
                 <tr>
                   <th class="py-3 px-4">기관명</th>
-                  <th class="py-3 px-4 text-center">강사료 청구서</th>
-                  <th class="py-3 px-4 text-center">교재비 청구서</th>
+                  <th class="py-3 px-4 text-center">강사료 1차/2차/3차</th>
+                  <th class="py-3 px-4 text-center">교재비 1차/2차/3차</th>
                   <th class="py-3 px-4 text-center">강사 출근부</th>
                   <th class="py-3 px-4 text-center">지출결의서</th>
                   <th class="py-3 px-4 text-center">종합 상태</th>
@@ -257,8 +252,9 @@
         </div>
       </section>
 
-      <!-- ================= TAB 1: BILLING ================= -->
+      <!-- ================= TAB 1: BILLING (1~3차 순서대로 자동 정렬 표시) ================= -->
       <section id="view-billing" class="space-y-5">
+        <!-- Sub Tabs: 강사료 vs 교재비 -->
         <div class="bg-amber-50/60 p-2 rounded-2xl border border-amber-200 inline-flex gap-2">
           <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
             <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 강사료 청구서
@@ -268,35 +264,26 @@
           </button>
         </div>
 
+        <!-- 분기 선택 바 (차수 드롭다운 제거 -> 클릭 한 번으로 분기 전환) -->
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white">1분기 (3~5월)</button>
-            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">2분기 (6~8월)</button>
-            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">3분기 (9~11월)</button>
-            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">4분기 (12~2월)</button>
+            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
           </div>
-
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5 text-xs font-bold">
-              <span class="text-stone-400">차수:</span>
-              <select id="select-period" onchange="changePeriod(this.value)" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 outline-none font-bold text-amber-900">
-                <option value="1">1차 (1주~4주)</option>
-                <option value="2">2차 (5주~8주)</option>
-                <option value="3">3차 (9주~12주)</option>
-              </select>
-            </div>
-            <button onclick="openAddBillingModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="upload" class="w-3.5 h-3.5"></i> 새 청구서 등록
-            </button>
+          <div class="text-xs text-stone-400 font-bold">
+            ※ 분기를 선택하면 1차, 2차, 3차가 순서대로 바로 표시됩니다.
           </div>
         </div>
 
+        <!-- 요약 카드 -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white p-5 rounded-3xl border border-amber-200 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">₩</div>
             <div>
-              <p class="text-xs font-bold text-stone-400" id="billing-summary-label">강사료 청구 총 합계액</p>
+              <p class="text-xs font-bold text-stone-400" id="billing-summary-label">1분기 청구 총 합계액 (1~3차)</p>
               <h3 class="text-2xl font-brand text-stone-900" id="total-billing-amount">0원</h3>
             </div>
           </div>
@@ -305,16 +292,17 @@
               <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
             </div>
             <div>
-              <p class="text-xs font-bold text-stone-400">등록된 청구서 수</p>
-              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-count">0건</h3>
+              <p class="text-xs font-bold text-stone-400">등록 완료된 차수</p>
+              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-count">0 / 3 차수</h3>
             </div>
           </div>
         </div>
 
+        <!-- 청구서 테이블 (1차, 2차, 3차 고정 슬롯 뷰) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
-          <div class="p-4 border-b border-stone-100 flex items-center justify-between">
-            <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">강사료 청구서 내역</h3>
-            <span class="text-xs text-stone-400">분기당 1차·2차·3차 각 1건 관리 / 수정 및 미리보기 지원</span>
+          <div class="p-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+            <h3 class="font-bold text-stone-900 text-sm" id="billing-table-title">1분기 청구서 내역 (1차 · 2차 · 3차)</h3>
+            <span class="text-xs text-stone-400">순서대로 확인하고 바로 등록 및 수정할 수 있습니다</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -323,17 +311,19 @@
                 <tr>
                   <th class="py-3 px-4">기관명</th>
                   <th class="py-3 px-3 text-center">구분</th>
-                  <th class="py-3 px-3 text-center">회기(분기)</th>
-                  <th class="py-3 px-3 text-center">차수(4주)</th>
+                  <th class="py-3 px-3 text-center">회기</th>
+                  <th class="py-3 px-4 text-center">정산 차수</th>
                   <th class="py-3 px-4 text-right">청구 금액</th>
-                  <th class="py-3 px-4 text-center">청구서 파일</th>
+                  <th class="py-3 px-4 text-center">청구서 엑셀 파일</th>
                   <th class="py-3 px-3 text-center">미리보기</th>
-                  <th class="py-3 px-3 text-center">다운로드</th>
+                  <th class="py-3 px-3 text-center">다운</th>
                   <th class="py-3 px-3 text-center">수정</th>
                   <th class="py-3 px-3 text-center">삭제</th>
                 </tr>
               </thead>
-              <tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody>
+              <tbody id="billing-table-body" class="divide-y divide-stone-100">
+                <!-- JS 렌더링 -->
+              </tbody>
             </table>
           </div>
         </div>
@@ -590,17 +580,15 @@
 
   <!-- ================= M O D A L S ================= -->
 
-  <!-- 1. 파일 미리보기 모달 (가로 스크롤 없는 '한 화면 자동 맞춤 뷰어') -->
+  <!-- 1. 파일 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 md:p-6 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-7xl w-full h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
-      <!-- 팝업 헤더 -->
       <div class="px-5 py-3 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3 bg-stone-50">
         <div class="flex items-center gap-2.5 truncate max-w-md">
           <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 shrink-0">엑셀 시트</span>
           <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate font-mono">파일 미리보기</h3>
         </div>
 
-        <!-- 보기 옵션 툴바 (한 화면 맞춤 / 줌 인 / 줌 아웃) -->
         <div class="flex items-center gap-2">
           <div id="excel-zoom-controls" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold">
             <button onclick="setExcelZoom('fit')" class="px-2.5 py-1 rounded-lg bg-white text-stone-800 shadow-2xs hover:bg-stone-50">
@@ -627,15 +615,11 @@
         </div>
       </div>
 
-      <!-- 엑셀 시트 탭 바 -->
       <div id="preview-sheet-tabs" class="px-5 py-2 bg-stone-200/70 border-b border-stone-300 flex items-center gap-1.5 overflow-x-auto custom-scroll hidden"></div>
 
-      <!-- 엑셀 실제 표 본문 (한 페이지 자동 맞춤 뷰포트) -->
       <div id="preview-viewport" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4 flex justify-center items-start">
         <div id="preview-scale-wrapper" class="origin-top transition-transform duration-150">
-          <div id="preview-body" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200 inline-block min-w-max">
-            <!-- 엑셀 표 주입 -->
-          </div>
+          <div id="preview-body" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200 inline-block min-w-max"></div>
         </div>
       </div>
     </div>
@@ -684,48 +668,29 @@
     </div>
   </div>
 
-  <!-- 4. 청구서 등록 모달 -->
+  <!-- 4. 청구서 등록 모달 (원클릭 해당 차수 지정 등록) -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 청구서 등록 (차수별 1건)
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> <span id="add-billing-modal-title">청구서 등록</span>
         </h3>
         <button onclick="closeModal('modal-add-billing')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveBilling(event)" class="space-y-3.5 text-xs">
-        <div class="grid grid-cols-2 gap-2">
+        <input type="hidden" id="billing-input-category" />
+        <input type="hidden" id="billing-input-school" />
+        <input type="hidden" id="billing-input-quarter" />
+        <input type="hidden" id="billing-input-period" />
+
+        <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center text-xs">
           <div>
-            <label class="block font-bold text-stone-700 mb-1">청구 구분</label>
-            <select id="billing-input-category" class="w-full p-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 font-extrabold outline-none">
-              <option value="instructor">강사료 청구서</option>
-              <option value="materials">교재비 청구서</option>
-            </select>
+            <span id="add-billing-school-name" class="font-extrabold text-stone-900 text-sm">경원초</span>
+            <span id="add-billing-cat-name" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold">강사료</span>
           </div>
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
-            <select id="billing-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold"></select>
-          </div>
+          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm">1분기 1차 (1~4주)</span>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">회기 (분기)</label>
-            <select id="billing-input-quarter" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold">
-              <option value="1">1분기 (3~5월)</option>
-              <option value="2">2분기 (6~8월)</option>
-              <option value="3">3분기 (9~11월)</option>
-              <option value="4">4분기 (12~2월)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">차수 (4주)</label>
-            <select id="billing-input-period" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold text-amber-900">
-              <option value="1">1차 (1주~4주)</option>
-              <option value="2">2차 (5주~8주)</option>
-              <option value="3">3차 (9주~12주)</option>
-            </select>
-          </div>
-        </div>
+
         <div>
           <label class="block font-bold text-stone-700 mb-1">청구 금액(원)</label>
           <input type="number" id="billing-input-amount" required placeholder="예: 19548900" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold text-amber-900 text-sm" />
@@ -734,7 +699,6 @@
           <label class="block font-bold text-stone-700 mb-1">청구서 엑셀 파일 (.xlsx, .xls)</label>
           <input type="file" id="billing-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
-        <p class="text-[11px] text-stone-400">※ 해당 분기·차수에 이미 파일이 등록되어 있으면 자동으로 최신 파일로 교체(수정)됩니다.</p>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
           <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold">등록 완료</button>
@@ -743,7 +707,7 @@
     </div>
   </div>
 
-  <!-- 4-1. 청구서 단독 수정 모달 (신규 추가) -->
+  <!-- 4-1. 청구서 단독 수정 모달 -->
   <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -997,7 +961,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v2', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v3', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1095,7 +1059,6 @@
 
     let currentSchoolId = 'all';
     let currentQuarter = 1;
-    let currentPeriod = 1;
     let currentMonth = 3;
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
@@ -1273,7 +1236,7 @@
     }
 
     function populateSelects() {
-      const ids = ['billing-input-school', 'sched-input-school', 'exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
+      const ids = ['sched-input-school', 'exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1303,21 +1266,28 @@
 
       let readyCount = 0;
       let missingCount = 0;
+      const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
 
       schools.forEach(sch => {
-        const hasInstBill = billings.some(b => b.schoolId === sch.id && b.quarter === currentQuarter && b.period === currentPeriod && (b.category || 'instructor') === 'instructor');
-        const hasMatBill = billings.some(b => b.schoolId === sch.id && b.quarter === currentQuarter && b.period === currentPeriod && b.category === 'materials');
-        const hasAtt = attendances.some(a => a.schoolId === sch.id && a.month === currentMonth);
-        const hasExp = expenses.some(e => e.schoolId === sch.id && e.month === currentMonth);
+        const inst1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && (b.category || 'instructor') === 'instructor');
+        const inst2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && (b.category || 'instructor') === 'instructor');
+        const inst3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && (b.category || 'instructor') === 'instructor');
 
-        let completed = [hasInstBill, hasAtt].filter(Boolean).length;
+        const mat1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && b.category === 'materials');
+        const mat2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && b.category === 'materials');
+        const mat3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && b.category === 'materials');
+
+        const hasAtt = attendances.some(a => a.schoolId === sch.id);
+        const hasExp = expenses.some(e => e.schoolId === sch.id);
+
+        const instDoneCount = [inst1, inst2, inst3].filter(Boolean).length;
         let badgeHtml = '';
 
-        if (completed === 2) {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs inline-flex items-center gap-1">🟢 제출완료</span>';
+        if (instDoneCount === 3) {
+          badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs inline-flex items-center gap-1">🟢 3차완료</span>';
           readyCount++;
-        } else if (completed === 1) {
-          badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-800 font-bold text-xs inline-flex items-center gap-1">🟡 일부제출</span>';
+        } else if (instDoneCount > 0) {
+          badgeHtml = `<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-800 font-bold text-xs inline-flex items-center gap-1">🟡 ${instDoneCount}/3차</span>`;
         } else {
           badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-800 font-bold text-xs inline-flex items-center gap-1">🔴 미제출</span>';
           missingCount++;
@@ -1332,14 +1302,18 @@
             <span class="text-base">${isCenter ? '🏡' : '🎒'}</span>
             ${sch.name}
           </td>
-          <td class="py-3 px-4 text-center">
-            ${hasInstBill ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-rose-400 text-xs">미제출</span>'}
+          <td class="py-3 px-4 text-center font-mono text-xs">
+            <span class="${inst1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
+            <span class="${inst2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
+            <span class="${inst3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
+          </td>
+          <td class="py-3 px-4 text-center font-mono text-xs">
+            <span class="${mat1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
+            <span class="${mat2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
+            <span class="${mat3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
           </td>
           <td class="py-3 px-4 text-center">
-            ${hasMatBill ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}
-          </td>
-          <td class="py-3 px-4 text-center">
-            ${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-rose-400 text-xs">미제출</span>'}
+            ${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}
           </td>
           <td class="py-3 px-4 text-center">
             ${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}
@@ -1359,24 +1333,18 @@
       document.getElementById('stat-missing-count').textContent = missingCount;
     }
 
-    // ---------- 7. TAB 1: BILLING (차수별 1건 등록 및 수정 로직) ----------
+    // ---------- 7. TAB 1: BILLING (1~3차 순서대로 고정 노출 및 등록/수정) ----------
     function switchBillingCategory(cat) {
       currentBillingCategory = cat;
       const instBtn = document.getElementById('sub-billing-btn-instructor');
       const matBtn = document.getElementById('sub-billing-btn-materials');
-      const summaryLabel = document.getElementById('billing-summary-label');
-      const tableTitle = document.getElementById('billing-table-title');
 
       if (cat === 'instructor') {
         instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
         matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
-        summaryLabel.textContent = "강사료 청구 총 합계액";
-        tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 강사료 청구서 내역`;
       } else {
         matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
         instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
-        summaryLabel.textContent = "교재비 청구 총 합계액";
-        tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 교재비 청구서 내역`;
       }
 
       renderBilling();
@@ -1388,16 +1356,10 @@
         const b = document.getElementById(`btn-q-${i}`);
         if (b) {
           b.className = (i === q) 
-            ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white" 
-            : "px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-100 text-stone-600";
+            ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" 
+            : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
         }
       }
-      renderBilling();
-      renderChecklist();
-    }
-
-    function changePeriod(p) {
-      currentPeriod = parseInt(p, 10);
       renderBilling();
       renderChecklist();
     }
@@ -1406,78 +1368,100 @@
       const tbody = document.getElementById('billing-table-body');
       tbody.innerHTML = '';
 
-      let list = billings.filter(b => 
-        b.quarter === currentQuarter && 
-        b.period === currentPeriod && 
-        (b.category || 'instructor') === currentBillingCategory
-      );
-
-      if (currentSchoolId !== 'all') {
-        list = list.filter(b => b.schoolId === currentSchoolId);
-      }
-
-      let total = 0;
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
+      const targetSchools = (currentSchoolId === 'all') ? schools : schools.filter(s => s.id === currentSchoolId);
 
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-stone-400">등록된 ${catName} 청구서가 없습니다. [+ 새 청구서 등록] 버튼으로 엑셀 파일을 올려보세요.</td></tr>`;
-      } else {
-        list.forEach(b => {
-          const sch = schools.find(s => s.id === b.schoolId);
-          total += (b.amount || 0);
+      let totalQuarterAmount = 0;
+      let registeredCount = 0;
+      let totalSlots = targetSchools.length * 3;
+
+      targetSchools.forEach(sch => {
+        // 각 학교별로 1차, 2차, 3차 고정 루프
+        [1, 2, 3].forEach(period => {
+          const periodLabel = `${period}차 (${(period-1)*4 + 1}~${period*4}주)`;
+          const item = billings.find(b => 
+            b.schoolId === sch.id && 
+            (b.category || 'instructor') === currentBillingCategory && 
+            b.quarter === currentQuarter && 
+            b.period === period
+          );
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-amber-50/40 transition-colors";
-          tr.innerHTML = `
-            <td class="py-3 px-4 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
-            <td class="py-3 px-3 text-center">
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                (b.category || 'instructor') === 'instructor' 
-                  ? 'bg-amber-100 text-amber-900' 
-                  : 'bg-emerald-100 text-emerald-900'
-              }">${(b.category || 'instructor') === 'instructor' ? '강사료' : '교재비'}</span>
-            </td>
-            <td class="py-3 px-3 text-center font-semibold text-stone-700">${b.quarter}분기</td>
-            <td class="py-3 px-3 text-center font-semibold text-stone-700">${b.period}차</td>
-            <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(b.amount || 0).toLocaleString()}원</td>
-            <td class="py-3 px-4 text-center">
-              <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${b.fileName || '청구서.xlsx'}
-              </span>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="previewFile('${b.id}', 'excel', '${b.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
-                미리보기
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="downloadFileFromDB('${b.id}', '${b.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
-                다운
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="openEditBillingModal('${b.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200" title="청구서 수정">
-                수정
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="deleteBilling('${b.id}')" class="text-stone-300 hover:text-red-500">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </td>
-          `;
+          tr.className = item ? "hover:bg-amber-50/40 transition-colors" : "hover:bg-stone-50 transition-colors opacity-90";
+
+          if (item) {
+            totalQuarterAmount += (item.amount || 0);
+            registeredCount++;
+
+            tr.innerHTML = `
+              <td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td>
+              <td class="py-3 px-3 text-center">
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${
+                  currentBillingCategory === 'instructor' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'
+                }">${catName}</span>
+              </td>
+              <td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td>
+              <td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${periodLabel}</td>
+              <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td>
+              <td class="py-3 px-4 text-center">
+                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono">
+                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}
+                </span>
+              </td>
+              <td class="py-3 px-3 text-center">
+                <button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
+                  미리보기
+                </button>
+              </td>
+              <td class="py-3 px-3 text-center">
+                <button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
+                  다운
+                </button>
+              </td>
+              <td class="py-3 px-3 text-center">
+                <button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200" title="수정">
+                  수정
+                </button>
+              </td>
+              <td class="py-3 px-3 text-center">
+                <button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </td>
+            `;
+          } else {
+            // 아직 등록되지 않은 빈 차수 슬롯 (원클릭 등록 버튼 제공)
+            tr.innerHTML = `
+              <td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td>
+              <td class="py-3 px-3 text-center text-stone-400 font-medium">${catName}</td>
+              <td class="py-3 px-3 text-center text-stone-400 font-medium">${currentQuarter}분기</td>
+              <td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${periodLabel}</td>
+              <td class="py-3 px-4 text-right text-stone-300 font-mono">-</td>
+              <td class="py-3 px-4 text-center">
+                <button onclick="openAddBillingModalForSlot('${sch.id}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto transition-colors">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록
+                </button>
+              </td>
+              <td class="py-3 px-3 text-center text-stone-300">-</td>
+              <td class="py-3 px-3 text-center text-stone-300">-</td>
+              <td class="py-3 px-3 text-center text-stone-300">-</td>
+              <td class="py-3 px-3 text-center text-stone-300">-</td>
+            `;
+          }
+
           tbody.appendChild(tr);
         });
-      }
+      });
 
-      document.getElementById('total-billing-amount').textContent = total.toLocaleString() + '원';
-      document.getElementById('total-billing-count').textContent = list.length + '건';
-      document.getElementById('billing-table-title').textContent = `${currentQuarter}분기 ${currentPeriod}차 ${catName} 청구서 내역`;
+      document.getElementById('billing-summary-label').textContent = `${currentQuarter}분기 ${catName} 청구 총 합계액 (1~3차)`;
+      document.getElementById('total-billing-amount').textContent = totalQuarterAmount.toLocaleString() + '원';
+      document.getElementById('total-billing-count').textContent = `${registeredCount} / ${totalSlots} 등록 완료`;
+      document.getElementById('billing-table-title').textContent = `${currentQuarter}분기 ${catName} 청구서 내역 (1차 · 2차 · 3차)`;
       lucide.createIcons();
     }
 
     function deleteBilling(id) {
-      if (confirm('청구서 내역을 삭제하시겠습니까?')) {
+      if (confirm('해당 청구서를 삭제하시겠습니까? (삭제 시 빈 슬롯으로 복구됩니다)')) {
         billings = billings.filter(b => b.id !== id);
         save('billings', billings);
         renderBilling();
@@ -1485,19 +1469,29 @@
       }
     }
 
-    // 청구서 등록 모달 열기
-    function openAddBillingModal() {
-      if (schools.length === 0) return alert('기관을 먼저 추가해 주세요!');
-      document.getElementById('billing-input-school').value = currentSchoolId === 'all' ? schools[0].id : currentSchoolId;
+    // 특정 학교의 특정 차수 슬롯에 바로 등록 모달 열기
+    function openAddBillingModalForSlot(schoolId, period) {
+      const sch = schools.find(s => s.id === schoolId);
+      const schName = sch ? sch.name : '기관';
+      const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
+
       document.getElementById('billing-input-category').value = currentBillingCategory;
+      document.getElementById('billing-input-school').value = schoolId;
       document.getElementById('billing-input-quarter').value = currentQuarter;
-      document.getElementById('billing-input-period').value = currentPeriod;
+      document.getElementById('billing-input-period').value = period;
+
+      document.getElementById('add-billing-modal-title').textContent = `${schName} ${period}차 청구서 등록`;
+      document.getElementById('add-billing-school-name').textContent = schName;
+      document.getElementById('add-billing-cat-name').textContent = catName;
+      document.getElementById('add-billing-quarter-period-text').textContent = `${currentQuarter}분기 ${period}차 (${(period-1)*4 + 1}~${period*4}주)`;
+
       document.getElementById('billing-input-amount').value = '';
       document.getElementById('billing-input-file').value = '';
+
       openModal('modal-add-billing');
     }
 
-    // 청구서 저장 (차수별 1건 중복 방지 및 자동 교체)
+    // 청구서 저장 (차수 슬롯에 1개 저장)
     async function handleSaveBilling(e) {
       e.preventDefault();
       const schoolId = document.getElementById('billing-input-school').value;
@@ -1512,47 +1506,32 @@
       const schName = sch ? sch.name : '기관';
       const catLabel = category === 'instructor' ? '강사료' : '교재비';
 
-      // 동일 학교, 동일 구분, 동일 분기, 동일 차수에 이미 등록된 건이 있는지 체크
-      const existingIndex = billings.findIndex(b => 
+      const fileId = 'b_' + Date.now();
+      const fileName = file ? file.name : `${schName}_${quarter}분기_${period}차_${catLabel}청구서.xlsx`;
+
+      if (file) await storeFile(fileId, file);
+
+      // 기존에 해당 차수가 있으면 교체, 없으면 추가
+      const existingIdx = billings.findIndex(b => 
         b.schoolId === schoolId && 
         (b.category || 'instructor') === category && 
         b.quarter === quarter && 
         b.period === period
       );
 
-      if (existingIndex > -1) {
-        const overwrite = confirm(`[${schName}] ${quarter}분기 ${period}차 ${catLabel} 청구서가 이미 등록되어 있습니다.\n\n새로운 청구서와 금액(${amount.toLocaleString()}원)으로 덮어쓸까요?`);
-        if (!overwrite) return;
-
-        const existingItem = billings[existingIndex];
-        const fileId = existingItem.id;
-        const fileName = file ? file.name : existingItem.fileName;
-
-        if (file) await storeFile(fileId, file);
-
-        billings[existingIndex] = {
-          ...existingItem,
-          amount,
-          fileName
-        };
+      if (existingIdx > -1) {
+        billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName };
       } else {
-        const fileId = 'b_' + Date.now();
-        const fileName = file ? file.name : `${schName}_${quarter}분기_${period}차_${catLabel}청구서.xlsx`;
-
-        if (file) await storeFile(fileId, file);
-
         billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
       }
 
       save('billings', billings);
       closeModal('modal-add-billing');
-
-      currentBillingCategory = category;
-      switchBillingCategory(category);
+      renderBilling();
       renderChecklist();
     }
 
-    // 청구서 수정 모달 열기
+    // 청구서 단독 수정 모달 열기
     function openEditBillingModal(billingId) {
       const item = billings.find(b => b.id === billingId);
       if (!item) return;
@@ -1564,7 +1543,7 @@
       document.getElementById('edit-billing-id').value = item.id;
       document.getElementById('edit-billing-school-badge').textContent = schName;
       document.getElementById('edit-billing-cat-badge').textContent = catName;
-      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차`;
+      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차 (${(item.period-1)*4 + 1}~${item.period*4}주)`;
       document.getElementById('edit-billing-amount').value = item.amount || '';
       document.getElementById('edit-billing-current-filename').textContent = item.fileName || '등록된 파일 없음';
       document.getElementById('edit-billing-file').value = '';

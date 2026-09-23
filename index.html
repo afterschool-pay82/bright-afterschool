@@ -10,26 +10,33 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- SheetJS (Excel Engine) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Google Fonts: Gaegu & Noto Sans KR -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Noto Sans KR"', 'sans-serif'],
-            cute: ['"Gaegu"', 'cursive', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  
+  <!-- 가독성 최우선 웹폰트: 나눔스퀘어라운드 & GmarketSans -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
 
   <style>
-    body { background-color: #F8F9FA; font-family: 'Noto Sans KR', sans-serif; }
+    @font-face {
+      font-family: 'NanumSquareRound';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'GmarketSansBold';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    body {
+      background-color: #F8F9FA;
+      font-family: 'NanumSquareRound', 'Noto Sans KR', sans-serif;
+      letter-spacing: -0.02em;
+    }
+    .font-brand {
+      font-family: 'GmarketSansBold', 'NanumSquareRound', sans-serif;
+    }
     .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
     @media print {
@@ -44,14 +51,15 @@
 
   <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
-    <!-- Brand Header : (주)밝은생각 글씨 강조 / 다운로드 버튼 및 하단 문구 완전 제거 -->
-    <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/70 flex items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-2xl shadow-sm shrink-0">
-          🌟
+    <!-- Brand Header : 선명한 로고 대비 & 굵고 시원한 폰트 -->
+    <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/80 flex items-center">
+      <div class="flex items-center gap-3.5">
+        <!-- 배경과 별 아이콘 색상 대비를 강화하여 선명하게 돋보이는 로고 -->
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 text-white flex items-center justify-center font-bold text-2xl shadow-md shadow-amber-200/80 ring-2 ring-white shrink-0">
+          ⭐
         </div>
         <div>
-          <h1 class="text-2xl font-black font-cute text-stone-900 tracking-tight leading-tight">
+          <h1 class="text-[23px] font-brand text-stone-900 tracking-tight leading-none drop-shadow-2xs">
             (주)밝은생각
           </h1>
         </div>
@@ -66,18 +74,18 @@
           <span class="text-lg">🏫</span>
           <span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span>
         </div>
-        <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/80 text-amber-900 font-extrabold">0개소</span>
+        <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/90 text-amber-950 font-extrabold">0개소</span>
       </button>
 
       <!-- 기관 목록 헤더 및 추가 버튼 -->
       <div class="flex items-center justify-between px-2 mb-2">
-        <span class="text-xs font-bold text-stone-400">위탁 기관 목록</span>
+        <span class="text-xs font-bold text-stone-400 tracking-wider">위탁 기관 목록</span>
         <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> 기관 추가
         </button>
       </div>
 
-      <!-- 기관 리스트 (두 글자 뱃지 제거, 단일 이모티콘 🎒/🏡 적용) -->
+      <!-- 기관 리스트 (🎒 / 🏡 단일 이모티콘) -->
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
         <!-- JS 렌더링 -->
       </div>
@@ -87,7 +95,7 @@
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
-          <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-1.5 font-bold">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 서류 제출 현황
           </span>
           <span class="text-[11px] text-stone-400">실시간</span>
@@ -113,33 +121,33 @@
   <!-- ================= M A I N   C O N T E N T ================= -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scroll min-w-0">
     <!-- 전사 긴급 공지 띠 배너 -->
-    <div class="bg-amber-400 px-6 py-2 text-xs text-stone-900 font-bold flex items-center justify-between shadow-xs">
+    <div class="bg-amber-400 px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between shadow-xs">
       <div class="flex items-center gap-2 truncate">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase">Notice</span>
-        <span id="banner-notice-text" class="truncate">📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
       </div>
-      <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3">공지 수정</button>
+      <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold">공지 수정</button>
     </div>
 
     <!-- Top Bar -->
-    <header class="bg-white sticky top-0 z-10 px-6 py-3.5 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
+    <header class="bg-white sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span id="current-school-badge" class="px-3 py-1 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-200">
+          <span id="current-school-badge" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200">
             전체 위탁기관 통합
           </span>
           <span class="text-xs text-stone-400 font-mono" id="realtime-clock"></span>
         </div>
-        <h2 id="current-school-title" class="text-xl md:text-2xl font-bold text-stone-900 flex items-center gap-2">
+        <h2 id="current-school-title" class="text-xl md:text-2xl font-brand text-stone-900 flex items-center gap-2">
           (주)밝은생각 협업룸
         </h2>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="downloadSampleExcel()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-200">
+        <button onclick="downloadSampleExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-200">
           <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i> 표준 양식 다운
         </button>
-        <button onclick="window.print()" class="px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
           <i data-lucide="printer" class="w-4 h-4"></i> 인쇄
         </button>
       </div>
@@ -149,10 +157,10 @@
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영 협업</span>
+          <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영 협업</span>
           <span id="hero-admin-tag" class="text-xs font-bold text-stone-500">본사 총괄 모드</span>
         </div>
-        <h3 class="text-xl font-bold text-stone-900 mt-1.5" id="hero-school-name">전체 위탁기관 종합 현황</h3>
+        <h3 class="text-xl font-brand text-stone-900 mt-1.5" id="hero-school-name">전체 위탁기관 종합 현황</h3>
         <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">현장 관리자와 본사 간 청구서·출근부·결강 대체 및 업무 메모를 공유합니다.</p>
       </div>
       <div class="flex items-center gap-2">
@@ -165,8 +173,8 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs (청구서 탭 단순화) -->
-    <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[69px] z-10">
+    <!-- Navigation Tabs -->
+    <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
@@ -241,10 +249,10 @@
       <section id="view-billing" class="space-y-5">
         <!-- Sub Tabs: 강사료 vs 교재비 -->
         <div class="bg-amber-50/60 p-2 rounded-2xl border border-amber-200 inline-flex gap-2">
-          <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
+          <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
             <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 강사료 청구서
           </button>
-          <button onclick="switchBillingCategory('materials')" id="sub-billing-btn-materials" class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5">
+          <button onclick="switchBillingCategory('materials')" id="sub-billing-btn-materials" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5">
             <i data-lucide="book-open" class="w-3.5 h-3.5"></i> 교재비 청구서
           </button>
         </div>
@@ -280,7 +288,7 @@
             <div class="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-xl shadow-xs">₩</div>
             <div>
               <p class="text-xs font-bold text-stone-400" id="billing-summary-label">강사료 청구 총 합계액</p>
-              <h3 class="text-2xl font-bold text-stone-900" id="total-billing-amount">0원</h3>
+              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-amount">0원</h3>
             </div>
           </div>
           <div class="bg-white p-5 rounded-3xl border border-emerald-200 shadow-xs flex items-center gap-4">
@@ -289,7 +297,7 @@
             </div>
             <div>
               <p class="text-xs font-bold text-stone-400">등록된 청구서 수</p>
-              <h3 class="text-2xl font-bold text-stone-900" id="total-billing-count">0건</h3>
+              <h3 class="text-2xl font-brand text-stone-900" id="total-billing-count">0건</h3>
             </div>
           </div>
         </div>
@@ -327,7 +335,7 @@
         <div class="bg-gradient-to-r from-sky-50 to-indigo-50 p-5 rounded-3xl border border-sky-200 shadow-xs">
           <div class="mb-3">
             <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-sky-200 text-sky-900">결강/보강 상황실</span>
-            <h4 class="text-base font-bold text-stone-900 mt-1">시간표가 겹치지 않는 대체 강사 검색</h4>
+            <h4 class="text-base font-brand text-stone-900 mt-1">시간표가 겹치지 않는 대체 강사 검색</h4>
             <p class="text-xs text-stone-500">카톡 단톡방에 "누구 대신 가실 분?" 묻지 않고, 해당 시간 빈 강사를 실시간 매칭합니다.</p>
           </div>
 
@@ -439,7 +447,7 @@
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
             <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
               <h4 class="font-bold text-stone-900 text-sm">지출결의서 (엑셀)</h4>
-              <p class="font-bold text-emerald-700 text-sm" id="total-monthly-expense">0원</p>
+              <p class="font-brand text-emerald-700 text-base" id="total-monthly-expense">0원</p>
             </div>
             <div class="overflow-y-auto max-h-80 custom-scroll">
               <table class="w-full text-left text-xs">
@@ -991,7 +999,6 @@
       localStorage.setItem('bm_perm_' + key, JSON.stringify(val));
     }
 
-    // 12개 기관을 기본으로 영구 보존
     let savedSchools = load('schools', null);
     let schools = (savedSchools && savedSchools.length >= 10) ? savedSchools : fixedMasterSchools;
     save('schools', schools);
@@ -1057,7 +1064,7 @@
       lucide.createIcons();
     }
 
-    // ---------- 5. School List (두 글자 뱃지 제거, 단일 이모티콘 🎒/🏡) ----------
+    // ---------- 5. School List ----------
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
@@ -1266,7 +1273,7 @@
       document.getElementById('stat-missing-count').textContent = missingCount;
     }
 
-    // ---------- 7. TAB 1: BILLING (강사료 vs 교재비 탭 분리) ----------
+    // ---------- 7. TAB 1: BILLING ----------
     function switchBillingCategory(cat) {
       currentBillingCategory = cat;
       const instBtn = document.getElementById('sub-billing-btn-instructor');
@@ -1275,13 +1282,13 @@
       const tableTitle = document.getElementById('billing-table-title');
 
       if (cat === 'instructor') {
-        instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
-        matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
+        instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
+        matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
         summaryLabel.textContent = "강사료 청구 총 합계액";
         tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 강사료 청구서 내역`;
       } else {
-        matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
-        instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
+        matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
+        instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
         summaryLabel.textContent = "교재비 청구 총 합계액";
         tableTitle.textContent = `${currentQuarter}분기 ${currentPeriod}차 교재비 청구서 내역`;
       }

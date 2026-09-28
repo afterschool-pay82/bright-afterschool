@@ -157,12 +157,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="downloadSampleExcel()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition-colors border border-emerald-200">
-          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i> 표준 양식 다운
-        </button>
-        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-stone-200">
-          <i data-lucide="printer" class="w-4 h-4"></i> 인쇄
-        </button>
+        <!-- 요청하신 메인 화면 불필요한 단추(표준양식다운, 인쇄) 제거 완료 -->
       </div>
     </header>
 
@@ -189,7 +184,7 @@
           <i data-lucide="calculator" class="w-4 h-4"></i> 청구서
         </button>
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="calendar" class="w-4 h-4"></i> 과목별 강사 및 요일 시간표
+          <i data-lucide="calendar" class="w-4 h-4"></i> 월화수목금 학교별 시간표 & 강사명단
         </button>
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
@@ -337,34 +332,81 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: MASTER TEACHER SEARCH (과목별 검색 및 184명 전체 강사 명단) ================= -->
+      <!-- ================= TAB 2: SCHOOL TIMETABLE & TEACHER SEARCH (월화수목금 학교별 시간표 및 강사 검색) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
+        <!-- 제어 바 -->
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-bold">강사 및 과목 검색</span>
-              <h4 class="font-bold text-stone-900 text-base" id="timetable-header-title">전체 위탁기관 강사 및 과목 현황</h4>
+              <span class="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-bold">시간표 및 강사 관리</span>
+              <h4 class="font-bold text-stone-900 text-base" id="timetable-header-title">학교별 월화수목금 시간표 & 전체 강사 명단</h4>
             </div>
-            <p class="text-xs text-stone-500 mt-1">과목명(예: 영어, 피아노, 한자, 컴퓨터)이나 강사님 성함으로 검색하면 출강 학교와 요일이 즉시 조회됩니다.</p>
+            <p class="text-xs text-stone-500 mt-1">선택한 학교의 월~금 시간표를 직접 작성/등록하거나, 전체 강사 명단에서 과목별로 검색할 수 있습니다.</p>
           </div>
 
-          <div class="flex items-center gap-2">
-            <div class="relative">
-              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
-              <input type="text" id="teacher-search-input" oninput="renderMasterTeacherList()" placeholder="과목 또는 강사명 검색..." class="text-xs pl-9 pr-4 py-2 rounded-xl border border-stone-300 outline-none focus:border-amber-400 font-bold w-60" />
-            </div>
-            <button onclick="downloadMasterTeacherExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 전체 강사 명단 내보내기
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> + 새 시간표 강좌 등록
+            </button>
+            <button onclick="openUploadTeacherExcelModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 📁 강사 명단 엑셀 업로드
             </button>
           </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
-            <h5 class="font-bold text-stone-800 text-sm" id="search-result-count-title">등록된 강사 및 과목 현황</h5>
-            <span class="text-xs text-stone-400">교사 연락처 및 출강 요일 확인</span>
+        <!-- 1) 선택된 학교의 월~금 5단 타임테이블 그리드 -->
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+            <h5 class="font-bold text-stone-900 text-sm flex items-center gap-2" id="school-timetable-grid-title">
+              🎒 선택 기관 월~금 요일별 시간표
+            </h5>
+            <span class="text-xs text-stone-400">좌측 위탁 기관 목록에서 학교를 선택하면 해당 학교 시간표가 표시됩니다</span>
           </div>
-          <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1">
+
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5">
+            <!-- 월요일 -->
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 flex flex-col">
+              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">월요일</div>
+              <div id="day-col-월요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
+            </div>
+            <!-- 화요일 -->
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 flex flex-col">
+              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">화요일</div>
+              <div id="day-col-화요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
+            </div>
+            <!-- 수요일 -->
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 flex flex-col">
+              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">수요일</div>
+              <div id="day-col-수요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
+            </div>
+            <!-- 목요일 -->
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 flex flex-col">
+              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">목요일</div>
+              <div id="day-col-목요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
+            </div>
+            <!-- 금요일 -->
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 flex flex-col">
+              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">금요일</div>
+              <div id="day-col-금요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2) 전체 강사 및 과목 검색 섹션 -->
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-stone-100">
+            <h5 class="font-bold text-stone-800 text-sm" id="search-result-count-title">전체 위탁기관 강사 및 과목 명단</h5>
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+                <input type="text" id="teacher-search-input" oninput="renderMasterTeacherList()" placeholder="과목 또는 강사명 검색..." class="text-xs pl-9 pr-4 py-2 rounded-xl border border-stone-300 outline-none focus:border-amber-400 font-bold w-60" />
+              </div>
+              <button onclick="downloadMasterTeacherExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 명단 내보내기
+              </button>
+            </div>
+          </div>
+          <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[500px] overflow-y-auto custom-scroll pr-1">
             <!-- JS 렌더링 -->
           </div>
         </div>
@@ -535,7 +577,7 @@
         <div id="memo-list-container" class="space-y-3"></div>
       </section>
 
-      <!-- ================= TAB 6: FORMS VAULT (공용 서식 자료실 업로드/다운로드/삭제) ================= -->
+      <!-- ================= TAB 6: FORMS VAULT ================= -->
       <section id="view-vault" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -741,6 +783,86 @@
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-edit-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
           <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold">수정 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. 시간표 강좌 개별 등록 모달 (수업시간 포함) -->
+  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900">새 강좌 시간표 등록</h3>
+        <button onclick="closeModal('modal-add-schedule')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveSchedule(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">대상 기관</label>
+          <select id="sched-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">요일 선택</label>
+            <select id="sched-input-day" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none">
+              <option value="월요일">월요일</option>
+              <option value="화요일">화요일</option>
+              <option value="수요일">수요일</option>
+              <option value="목요일">목요일</option>
+              <option value="금요일">금요일</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">수업 시간</label>
+            <input type="text" id="sched-input-time" required placeholder="예: 13:40~15:00" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">과목(강좌)명</label>
+          <input type="text" id="sched-input-course" required placeholder="예: 창의 로봇코딩" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">강사명</label>
+            <input type="text" id="sched-input-teacher" required placeholder="강사 성함" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">연락처</label>
+            <input type="text" id="sched-input-phone" placeholder="010-0000-0000" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">강의실 (선택)</label>
+          <input type="text" id="sched-input-room" placeholder="예: 방과후실2" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5-1. 강사 명단 엑셀 업로드 모달 -->
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드
+        </h3>
+        <button onclick="closeModal('modal-upload-teacher-excel')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleUploadTeacherExcel(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">강사 명단 엑셀 파일 (.xlsx, .xls)</label>
+          <input type="file" id="teacher-upload-file" required accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 text-stone-600 space-y-1">
+          <p class="font-bold text-stone-800">💡 엑셀 업로드 안내</p>
+          <p>• 학교별 시트 이름과 [과목명, 강사명, 수업요일, 연락처] 열을 자동 인식하여 언제든 최신 명단으로 갱신합니다.</p>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-upload-teacher-excel')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">명단 업데이트</button>
         </div>
       </form>
     </div>
@@ -1003,9 +1125,8 @@
       { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 올려주신 엑셀 전체 184개 강사 및 과목 데이터 전수 하드코딩 반영
+    // 전체 184개 마스터 강사 명단 기본 내장
     const fullMasterTeachersData = [
-      // 경원초 (27명)
       { school: '경원초', subject: '창의과학', name: '강현정', day: '월,수', phone: '010-5386-7502' },
       { school: '경원초', subject: '피아노Ⅰ', name: '최정아', day: '월,수', phone: '010-9814-1024' },
       { school: '경원초', subject: '피아노Ⅱ', name: '최정아', day: '화,목,금', phone: '010-9814-1024' },
@@ -1053,6 +1174,17 @@
       { school: '남부초', subject: '미술', name: '조성경', day: '화', phone: '010-4288-3733' },
       { school: '남부초', subject: '배드민턴', name: '마봉희', day: '수', phone: '010-8225-3744' },
       { school: '남부초', subject: '컴퓨터', name: '홍은미', day: '목', phone: '010-6555-9785' },
+      // 새말초
+      { school: '새말초', subject: '음악줄넘기', name: '변혜진', day: '수', phone: '010-8816-6937' },
+      { school: '새말초', subject: '영어', name: '서석희', day: '월,수', phone: '010-3314-6287' },
+      { school: '새말초', subject: '피아노', name: '양주희', day: '월,수,금', phone: '010-3298-1484' },
+      { school: '새말초', subject: '미니어쳐', name: '박건희', day: '화', phone: '010-2941-1265' },
+      { school: '새말초', subject: '수학', name: '유혜자', day: '화,목', phone: '010-2718-5056' },
+      { school: '새말초', subject: '요리', name: '박은영', day: '수', phone: '010-8245-1805' },
+      { school: '새말초', subject: '집중력한자', name: '고선옥', day: '목', phone: '010-9042-8836' },
+      { school: '새말초', subject: '로봇영재', name: '이혜령', day: '목', phone: '010-5311-1025' },
+      { school: '새말초', subject: '방송댄스', name: '이다영', day: '금', phone: '010-5746-7971' },
+      { school: '새말초', subject: '배드민턴', name: '마봉희', day: '화', phone: '010-8225-3744' },
       // 문남초
       { school: '문남초', subject: '맞춤형(놀이한글)', name: '윤충', day: '월,수', phone: '010-3701-4867' },
       { school: '문남초', subject: '맞춤형(놀이수학)', name: '윤충', day: '목,금', phone: '010-3701-4867' },
@@ -1077,17 +1209,16 @@
       { school: '문남초', subject: '방과후(바둑)', name: '이연희', day: '화', phone: '010-8876-5833' },
       { school: '문남초', subject: '방과후(웹툰)', name: '고아라', day: '금', phone: '010-5745-2989' },
       { school: '문남초', subject: '방과후(요리)', name: '박경선', day: '목', phone: '010-2686-3150' },
-      // 새말초
-      { school: '새말초', subject: '음악줄넘기', name: '변혜진', day: '수', phone: '010-8816-6937' },
-      { school: '새말초', subject: '영어', name: '서석희', day: '월,수', phone: '010-3314-6287' },
-      { school: '새말초', subject: '피아노', name: '양주희', day: '월,수,금', phone: '010-3298-1484' },
-      { school: '새말초', subject: '미니어쳐', name: '박건희', day: '화', phone: '010-2941-1265' },
-      { school: '새말초', subject: '수학', name: '유혜자', day: '화,목', phone: '010-2718-5056' },
-      { school: '새말초', subject: '요리', name: '박은영', day: '수', phone: '010-8245-1805' },
-      { school: '새말초', subject: '집중력한자', name: '고선옥', day: '목', phone: '010-9042-8836' },
-      { school: '새말초', subject: '로봇영재', name: '이혜령', day: '목', phone: '010-5311-1025' },
-      { school: '새말초', subject: '방송댄스', name: '이다영', day: '금', phone: '010-5746-7971' },
-      { school: '새말초', subject: '배드민턴', name: '마봉희', day: '화', phone: '010-8225-3744' },
+      // 청량초
+      { school: '청량초', subject: '방송댄스', name: '박보교', day: '월', phone: '010-6408-2530' },
+      { school: '청량초', subject: '배드민턴', name: '마봉희', day: '월', phone: '010-8225-3744' },
+      { school: '청량초', subject: '보드게임', name: '전인자', day: '월', phone: '010-8950-9418' },
+      { school: '청량초', subject: '영어교실', name: '강미은', day: '화,목', phone: '010-6862-4843' },
+      { school: '청량초', subject: '쿠키&클레이', name: '이소영', day: '화', phone: '010-6862-4843' },
+      { school: '청량초', subject: '축구교실', name: '조은이', day: '화', phone: '010-5514-5742' },
+      { school: '청량초', subject: '음악줄넘기', name: '윤여원', day: '수', phone: '010-6731-7021' },
+      { school: '청량초', subject: '과학실험', name: '이유선', day: '목', phone: '010-6228-9395' },
+      { school: '청량초', subject: '요리교실', name: '김수연', day: '목', phone: '010-2823-7744' },
       // 서화초
       { school: '서화초', subject: '컴퓨터', name: '정소영', day: '월,목', phone: '010-2669-5853' },
       { school: '서화초', subject: '창의생명과학', name: '강희경', day: '월', phone: '010-5310-7258' },
@@ -1203,6 +1334,7 @@
 
     let billings = load('billings', []);
     let masterTeachers = load('masterTeachers', fullMasterTeachersData);
+    let schedules = load('schedules', []);
     let vaultFiles = load('vaultFiles', [
       { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
       { id: 'v_2', date: '2026-03-02', name: '강사_청렴서약서_및_계약양식.pdf' },
@@ -1265,6 +1397,7 @@
         if (t === tId) {
           v.classList.remove('hidden');
           b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm";
+          if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
@@ -1345,7 +1478,7 @@
         titleEl.textContent = `${name} 협업룸`;
         badgeEl.textContent = name;
         heroName.textContent = `${name} 위탁운영`;
-        heroDesc.textContent = `${name}의 청구서, 강사 명단 및 공문을 전용으로 공유합니다.`;
+        heroDesc.textContent = `${name}의 청구서, 시간표 및 공문을 전용으로 공유합니다.`;
         heroTag.textContent = `${name} 전담실`;
         editBtn.classList.remove('hidden');
       }
@@ -1397,7 +1530,7 @@
     }
 
     function populateSelects() {
-      const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
+      const ids = ['sched-input-school', 'exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1413,6 +1546,7 @@
 
     function renderAllViews() {
       renderBilling();
+      renderSchoolTimetableGrid();
       renderMasterTeacherList();
       renderChecklist();
       renderExpenseAndAttendance();
@@ -1786,7 +1920,161 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: MASTER TEACHER SEARCH (과목별 검색) ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID (월화수목금 학교별 시간표 및 강사 검색) ----------
+    function renderSchoolTimetableGrid() {
+      const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
+      const gridTitle = document.getElementById('school-timetable-grid-title');
+
+      if (currentSchoolId === 'all') {
+        gridTitle.innerHTML = `🎒 전체 기관 통합 시간표 <span class="text-xs font-normal text-stone-400 ml-2">(좌측에서 특정 학교를 선택하면 해당 학교 시간표가 뜹니다)</span>`;
+      } else {
+        const sch = schools.find(s => s.id === currentSchoolId);
+        gridTitle.innerHTML = `🎒 [${sch ? sch.name : '기관'}] 월~금 요일별 시간표`;
+      }
+
+      days.forEach(d => {
+        const col = document.getElementById(`day-col-${d}`);
+        if (!col) return;
+        col.innerHTML = '';
+
+        let items = schedules.filter(s => s.day === d);
+        if (currentSchoolId !== 'all') {
+          items = items.filter(s => s.schoolId === currentSchoolId);
+        }
+
+        // 시간순 정렬
+        items.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+
+        if (items.length === 0) {
+          col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
+        } else {
+          items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between";
+            card.innerHTML = `
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-extrabold text-[11px]">⏰ ${item.time}</span>
+                  <button onclick="deleteSchedule('${item.id}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+                <h5 class="font-extrabold text-stone-900 mt-1.5 text-sm">${item.course}</h5>
+                <p class="font-bold text-amber-800 mt-1">${item.teacher} 강사</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
+                <span class="font-mono">${item.room || '교실'}</span>
+                <span class="font-mono text-stone-600">${item.phone || ''}</span>
+              </div>
+            `;
+            col.appendChild(card);
+          });
+        }
+      });
+
+      renderMasterTeacherList();
+      lucide.createIcons();
+    }
+
+    function handleSaveSchedule(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('sched-input-school').value;
+      const day = document.getElementById('sched-input-day').value;
+      const time = document.getElementById('sched-input-time').value.trim();
+      const course = document.getElementById('sched-input-course').value.trim();
+      const teacher = document.getElementById('sched-input-teacher').value.trim();
+      const phone = document.getElementById('sched-input-phone').value.trim();
+      const room = document.getElementById('sched-input-room').value.trim() || '교실';
+
+      schedules.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone, room });
+      save('schedules', schedules);
+      closeModal('modal-add-schedule');
+      renderSchoolTimetableGrid();
+    }
+
+    function deleteSchedule(id) {
+      if (confirm('해당 강좌 시간표를 삭제하시겠습니까?')) {
+        schedules = schedules.filter(s => s.id !== id);
+        save('schedules', schedules);
+        renderSchoolTimetableGrid();
+      }
+    }
+
+    // 엑셀 일괄 업로드로 강사 명단 갱신
+    async function handleUploadTeacherExcel(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('teacher-upload-file');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const newParsedTeachers = [];
+
+        workbook.SheetNames.forEach(sheetName => {
+          if (sheetName.includes('첨부')) return;
+          const sheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+          if (!rows || rows.length === 0) return;
+
+          let headerIdx = -1;
+          for (let r = 0; r < Math.min(rows.length, 5); r++) {
+            const rowStr = rows[r].join(' ');
+            if (rowStr.includes('강사명') && rowStr.includes('과목')) {
+              headerIdx = r;
+              break;
+            }
+          }
+
+          if (headerIdx !== -1) {
+            const headers = rows[headerIdx];
+            let sCol = -1, nCol = -1, dCol = -1, pCol = -1, statusCol = -1;
+            headers.forEach((h, c) => {
+              const hStr = String(h).trim().replace(/\s+/g, '');
+              if (hStr.includes('과목')) sCol = c;
+              if (hStr.includes('강사명')) nCol = c;
+              if (hStr.includes('요일')) dCol = c;
+              if (hStr.includes('연락처') || hStr.includes('전화')) pCol = c;
+              if (hStr.includes('비고')) statusCol = c;
+            });
+
+            for (let r = headerIdx + 1; r < rows.length; r++) {
+              const row = rows[r];
+              const name = nCol > -1 ? String(row[nCol] || '').trim() : '';
+              const subj = sCol > -1 ? String(row[sCol] || '').trim() : '';
+              const day = dCol > -1 ? String(row[dCol] || '').trim() : '';
+              const phone = pCol > -1 ? String(row[pCol] || '').trim() : '';
+              const status = statusCol > -1 ? String(row[statusCol] || '').trim() : '';
+
+              if (name && name !== 'nan' && name !== '강사명') {
+                if (status.includes('퇴사') || status.includes('폐강')) continue;
+                newParsedTeachers.push({
+                  school: sheetName,
+                  subject: subj || '기타과목',
+                  name: name,
+                  day: day || '요일미정',
+                  phone: phone || '연락처없음'
+                });
+              }
+            }
+          }
+        });
+
+        if (newParsedTeachers.length > 0) {
+          masterTeachers = newParsedTeachers;
+          save('masterTeachers', masterTeachers);
+          closeModal('modal-upload-teacher-excel');
+          alert(`성공적으로 총 ${newParsedTeachers.length명의 강사 명단이 업데이트되었습니다!`);
+          renderMasterTeacherList();
+        } else {
+          alert('엑셀에서 올바른 강사 명단 데이터를 찾지 못했습니다.');
+        }
+      } catch (err) {
+        alert('엑셀 파일을 읽는 중 오류가 발생했습니다: ' + err);
+      }
+    }
+
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input').value.trim().toLowerCase();
       const grid = document.getElementById('master-teacher-grid');
@@ -2013,7 +2301,7 @@
       }
     }
 
-    // ---------- 10-1. TAB 6: FORMS VAULT (공용 서식 자료실 업로드/다운로드/삭제) ----------
+    // ---------- 10-1. TAB 6: FORMS VAULT ----------
     function renderVaultFiles() {
       const tbody = document.getElementById('vault-table-body');
       tbody.innerHTML = '';
@@ -2621,6 +2909,26 @@
       save('memos', memos);
       closeModal('modal-add-memo');
       renderMemos();
+    }
+
+    function openUploadTeacherExcelModal() {
+      document.getElementById('teacher-upload-file').value = '';
+      openModal('modal-upload-teacher-excel');
+    }
+
+    function openAddScheduleModal() {
+      if (currentSchoolId === 'all') {
+        alert('좌측 위탁 기관 목록에서 특정 학교(기관)를 먼저 선택해 주세요!');
+        return;
+      }
+      const sch = schools.find(s => s.id === currentSchoolId);
+      document.getElementById('sched-input-school').value = currentSchoolId;
+      document.getElementById('sched-input-time').value = '';
+      document.getElementById('sched-input-course').value = '';
+      document.getElementById('sched-input-teacher').value = '';
+      document.getElementById('sched-input-phone').value = '';
+      document.getElementById('sched-input-room').value = '';
+      openModal('modal-add-schedule');
     }
 
     // ---------- 14. SAMPLE EXCEL DOWNLOAD ----------

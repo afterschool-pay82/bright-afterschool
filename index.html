@@ -419,7 +419,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭 신설) ================= -->
+      <!-- ================= TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭) ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -827,7 +827,7 @@
     </div>
   </div>
 
-  <!-- 5. 시간표 강좌 개별 등록 모달 -->
+  <!-- 5. 시간표 강좌 개별 등록 모달 (수업시간 버튼 선택 기능 추가) -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -851,6 +851,19 @@
             <input type="text" id="sched-input-time" required placeholder="예: 13:40~15:00" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
           </div>
         </div>
+
+        <!-- 자주 쓰는 수업시간 선택 단추들 -->
+        <div>
+          <label class="block text-[11px] font-bold text-stone-400 mb-1">자주 쓰는 시간 선택 (클릭)</label>
+          <div class="flex flex-wrap gap-1">
+            <button type="button" onclick="setScheduleTime('12:50~13:30')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">12:50~13:30</button>
+            <button type="button" onclick="setScheduleTime('13:40~14:20')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">13:40~14:20</button>
+            <button type="button" onclick="setScheduleTime('13:40~15:00')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">13:40~15:00</button>
+            <button type="button" onclick="setScheduleTime('14:30~15:10')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">14:30~15:10</button>
+            <button type="button" onclick="setScheduleTime('15:10~16:30')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">15:10~16:30</button>
+          </div>
+        </div>
+
         <div>
           <label class="block font-bold text-stone-700 mb-1">과목(강좌)명</label>
           <input type="text" id="sched-input-course" required placeholder="예: 창의 로봇코딩" class="w-full p-2.5 rounded-xl border border-stone-200" />
@@ -864,10 +877,6 @@
             <label class="block font-bold text-stone-700 mb-1">연락처</label>
             <input type="text" id="sched-input-phone" placeholder="010-0000-0000" class="w-full p-2.5 rounded-xl border border-stone-200" />
           </div>
-        </div>
-        <div>
-          <label class="block font-bold text-stone-700 mb-1">강의실 (선택)</label>
-          <input type="text" id="sched-input-room" placeholder="예: 방과후실2" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -1156,7 +1165,6 @@
       { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 전체 184개 마스터 강사 명단 기본 내장
     const fullMasterTeachersData = [
       { school: '경원초', subject: '창의과학', name: '강현정', day: '월,수', phone: '010-5386-7502' },
       { school: '경원초', subject: '피아노Ⅰ', name: '최정아', day: '월,수', phone: '010-9814-1024' },
@@ -1952,7 +1960,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID & SUBSTITUTE FINDER ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE & SUBSTITUTE FINDER ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
@@ -1995,7 +2003,6 @@
                 <p class="font-bold text-amber-800 mt-1">${item.teacher} 강사</p>
               </div>
               <div class="mt-2 pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
-                <span class="font-mono">${item.room || '교실'}</span>
                 <span class="font-mono text-stone-600">${item.phone || ''}</span>
               </div>
             `;
@@ -2015,8 +2022,11 @@
       document.getElementById('sched-input-course').value = '';
       document.getElementById('sched-input-teacher').value = '';
       document.getElementById('sched-input-phone').value = '';
-      document.getElementById('sched-input-room').value = '';
       openModal('modal-add-schedule');
+    }
+
+    function setScheduleTime(timeStr) {
+      document.getElementById('sched-input-time').value = timeStr;
     }
 
     function handleSaveSchedule(e) {
@@ -2027,9 +2037,8 @@
       const course = document.getElementById('sched-input-course').value.trim();
       const teacher = document.getElementById('sched-input-teacher').value.trim();
       const phone = document.getElementById('sched-input-phone').value.trim();
-      const room = document.getElementById('sched-input-room').value.trim() || '교실';
 
-      schedules.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone, room });
+      schedules.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
       save('schedules', schedules);
       closeModal('modal-add-schedule');
       renderSchoolTimetableGrid();
@@ -2107,6 +2116,12 @@
           cardContainer.appendChild(card);
         });
       }
+    }
+
+    function copyToClipboard(text) {
+      if (!text) return;
+      navigator.clipboard.writeText(text);
+      alert('강사 연락처가 복사되었습니다: ' + text);
     }
 
     // ---------- 8-1. TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭) ----------
@@ -2254,12 +2269,6 @@
     function openUploadTeacherExcelModal() {
       document.getElementById('teacher-upload-file').value = '';
       openModal('modal-upload-teacher-excel');
-    }
-
-    function copyToClipboard(text) {
-      if (!text) return;
-      navigator.clipboard.writeText(text);
-      alert('강사 연락처가 복사되었습니다: ' + text);
     }
 
     // ---------- 9. TAB 3: EXPENSE & ATTENDANCE ----------

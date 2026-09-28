@@ -337,15 +337,15 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE (과목별 검색 및 강사 현황) ================= -->
+      <!-- ================= TAB 2: MASTER TEACHER SEARCH (과목별 검색 및 184명 강사 명단) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-bold">강사 및 과목 현황</span>
-              <h4 class="font-bold text-stone-900 text-base" id="timetable-header-title">전체 위탁기관 강사 및 과목 검색</h4>
+              <span class="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-bold">강사 및 과목 검색</span>
+              <h4 class="font-bold text-stone-900 text-base" id="timetable-header-title">전체 위탁기관 강사 및 과목 현황</h4>
             </div>
-            <p class="text-xs text-stone-500 mt-1">과목명(예: 영어, 피아노, 한자)이나 강사님 성함으로 검색하면 출강 학교와 요일이 즉시 조회됩니다.</p>
+            <p class="text-xs text-stone-500 mt-1">과목명(예: 영어, 피아노, 한자, 컴퓨터)이나 강사님 성함으로 검색하면 출강 학교와 요일이 즉시 조회됩니다.</p>
           </div>
 
           <div class="flex items-center gap-2">
@@ -359,10 +359,9 @@
           </div>
         </div>
 
-        <!-- 강사 및 과목 검색 결과 카드 그리드 -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
           <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
-            <h5 class="font-bold text-stone-800 text-sm" id="search-result-count-title">등록된 강사 및 과목 현황 (총 184건)</h5>
+            <h5 class="font-bold text-stone-800 text-sm" id="search-result-count-title">등록된 강사 및 과목 현황</h5>
             <span class="text-xs text-stone-400">교사 연락처 및 출강 요일 확인</span>
           </div>
           <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1">
@@ -991,8 +990,8 @@
       { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 기본 내장 마스터 강사 명단 (184개 전체 데이터 반영)
-    const defaultMasterTeachers = [
+    // 업로드해주신 2026년 전체 184개 마스터 강사 명단 내장 반영
+    const fullMasterTeachersData = [
       { school: '경원초', subject: '창의과학', name: '강현정', day: '월,수', phone: '010-5386-7502' },
       { school: '경원초', subject: '피아노Ⅰ', name: '최정아', day: '월,수', phone: '010-9814-1024' },
       { school: '경원초', subject: '피아노Ⅱ', name: '최정아', day: '화,목,금', phone: '010-9814-1024' },
@@ -1009,6 +1008,7 @@
       { school: '경원초', subject: '코딩Ⅱ', name: '박미경', day: '금', phone: '010-9442-3439' },
       { school: '경원초', subject: '클레이아트', name: '김은주', day: '목', phone: '010-6750-8754' },
       { school: '경원초', subject: '바이올린', name: '연정윤', day: '수', phone: '010-5298-5076' },
+      { school: '경원초', subject: '바이올린(대체)', name: '김지연', day: '수', phone: '010-4886-0104' },
       { school: '경원초', subject: '축구', name: '성준모', day: '목', phone: '010-5054-7880' },
       { school: '경원초', subject: '수학아카데미', name: '홍진선', day: '금', phone: '010-9133-1061' },
       { school: '경원초', subject: '배드민턴Ⅰ', name: '임종원', day: '화', phone: '010-2770-3348' },
@@ -1032,8 +1032,14 @@
       { school: '남부초', subject: '독서논술', name: '안덕희', day: '수', phone: '010-6401-0262' },
       { school: '남부초', subject: '보드게임(맞춤형)', name: '오연정', day: '화', phone: '010-9201-4057' },
       { school: '남부초', subject: '창의과학', name: '최희자', day: '수', phone: '010-9035-3426' },
-      { school: '남부초', subject: '멀티스포츠(이전)', name: '장정아', day: '월', phone: '010-5445-9791' },
-      // 새말초 (안내장에 나온 새말초 3분기 과목들 추가)
+      { school: '남부초', subject: '음악줄넘기', name: '윤여원', day: '금', phone: '010-6731-7021' },
+      { school: '남부초', subject: '생명과학', name: '김은아', day: '금', phone: '010-2569-2508' },
+      { school: '남부초', subject: '토탈공예(추가)', name: '김현영', day: '목', phone: '010-7363-2336' },
+      { school: '남부초', subject: '로봇과학', name: '이향미', day: '화', phone: '010-8290-6219' },
+      { school: '남부초', subject: '미술', name: '조성경', day: '화', phone: '010-4288-3733' },
+      { school: '남부초', subject: '배드민턴', name: '마봉희', day: '수', phone: '010-8225-3744' },
+      { school: '남부초', subject: '컴퓨터', name: '홍은미', day: '목', phone: '010-6555-9785' },
+      // 새말초
       { school: '새말초', subject: '음악줄넘기', name: '변혜진', day: '수', phone: '010-8816-6937' },
       { school: '새말초', subject: '영어', name: '서석희', day: '월,수', phone: '010-3314-6287' },
       { school: '새말초', subject: '피아노', name: '양주희', day: '월,수,금', phone: '010-3298-1484' },
@@ -1063,7 +1069,65 @@
       { school: '청량초', subject: '축구교실', name: '조은이', day: '화', phone: '010-5514-5742' },
       { school: '청량초', subject: '음악줄넘기', name: '윤여원', day: '수', phone: '010-6731-7021' },
       { school: '청량초', subject: '과학실험', name: '이유선', day: '목', phone: '010-6228-9395' },
-      { school: '청량초', subject: '요리교실', name: '김수연', day: '목', phone: '010-2823-7744' }
+      { school: '청량초', subject: '요리교실', name: '김수연', day: '목', phone: '010-2823-7744' },
+      // 서화초
+      { school: '서화초', subject: '컴퓨터', name: '정소영', day: '월,목', phone: '010-2669-5853' },
+      { school: '서화초', subject: '창의생명과학', name: '강희경', day: '월', phone: '010-5310-7258' },
+      { school: '서화초', subject: '스마트레고', name: '김혜연', day: '월', phone: '010-2330-9415' },
+      { school: '서화초', subject: '방송댄스', name: '홍윤지', day: '월', phone: '010-4522-3432' },
+      { school: '서화초', subject: '한자자격증', name: '김순옥', day: '화', phone: '010-8731-5342' },
+      { school: '서화초', subject: '영어', name: '정혜숙', day: '화', phone: '010-7303-0229' },
+      { school: '서화초', subject: '역사탐험대', name: '노현진', day: '화', phone: '010-2854-1555' },
+      { school: '서화초', subject: '수학아카데미', name: '박향미', day: '화', phone: '010-8191-2430' },
+      { school: '서화초', subject: '큐브', name: '송정옥', day: '수', phone: '010-3210-0590' },
+      { school: '서화초', subject: '웹툰', name: '고아라', day: '수', phone: '010-5745-2989' },
+      // 서흥초
+      { school: '서흥초', subject: '영어교실', name: '김현미', day: '월,수', phone: '010-9189-1022' },
+      { school: '서흥초', subject: '음악줄넘기', name: '김은선', day: '월', phone: '010-2313-9633' },
+      { school: '서흥초', subject: '컴퓨터', name: '최유정', day: '화,목', phone: '010-9768-0206' },
+      { school: '서흥초', subject: '미니어쳐', name: '신민정', day: '화', phone: '010-4925-2363' },
+      { school: '서흥초', subject: '방송댄스', name: '오현화', day: '화', phone: '010-3476-3713' },
+      { school: '서흥초', subject: '웹툰', name: '손인옥', day: '목', phone: '010-8868-2405' },
+      { school: '서흥초', subject: '드론항공', name: '한은주', day: '금', phone: '010-6679-9099' },
+      { school: '서흥초', subject: '요리교실', name: '박은영', day: '금', phone: '010-8245-1805' },
+      // 숭의초
+      { school: '숭의초', subject: '수학아카데미', name: '정진희', day: '화,목', phone: '010-2326-2453' },
+      { school: '숭의초', subject: '영어회화', name: '정혜숙', day: '수,금', phone: '010-7303-0229' },
+      { school: '숭의초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
+      { school: '숭의초', subject: '생명과학', name: '김은아', day: '월', phone: '010-2569-2508' },
+      { school: '숭의초', subject: '보드게임', name: '박향미', day: '월', phone: '010-8191-2430' },
+      { school: '숭의초', subject: '전자로봇', name: '이향미', day: '목', phone: '010-8290-6219' },
+      { school: '숭의초', subject: '미술과공예', name: '김현영', day: '수', phone: '010-7363-2336' },
+      { school: '숭의초', subject: '미니어쳐', name: '박건희', day: '목', phone: '010-2941-1265' },
+      { school: '숭의초', subject: '웹툰', name: '고아라', day: '금', phone: '010-5745-2989' },
+      // 연학초
+      { school: '연학초', subject: '요리부', name: '황은주', day: '월', phone: '010-8637-2048' },
+      { school: '연학초', subject: '영어부', name: '김지연', day: '월,목', phone: '010-4886-0104' },
+      { school: '연학초', subject: '축구부', name: '이경민', day: '월', phone: '010-8770-4537' },
+      { school: '연학초', subject: '피아노부', name: '김희영', day: '월,수,금', phone: '010-4931-1494' },
+      { school: '연학초', subject: '클레이아트부', name: '최세진', day: '화', phone: '010-7301-4540' },
+      { school: '연학초', subject: '수학교실부', name: '박정숙', day: '화', phone: '010-3066-8136' },
+      { school: '연학초', subject: '미술부', name: '조성경', day: '수', phone: '010-4288-3733' },
+      { school: '연학초', subject: '컴퓨터부', name: '홍은미', day: '수,금', phone: '010-6555-9785' },
+      { school: '연학초', subject: '생명과학부', name: '최희자', day: '목', phone: '010-9035-3426' },
+      // 창신초
+      { school: '창신초', subject: '컴퓨터', name: '강모래', day: '월,금', phone: '010-9923-9379' },
+      { school: '창신초', subject: '영어', name: '이매화', day: '월,수', phone: '010-2335-7510' },
+      { school: '창신초', subject: '수학', name: '박종은', day: '화,목', phone: '010-7282-9197' },
+      { school: '창신초', subject: '방송댄스', name: '심은희', day: '화', phone: '010-3335-6920' },
+      { school: '창신초', subject: '미술회화', name: '김유경', day: '수', phone: '010-6227-5943' },
+      { school: '창신초', subject: '통기타&우클렐레', name: '유현경', day: '수', phone: '010-9109-0997' },
+      { school: '창신초', subject: '일러스트', name: '허윤주', day: '목', phone: '010-9512-5879' },
+      // 창영초
+      { school: '창영초', subject: '창의생명과학', name: '신지현', day: '월', phone: '010-2705-1593' },
+      { school: '창영초', subject: '컴퓨터&코딩', name: '유진희', day: '월', phone: '010-6562-0653' },
+      { school: '창영초', subject: '음악줄넘기', name: '김은선', day: '수', phone: '010-2313-9633' },
+      { school: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
+      { school: '창영초', subject: '요리&제빵', name: '박경선', day: '금', phone: '010-2686-3150' },
+      { school: '창영초', subject: '놀이영어', name: '정혜숙', day: '월', phone: '010-7303-0229' },
+      { school: '창영초', subject: '창의미술', name: '김진애', day: '화', phone: '010-2258-4945' },
+      { school: '창영초', subject: '책놀이', name: '이선형', day: '수', phone: '010-2461-9030' },
+      { school: '창영초', subject: '놀이음악', name: '주희정', day: '목', phone: '010-7463-2110' }
     ];
 
     function load(key, fb) {
@@ -1079,7 +1143,7 @@
     save('schools', schools);
 
     let billings = load('billings', []);
-    let masterTeachers = load('masterTeachers', defaultMasterTeachers);
+    let masterTeachers = load('masterTeachers', fullMasterTeachersData);
     let expenses = load('expenses', []);
     let attendances = load('attendances', []);
     let notices = load('notices', []);
@@ -1656,7 +1720,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: MASTER TEACHER SEARCH & TIMETABLE ----------
+    // ---------- 8. TAB 2: MASTER TEACHER SEARCH (과목별 검색) ----------
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input').value.trim().toLowerCase();
       const grid = document.getElementById('master-teacher-grid');
@@ -1760,7 +1824,7 @@
               <button onclick="previewFile('${e.id}', 'pdf', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
+              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>

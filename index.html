@@ -186,6 +186,9 @@
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표 & 대체강사
         </button>
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
+          <i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 과목 검색
+        </button>
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
         </button>
@@ -332,23 +335,19 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE (월화수목금 학교별 시간표 및 대체강사) ================= -->
+      <!-- ================= TAB 2: TIMETABLE (월화수목금 학교별 시간표 & 대체강사) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
-        <!-- 상단 제어 바 -->
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2">
               <span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 관리</span>
-              <h4 class="font-bold text-stone-900 text-base" id="timetable-header-title">기관별 요일 강좌 및 강사 시간표</h4>
+              <h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">기관별 요일 강좌 및 강사 시간표</h4>
             </div>
             <p class="text-xs text-stone-500 mt-1">학교별로 요일과 구체적인 수업 시간대, 강좌명, 강사명을 등록하여 월~금 시간표를 관리합니다.</p>
           </div>
-
-          <div class="flex items-center gap-2">
-            <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
-            </button>
-          </div>
+          <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
+          </button>
         </div>
 
         <!-- 대체강사 검색 상황실 -->
@@ -416,6 +415,38 @@
               <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">금요일</div>
               <div id="day-col-금요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭 신설) ================= -->
+      <section id="view-master-teachers" class="space-y-6 hidden">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-bold">강사 및 과목 검색</span>
+              <h4 class="font-bold text-stone-900 text-base" id="search-result-count-title">전체 위탁기관 강사 및 과목 현황 (총 184건)</h4>
+            </div>
+            <p class="text-xs text-stone-500 mt-1">과목명(예: 영어, 피아노, 한자, 컴퓨터)이나 강사님 성함으로 검색하면 출강 학교와 요일이 즉시 조회됩니다.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+              <input type="text" id="teacher-search-input" oninput="renderMasterTeacherList()" placeholder="과목 또는 강사명 검색..." class="text-xs pl-9 pr-4 py-2 rounded-xl border border-stone-300 outline-none focus:border-amber-400 font-bold w-60" />
+            </div>
+            <button onclick="downloadMasterTeacherExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 명단 내보내기
+            </button>
+            <button onclick="openUploadTeacherExcelModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 강사명단 엑셀 업로드
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+          <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1">
+            <!-- JS 렌더링 -->
           </div>
         </div>
       </section>
@@ -585,7 +616,7 @@
         <div id="memo-list-container" class="space-y-3"></div>
       </section>
 
-      <!-- ================= TAB 6: FORMS VAULT (공용 서식 자료실 업로드/다운로드/삭제 가능) ================= -->
+      <!-- ================= TAB 6: FORMS VAULT ================= -->
       <section id="view-vault" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -796,7 +827,7 @@
     </div>
   </div>
 
-  <!-- 5. 시간표 강좌 개별 등록 모달 (수업시간 포함) -->
+  <!-- 5. 시간표 강좌 개별 등록 모달 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -804,7 +835,6 @@
         <button onclick="closeModal('modal-add-schedule')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveSchedule(event)" class="space-y-3 text-xs">
-        <input type="hidden" id="sched-input-school" />
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-bold text-stone-700 mb-1">요일 선택</label>
@@ -842,6 +872,28 @@
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
           <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5-1. 강사 명단 엑셀 업로드 모달 -->
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드
+        </h3>
+        <button onclick="closeModal('modal-upload-teacher-excel')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleUploadTeacherExcel(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">강사 명단 엑셀 파일 (.xlsx, .xls)</label>
+          <input type="file" id="teacher-upload-file" required accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-upload-teacher-excel')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">명단 업데이트</button>
         </div>
       </form>
     </div>
@@ -1104,6 +1156,201 @@
       { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
+    // 전체 184개 마스터 강사 명단 기본 내장
+    const fullMasterTeachersData = [
+      { school: '경원초', subject: '창의과학', name: '강현정', day: '월,수', phone: '010-5386-7502' },
+      { school: '경원초', subject: '피아노Ⅰ', name: '최정아', day: '월,수', phone: '010-9814-1024' },
+      { school: '경원초', subject: '피아노Ⅱ', name: '최정아', day: '화,목,금', phone: '010-9814-1024' },
+      { school: '경원초', subject: '방송댄스', name: '임지향', day: '월', phone: '010-6568-1716' },
+      { school: '경원초', subject: '영어회화', name: '강미은', day: '월,수', phone: '010-6862-4843' },
+      { school: '경원초', subject: '독서논술', name: '안덕희', day: '화', phone: '010-6401-0262' },
+      { school: '경원초', subject: '주산암산', name: '이지영', day: '목', phone: '010-8743-5089' },
+      { school: '경원초', subject: '창의미술', name: '허윤정', day: '화', phone: '010-6770-3624' },
+      { school: '경원초', subject: '컴퓨터', name: '정래희', day: '화,목', phone: '010-6483-9476' },
+      { school: '경원초', subject: '한자', name: '김애연', day: '수', phone: '010-2258-7696' },
+      { school: '경원초', subject: '요리', name: '김수연', day: '월', phone: '010-2823-7744' },
+      { school: '경원초', subject: '바둑체스', name: '이연희', day: '목', phone: '010-8876-5833' },
+      { school: '경원초', subject: '코딩Ⅰ', name: '서지연', day: '수', phone: '010-7101-2039' },
+      { school: '경원초', subject: '코딩Ⅱ', name: '박미경', day: '금', phone: '010-9442-3439' },
+      { school: '경원초', subject: '클레이아트', name: '김은주', day: '목', phone: '010-6750-8754' },
+      { school: '경원초', subject: '바이올린', name: '연정윤', day: '수', phone: '010-5298-5076' },
+      { school: '경원초', subject: '바이올린(대체)', name: '김지연', day: '수', phone: '010-4886-0104' },
+      { school: '경원초', subject: '축구', name: '성준모', day: '목', phone: '010-5054-7880' },
+      { school: '경원초', subject: '수학아카데미', name: '홍진선', day: '금', phone: '010-9133-1061' },
+      { school: '경원초', subject: '배드민턴Ⅰ', name: '임종원', day: '화', phone: '010-2770-3348' },
+      { school: '경원초', subject: '배드민턴Ⅱ', name: '한기범', day: '목', phone: '010-3304-4531' },
+      { school: '경원초', subject: '역사탐험대', name: '노현진', day: '수', phone: '010-2854-1555' },
+      { school: '경원초', subject: '항공드론', name: '한은주', day: '월', phone: '010-6679-9099' },
+      { school: '경원초', subject: '생명과학', name: '강희경', day: '금', phone: '010-5310-7258' },
+      { school: '경원초', subject: '토탈공예', name: '신지현', day: '금', phone: '010-2705-1593' },
+      { school: '경원초', subject: '웹툰', name: '고아라', day: '금', phone: '010-5745-2989' },
+      { school: '경원초', subject: '스마트레고', name: '김혜연', day: '화', phone: '010-2330-9415' },
+      // 남부초
+      { school: '남부초', subject: '멀티스포츠', name: '정용호', day: '월', phone: '010-5473-5135' },
+      { school: '남부초', subject: '수학교실', name: '송태윤', day: '월,목', phone: '010-3348-5068' },
+      { school: '남부초', subject: '영어교실', name: '김지연', day: '화,수', phone: '010-4886-0104' },
+      { school: '남부초', subject: '피아노', name: '김희영', day: '화,목', phone: '010-4931-1494' },
+      { school: '남부초', subject: '요리', name: '김수연', day: '화', phone: '010-2823-7744' },
+      { school: '남부초', subject: '방송댄스', name: '송가휘', day: '수', phone: '010-4037-7031' },
+      { school: '남부초', subject: '토탈공예', name: '최세진', day: '수', phone: '010-7301-4540' },
+      { school: '남부초', subject: '주산암산', name: '이은주', day: '목', phone: '010-8582-9875' },
+      { school: '남부초', subject: '바둑교실', name: '이연희', day: '금', phone: '010-8876-5833' },
+      { school: '남부초', subject: '독서논술', name: '안덕희', day: '수', phone: '010-6401-0262' },
+      { school: '남부초', subject: '보드게임(맞춤형)', name: '오연정', day: '화', phone: '010-9201-4057' },
+      { school: '남부초', subject: '창의과학', name: '최희자', day: '수', phone: '010-9035-3426' },
+      { school: '남부초', subject: '음악줄넘기', name: '윤여원', day: '금', phone: '010-6731-7021' },
+      { school: '남부초', subject: '생명과학', name: '김은아', day: '금', phone: '010-2569-2508' },
+      { school: '남부초', subject: '토탈공예(추가)', name: '김현영', day: '목', phone: '010-7363-2336' },
+      { school: '남부초', subject: '로봇과학', name: '이향미', day: '화', phone: '010-8290-6219' },
+      { school: '남부초', subject: '미술', name: '조성경', day: '화', phone: '010-4288-3733' },
+      { school: '남부초', subject: '배드민턴', name: '마봉희', day: '수', phone: '010-8225-3744' },
+      { school: '남부초', subject: '컴퓨터', name: '홍은미', day: '목', phone: '010-6555-9785' },
+      // 새말초
+      { school: '새말초', subject: '음악줄넘기', name: '변혜진', day: '수', phone: '010-8816-6937' },
+      { school: '새말초', subject: '영어', name: '서석희', day: '월,수', phone: '010-3314-6287' },
+      { school: '새말초', subject: '피아노', name: '양주희', day: '월,수,금', phone: '010-3298-1484' },
+      { school: '새말초', subject: '미니어쳐', name: '박건희', day: '화', phone: '010-2941-1265' },
+      { school: '새말초', subject: '수학', name: '유혜자', day: '화,목', phone: '010-2718-5056' },
+      { school: '새말초', subject: '요리', name: '박은영', day: '수', phone: '010-8245-1805' },
+      { school: '새말초', subject: '집중력한자', name: '고선옥', day: '목', phone: '010-9042-8836' },
+      { school: '새말초', subject: '로봇영재', name: '이혜령', day: '목', phone: '010-5311-1025' },
+      { school: '새말초', subject: '방송댄스', name: '이다영', day: '금', phone: '010-5746-7971' },
+      { school: '새말초', subject: '배드민턴', name: '마봉희', day: '화', phone: '010-8225-3744' },
+      // 문남초
+      { school: '문남초', subject: '맞춤형(놀이한글)', name: '윤충', day: '월,수', phone: '010-3701-4867' },
+      { school: '문남초', subject: '맞춤형(놀이수학)', name: '윤충', day: '목,금', phone: '010-3701-4867' },
+      { school: '문남초', subject: '맞춤형(놀이체육)', name: '최석호', day: '월,수', phone: '010-4574-3568' },
+      { school: '문남초', subject: '방과후(배드민턴)', name: '최석호', day: '금', phone: '010-4574-3568' },
+      { school: '문남초', subject: '맞춤형(그림책놀이)', name: '이현정', day: '화,목', phone: '010-9938-4983' },
+      { school: '문남초', subject: '맞춤형(보드게임_2학년)', name: '심명주', day: '화', phone: '010-9062-7894' },
+      { school: '문남초', subject: '맞춤형(보드게임_1학년)', name: '심선희', day: '금', phone: '010-2760-8090' },
+      { school: '문남초', subject: '방과후(영어회화)', name: '박미향', day: '월,수,금', phone: '010-7609-2336' },
+      { school: '문남초', subject: '방과후(축구)', name: '성준모', day: '화', phone: '010-5054-7880' },
+      { school: '문남초', subject: '방과후(컴퓨터)', name: '최유정', day: '수,금', phone: '010-9768-0206' },
+      { school: '문남초', subject: '방과후(주산암산)', name: '이은주', day: '수', phone: '010-8582-9875' },
+      { school: '문남초', subject: '맞춤형(토탈공예)', name: '최세진', day: '월', phone: '010-7301-4540' },
+      { school: '문남초', subject: '방과후(항공드론)', name: '한은주', day: '목', phone: '010-6679-9099' },
+      { school: '문남초', subject: '방과후(생명과학)', name: '김은아', day: '목', phone: '010-2569-2508' },
+      { school: '문남초', subject: '방과후(방송댄스)', name: '송가휘', day: '월', phone: '010-4037-7031' },
+      { school: '문남초', subject: '방과후(우클렐레)', name: '유현경', day: '목', phone: '010-9109-0997' },
+      { school: '문남초', subject: '방과후(중국어)', name: '박성미', day: '화', phone: '010-4583-6787' },
+      { school: '문남초', subject: '방과후(로봇)', name: '이향미', day: '금', phone: '010-8290-6219' },
+      { school: '문남초', subject: '방과후(미술)', name: '김진애', day: '금', phone: '010-2258-4945' },
+      { school: '문남초', subject: '방과후(음악줄넘기)', name: '윤여원', day: '화', phone: '010-6731-7021' },
+      { school: '문남초', subject: '방과후(바둑)', name: '이연희', day: '화', phone: '010-8876-5833' },
+      { school: '문남초', subject: '방과후(웹툰)', name: '고아라', day: '금', phone: '010-5745-2989' },
+      { school: '문남초', subject: '방과후(요리)', name: '박경선', day: '목', phone: '010-2686-3150' },
+      // 청량초
+      { school: '청량초', subject: '방송댄스', name: '박보교', day: '월', phone: '010-6408-2530' },
+      { school: '청량초', subject: '배드민턴', name: '마봉희', day: '월', phone: '010-8225-3744' },
+      { school: '청량초', subject: '보드게임', name: '전인자', day: '월', phone: '010-8950-9418' },
+      { school: '청량초', subject: '영어교실', name: '강미은', day: '화,목', phone: '010-6862-4843' },
+      { school: '청량초', subject: '쿠키&클레이', name: '이소영', day: '화', phone: '010-6862-4843' },
+      { school: '청량초', subject: '축구교실', name: '조은이', day: '화', phone: '010-5514-5742' },
+      { school: '청량초', subject: '음악줄넘기', name: '윤여원', day: '수', phone: '010-6731-7021' },
+      { school: '청량초', subject: '과학실험', name: '이유선', day: '목', phone: '010-6228-9395' },
+      { school: '청량초', subject: '요리교실', name: '김수연', day: '목', phone: '010-2823-7744' },
+      // 서화초
+      { school: '서화초', subject: '컴퓨터', name: '정소영', day: '월,목', phone: '010-2669-5853' },
+      { school: '서화초', subject: '창의생명과학', name: '강희경', day: '월', phone: '010-5310-7258' },
+      { school: '서화초', subject: '스마트레고', name: '김혜연', day: '월', phone: '010-2330-9415' },
+      { school: '서화초', subject: '방송댄스', name: '홍윤지', day: '월', phone: '010-4522-3432' },
+      { school: '서화초', subject: '한자자격증', name: '김순옥', day: '화', phone: '010-8731-5342' },
+      { school: '서화초', subject: '영어', name: '정혜숙', day: '화', phone: '010-7303-0229' },
+      { school: '서화초', subject: '역사탐험대', name: '노현진', day: '화', phone: '010-2854-1555' },
+      { school: '서화초', subject: '수학아카데미', name: '박향미', day: '화', phone: '010-8191-2430' },
+      { school: '서화초', subject: '큐브', name: '송정옥', day: '수', phone: '010-3210-0590' },
+      { school: '서화초', subject: '웹툰', name: '고아라', day: '수', phone: '010-5745-2989' },
+      { school: '서화초', subject: '미술', name: '김유경', day: '목', phone: '010-6227-5943' },
+      { school: '서화초', subject: '토탈공예', name: '신지현', day: '목', phone: '010-2705-1593' },
+      { school: '서화초', subject: '음악줄넘기', name: '김은선', day: '금', phone: '010-2313-9633' },
+      { school: '서화초', subject: '요리', name: '박경선', day: '금', phone: '010-2686-3150' },
+      { school: '서화초', subject: '바둑', name: '이연희', day: '수', phone: '010-8876-5833' },
+      { school: '서화초', subject: '주산암산', name: '이은주', day: '수', phone: '010-8582-9875' },
+      { school: '서화초', subject: '과학실험', name: '이유선', day: '금', phone: '010-6228-9395' },
+      { school: '서화초', subject: '로봇과학', name: '김유정', day: '목', phone: '010-5063-5747' },
+      { school: '서화초', subject: '축구', name: '조은이', day: '금', phone: '010-5514-5742' },
+      { school: '서화초', subject: '피아노', name: '양희', day: '화,목', phone: '010-9814-1024' },
+      { school: '서화초', subject: '클레이아트', name: '최세진', day: '수', phone: '010-7301-4540' },
+      { school: '서화초', subject: '한자', name: '고옥', day: '금', phone: '010-9042-8836' },
+      // 서흥초
+      { school: '서흥초', subject: '영어교실', name: '김현미', day: '월,수', phone: '010-9189-1022' },
+      { school: '서흥초', subject: '음악줄넘기', name: '김은선', day: '월', phone: '010-2313-9633' },
+      { school: '서흥초', subject: '컴퓨터', name: '최유정', day: '화,목', phone: '010-9768-0206' },
+      { school: '서흥초', subject: '미니어쳐', name: '신민정', day: '화', phone: '010-4925-2363' },
+      { school: '서흥초', subject: '방송댄스', name: '오현화', day: '화', phone: '010-3476-3713' },
+      { school: '서흥초', subject: '웹툰', name: '손인옥', day: '목', phone: '010-8868-2405' },
+      { school: '서흥초', subject: '드론항공', name: '한은주', day: '금', phone: '010-6679-9099' },
+      { school: '서흥초', subject: '요리교실', name: '박은영', day: '금', phone: '010-8245-1805' },
+      { school: '서흥초', subject: '늘봄아트', name: '이현정', day: '월', phone: '010-9938-4983' },
+      { school: '서흥초', subject: '토탈공예', name: '최세진', day: '목', phone: '010-7301-4540' },
+      { school: '서흥초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
+      { school: '서흥초', subject: '바둑', name: '이연희', day: '목', phone: '010-8876-5833' },
+      { school: '서흥초', subject: '생명과학', name: '김은아', day: '수', phone: '010-2569-2508' },
+      { school: '서흥초', subject: '창의미술', name: '김진애', day: '수', phone: '010-2258-4945' },
+      { school: '서흥초', subject: '놀이체육', name: '강재건', day: '목', phone: '010-9136-8467' },
+      { school: '서흥초', subject: '우클렐레', name: '유현경', day: '금', phone: '010-9109-0997' },
+      // 숭의초
+      { school: '숭의초', subject: '수학아카데미', name: '정진희', day: '화,목', phone: '010-2326-2453' },
+      { school: '숭의초', subject: '영어회화', name: '정혜숙', day: '수,금', phone: '010-7303-0229' },
+      { school: '숭의초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
+      { school: '숭의초', subject: '생명과학', name: '김은아', day: '월', phone: '010-2569-2508' },
+      { school: '숭의초', subject: '보드게임', name: '박향미', day: '월', phone: '010-8191-2430' },
+      { school: '숭의초', subject: '전자로봇', name: '이향미', day: '목', phone: '010-8290-6219' },
+      { school: '숭의초', subject: '미술과공예', name: '김현영', day: '수', phone: '010-7363-2336' },
+      { school: '숭의초', subject: '미니어쳐', name: '박건희', day: '목', phone: '010-2941-1265' },
+      { school: '숭의초', subject: '웹툰', name: '고아라', day: '금', phone: '010-5745-2989' },
+      { school: '숭의초', subject: '아동요리', name: '김수연', day: '수', phone: '010-2823-7744' },
+      { school: '숭의초', subject: '방송댄스', name: '박보교', day: '화', phone: '010-6408-2530' },
+      { school: '숭의초', subject: '한자&중국어', name: '박성미', day: '화', phone: '010-4583-6787' },
+      { school: '숭의초', subject: '피구', name: '정용호', day: '목', phone: '010-5473-5135' },
+      { school: '숭의초', subject: '컴퓨터', name: '정래희', day: '금', phone: '010-6483-9476' },
+      { school: '숭의초', subject: '토탈공예', name: '신지현', day: '수', phone: '010-2705-1593' },
+      { school: '숭의초', subject: '배드민턴', name: '마봉희', day: '금', phone: '010-8225-3744' },
+      { school: '숭의초', subject: '클레이아트', name: '최세진', day: '월', phone: '010-7301-4540' },
+      { school: '숭의초', subject: '바이올린', name: '주희정', day: '금', phone: '010-7463-2110' },
+      { school: '숭의초', subject: '드론', name: '한은주', day: '화', phone: '010-6679-9099' },
+      // 연학초
+      { school: '연학초', subject: '요리부', name: '황은주', day: '월', phone: '010-8637-2048' },
+      { school: '연학초', subject: '영어부', name: '김지연', day: '월,목', phone: '010-4886-0104' },
+      { school: '연학초', subject: '축구부', name: '이경민', day: '월', phone: '010-8770-4537' },
+      { school: '연학초', subject: '피아노부', name: '김희영', day: '월,수,금', phone: '010-4931-1494' },
+      { school: '연학초', subject: '클레이아트부', name: '최세진', day: '화', phone: '010-7301-4540' },
+      { school: '연학초', subject: '수학교실부', name: '박정숙', day: '화', phone: '010-3066-8136' },
+      { school: '연학초', subject: '미술부', name: '조성경', day: '수', phone: '010-4288-3733' },
+      { school: '연학초', subject: '컴퓨터부', name: '홍은미', day: '수,금', phone: '010-6555-9785' },
+      { school: '연학초', subject: '생명과학부', name: '최희자', day: '목', phone: '010-9035-3426' },
+      { school: '연학초', subject: '음악줄넘기부', name: '김은선', day: '화', phone: '010-2313-9633' },
+      { school: '연학초', subject: '로봇과학부', name: '이향미', day: '금', phone: '010-8290-6219' },
+      { school: '연학초', subject: 'K팝댄스부', name: '이다영', day: '목', phone: '010-5746-7971' },
+      { school: '연학초', subject: '독서논술부', name: '안덕희', day: '금', phone: '010-6401-0262' },
+      // 창신초
+      { school: '창신초', subject: '컴퓨터', name: '강모래', day: '월,금', phone: '010-9923-9379' },
+      { school: '창신초', subject: '영어', name: '이매화', day: '월,수', phone: '010-2335-7510' },
+      { school: '창신초', subject: '수학', name: '박종은', day: '화,목', phone: '010-7282-9197' },
+      { school: '창신초', subject: '방송댄스', name: '심은희', day: '화', phone: '010-3335-6920' },
+      { school: '창신초', subject: '미술회화', name: '김유경', day: '수', phone: '010-6227-5943' },
+      { school: '창신초', subject: '통기타&우클렐레', name: '유현경', day: '수', phone: '010-9109-0997' },
+      { school: '창신초', subject: '일러스트', name: '허윤주', day: '목', phone: '010-9512-5879' },
+      { school: '창신초', subject: '생명과학', name: '강희경', day: '금', phone: '010-5310-7258' },
+      { school: '창신초', subject: '역사탐험대', name: '노현진', day: '금', phone: '010-2854-1555' },
+      { school: '창신초', subject: '토탈공예', name: '신지현', day: '금', phone: '010-2705-1593' },
+      // 창영초
+      { school: '창영초', subject: '창의생명과학', name: '신지현', day: '월', phone: '010-2705-1593' },
+      { school: '창영초', subject: '컴퓨터&코딩', name: '유진희', day: '월', phone: '010-6562-0653' },
+      { school: '창영초', subject: '음악줄넘기', name: '김은선', day: '수', phone: '010-2313-9633' },
+      { school: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
+      { school: '창영초', subject: '요리&제빵', name: '박경선', day: '금', phone: '010-2686-3150' },
+      { school: '창영초', subject: '놀이영어', name: '정혜숙', day: '월', phone: '010-7303-0229' },
+      { school: '창영초', subject: '창의미술', name: '김진애', day: '화', phone: '010-2258-4945' },
+      { school: '창영초', subject: '책놀이', name: '이선형', day: '수', phone: '010-2461-9030' },
+      { school: '창영초', subject: '놀이음악', name: '주희정', day: '목', phone: '010-7463-2110' },
+      { school: '창영초', subject: '놀이체육', name: '강재건', day: '금', phone: '010-9136-8467' },
+      { school: '창영초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
+      { school: '창영초', subject: '토탈공예', name: '최세진', day: '목', phone: '010-7301-4540' },
+      { school: '창영초', subject: '바이올린', name: '연정윤', day: '화', phone: '010-5298-5076' }
+    ];
+
     function load(key, fb) {
       const v = localStorage.getItem('bm_perm_' + key);
       return v ? JSON.parse(v) : fb;
@@ -1117,6 +1364,7 @@
     save('schools', schools);
 
     let billings = load('billings', []);
+    let masterTeachers = load('masterTeachers', fullMasterTeachersData);
     let schedules = load('schedules', []);
     let vaultFiles = load('vaultFiles', [
       { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
@@ -1173,7 +1421,7 @@
 
     // ---------- 4. Tab Switcher ----------
     function switchTab(tId) {
-      ['checklist', 'billing', 'timetable', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
+      ['checklist', 'billing', 'timetable', 'master-teachers', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
         const v = document.getElementById(`view-${t}`);
         const b = document.getElementById(`tab-btn-${t}`);
         if (!v || !b) return;
@@ -1181,6 +1429,7 @@
           v.classList.remove('hidden');
           b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm";
           if (t === 'timetable') renderSchoolTimetableGrid();
+          if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
@@ -1330,6 +1579,7 @@
     function renderAllViews() {
       renderBilling();
       renderSchoolTimetableGrid();
+      renderMasterTeacherList();
       renderChecklist();
       renderExpenseAndAttendance();
       renderNotices();
@@ -1702,7 +1952,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE & SUBSTITUTE FINDER ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID & SUBSTITUTE FINDER ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
@@ -1731,7 +1981,6 @@
           col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
         } else {
           items.forEach(item => {
-            const sch = schools.find(s => s.id === item.schoolId);
             const card = document.createElement('div');
             card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between";
             card.innerHTML = `
@@ -1762,7 +2011,6 @@
         alert('좌측 위탁 기관 목록에서 특정 학교(기관)를 먼저 선택해 주세요!');
         return;
       }
-      document.getElementById('sched-input-school').value = currentSchoolId;
       document.getElementById('sched-input-time').value = '';
       document.getElementById('sched-input-course').value = '';
       document.getElementById('sched-input-teacher').value = '';
@@ -1773,7 +2021,7 @@
 
     function handleSaveSchedule(e) {
       e.preventDefault();
-      const schoolId = document.getElementById('sched-input-school').value;
+      const schoolId = currentSchoolId;
       const day = document.getElementById('sched-input-day').value;
       const time = document.getElementById('sched-input-time').value.trim();
       const course = document.getElementById('sched-input-course').value.trim();
@@ -1861,6 +2109,153 @@
       }
     }
 
+    // ---------- 8-1. TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭) ----------
+    function renderMasterTeacherList() {
+      const query = document.getElementById('teacher-search-input').value.trim().toLowerCase();
+      const grid = document.getElementById('master-teacher-grid');
+      const countTitle = document.getElementById('search-result-count-title');
+      grid.innerHTML = '';
+
+      let list = masterTeachers;
+      if (currentSchoolId !== 'all') {
+        const sch = schools.find(s => s.id === currentSchoolId);
+        if (sch) list = list.filter(t => t.school === sch.name);
+      }
+
+      if (query) {
+        list = list.filter(t => 
+          t.subject.toLowerCase().includes(query) || 
+          t.name.toLowerCase().includes(query) || 
+          t.school.toLowerCase().includes(query) ||
+          t.day.toLowerCase().includes(query)
+        );
+      }
+
+      countTitle.textContent = `전체 위탁기관 강사 및 과목 현황 (총 ${list.length}건)`;
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">검색 결과가 없습니다. 과목명이나 강사 성함을 다시 확인해 보세요.</div>`;
+        return;
+      }
+
+      list.forEach(t => {
+        const card = document.createElement('div');
+        card.className = "bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all flex flex-col justify-between text-xs";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[11px]">${t.school}</span>
+              <span class="font-mono text-stone-500 font-bold">${t.day}요일</span>
+            </div>
+            <h5 class="font-black text-stone-900 text-sm mt-1">${t.subject}</h5>
+            <p class="font-bold text-amber-800 mt-0.5">${t.name} 강사님</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between">
+            <span class="font-mono text-stone-600 font-semibold">${t.phone || '연락처 없음'}</span>
+            <button onclick="copyToClipboard('${t.phone}')" class="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 rounded-lg text-[11px] font-bold border border-stone-200">
+              번호 복사
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    async function handleUploadTeacherExcel(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('teacher-upload-file');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const newParsedTeachers = [];
+
+        workbook.SheetNames.forEach(sheetName => {
+          if (sheetName.includes('첨부')) return;
+          const sheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+          if (!rows || rows.length === 0) return;
+
+          let headerIdx = -1;
+          for (let r = 0; r < Math.min(rows.length, 5); r++) {
+            const rowStr = rows[r].join(' ');
+            if (rowStr.includes('강사명') && rowStr.includes('과목')) {
+              headerIdx = r;
+              break;
+            }
+          }
+
+          if (headerIdx !== -1) {
+            const headers = rows[headerIdx];
+            let sCol = -1, nCol = -1, dCol = -1, pCol = -1, statusCol = -1;
+            headers.forEach((h, c) => {
+              const hStr = String(h).trim().replace(/\s+/g, '');
+              if (hStr.includes('과목')) sCol = c;
+              if (hStr.includes('강사명')) nCol = c;
+              if (hStr.includes('요일')) dCol = c;
+              if (hStr.includes('연락처') || hStr.includes('전화')) pCol = c;
+              if (hStr.includes('비고')) statusCol = c;
+            });
+
+            for (let r = headerIdx + 1; r < rows.length; r++) {
+              const row = rows[r];
+              const name = nCol > -1 ? String(row[nCol] || '').trim() : '';
+              const subj = sCol > -1 ? String(row[sCol] || '').trim() : '';
+              const day = dCol > -1 ? String(row[dCol] || '').trim() : '';
+              const phone = pCol > -1 ? String(row[pCol] || '').trim() : '';
+              const status = statusCol > -1 ? String(row[statusCol] || '').trim() : '';
+
+              if (name && name !== 'nan' && name !== '강사명') {
+                if (status.includes('퇴사') || status.includes('폐강')) continue;
+                newParsedTeachers.push({
+                  school: sheetName,
+                  subject: subj || '기타과목',
+                  name: name,
+                  day: day || '요일미정',
+                  phone: phone || '연락처없음'
+                });
+              }
+            }
+          }
+        });
+
+        if (newParsedTeachers.length > 0) {
+          masterTeachers = newParsedTeachers;
+          save('masterTeachers', masterTeachers);
+          closeModal('modal-upload-teacher-excel');
+          alert(`성공적으로 총 ${newParsedTeachers.length}명의 강사 명단이 업데이트되었습니다!`);
+          renderMasterTeacherList();
+        } else {
+          alert('엑셀에서 올바른 강사 명단 데이터를 찾지 못했습니다.');
+        }
+      } catch (err) {
+        alert('엑셀 파일을 읽는 중 오류가 발생했습니다: ' + err);
+      }
+    }
+
+    function downloadMasterTeacherExcel() {
+      const wb = XLSX.utils.book_new();
+      const exportData = masterTeachers.map((t, idx) => ({
+        '순번': idx + 1,
+        '학교명': t.school,
+        '과목명': t.subject,
+        '강사명': t.name,
+        '수업요일': t.day,
+        '연락처': t.phone
+      }));
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      XLSX.utils.book_append_sheet(wb, ws, '전체강사명단');
+      XLSX.writeFile(wb, '밝은생각_전체강사명단.xlsx');
+    }
+
+    function openUploadTeacherExcelModal() {
+      document.getElementById('teacher-upload-file').value = '';
+      openModal('modal-upload-teacher-excel');
+    }
+
     function copyToClipboard(text) {
       if (!text) return;
       navigator.clipboard.writeText(text);
@@ -1928,7 +2323,7 @@
               <button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
+              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>

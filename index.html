@@ -827,7 +827,7 @@
     </div>
   </div>
 
-  <!-- 5. 시간표 강좌 개별 등록 모달 (수업시간 버튼 선택 기능 추가) -->
+  <!-- 5. 시간표 강좌 개별 등록 모달 (탭형 드롭다운 및 시간 직접 등록 지원) -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -852,15 +852,16 @@
           </div>
         </div>
 
-        <!-- 자주 쓰는 수업시간 선택 단추들 -->
-        <div>
-          <label class="block text-[11px] font-bold text-stone-400 mb-1">자주 쓰는 시간 선택 (클릭)</label>
-          <div class="flex flex-wrap gap-1">
-            <button type="button" onclick="setScheduleTime('12:50~13:30')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">12:50~13:30</button>
-            <button type="button" onclick="setScheduleTime('13:40~14:20')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">13:40~14:20</button>
-            <button type="button" onclick="setScheduleTime('13:40~15:00')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">13:40~15:00</button>
-            <button type="button" onclick="setScheduleTime('14:30~15:10')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">14:30~15:10</button>
-            <button type="button" onclick="setScheduleTime('15:10~16:30')" class="px-2 py-1 bg-stone-100 hover:bg-amber-100 text-stone-700 rounded-lg text-[10px] font-bold">15:10~16:30</button>
+        <!-- 자주 쓰는 시간 선택 드롭다운 및 추가 버튼 -->
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+          <label class="block font-bold text-stone-700">⏰ 자주 쓰는 시간 선택 (탭)</label>
+          <div class="flex gap-2">
+            <select id="preset-time-select" onchange="onPresetTimeChange(this.value)" class="flex-1 p-2 rounded-xl border border-stone-300 bg-white font-bold outline-none">
+              <option value="">-- 시간 선택하기 --</option>
+            </select>
+            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0">
+              + 새 시간 추가
+            </button>
           </div>
         </div>
 
@@ -1374,6 +1375,7 @@
     let billings = load('billings', []);
     let masterTeachers = load('masterTeachers', fullMasterTeachersData);
     let schedules = load('schedules', []);
+    let presetTimes = load('presetTimes', ['12:50~13:30', '13:40~14:20', '13:40~15:00', '14:30~15:10', '15:10~16:30']);
     let vaultFiles = load('vaultFiles', [
       { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
       { id: 'v_2', date: '2026-03-02', name: '강사_청렴서약서_및_계약양식.pdf' },
@@ -1409,6 +1411,7 @@
 
       renderSchoolList();
       renderAllViews();
+      populatePresetTimesDropdown();
     });
 
     function updateClock() {
@@ -2002,7 +2005,7 @@
                 <h5 class="font-extrabold text-stone-900 mt-1.5 text-sm">${item.course}</h5>
                 <p class="font-bold text-amber-800 mt-1">${item.teacher} 강사</p>
               </div>
-              <div class="mt-2 pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
+              <div class="mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-400">
                 <span class="font-mono text-stone-600">${item.phone || ''}</span>
               </div>
             `;
@@ -2011,6 +2014,36 @@
         }
       });
       lucide.createIcons();
+    }
+
+    function populatePresetTimesDropdown() {
+      const select = document.getElementById('preset-time-select');
+      if (!select) return;
+      select.innerHTML = '<option value="">-- 시간 선택하기 --</option>';
+      presetTimes.forEach(pt => {
+        const opt = document.createElement('option');
+        opt.value = pt;
+        opt.textContent = pt;
+        select.appendChild(opt);
+      });
+    }
+
+    function onPresetTimeChange(val) {
+      if (!val) return;
+      document.getElementById('sched-input-time').value = val;
+    }
+
+    function addNewPresetTime() {
+      const newTime = prompt('새로 추가할 수업 시간대를 입력하세요 (예: 15:30~16:50):');
+      if (newTime && newTime.trim()) {
+        const trimmed = newTime.trim();
+        if (!presetTimes.includes(trimmed)) {
+          presetTimes.push(trimmed);
+          save('presetTimes', presetTimes);
+          populatePresetTimesDropdown();
+          document.getElementById('sched-input-time').value = trimmed;
+        }
+      }
     }
 
     function openAddScheduleModal() {
@@ -2022,11 +2055,8 @@
       document.getElementById('sched-input-course').value = '';
       document.getElementById('sched-input-teacher').value = '';
       document.getElementById('sched-input-phone').value = '';
+      populatePresetTimesDropdown();
       openModal('modal-add-schedule');
-    }
-
-    function setScheduleTime(timeStr) {
-      document.getElementById('sched-input-time').value = timeStr;
     }
 
     function handleSaveSchedule(e) {
@@ -2124,7 +2154,7 @@
       alert('강사 연락처가 복사되었습니다: ' + text);
     }
 
-    // ---------- 8-1. TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭) ----------
+    // ---------- 8-1. TAB 2-1: MASTER TEACHERS ----------
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input').value.trim().toLowerCase();
       const grid = document.getElementById('master-teacher-grid');
@@ -2332,7 +2362,7 @@
               <button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
+              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>

@@ -337,7 +337,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: MASTER TEACHER SEARCH (과목별 검색 및 184명 강사 명단) ================= -->
+      <!-- ================= TAB 2: MASTER TEACHER SEARCH (과목별 검색 및 184명 전체 강사 현황) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -535,40 +535,31 @@
         <div id="memo-list-container" class="space-y-3"></div>
       </section>
 
-      <!-- ================= TAB 6: FORMS VAULT ================= -->
+      <!-- ================= TAB 6: FORMS VAULT (공용 서식 자료실 업로드/다운로드/삭제 가능) ================= -->
       <section id="view-vault" class="space-y-5 hidden">
-        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
-          <h4 class="font-bold text-stone-900 text-base">공용 행정 서식 자료실</h4>
-          <p class="text-xs text-stone-400 mt-0.5">각 기관 관리자가 언제든 내려받아 쓸 수 있는 공식 표준 양식 모음입니다.</p>
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h4 class="font-bold text-stone-900 text-base">공용 행정 서식 자료실</h4>
+            <p class="text-xs text-stone-400 mt-0.5">각 기관 관리자가 언제든 내려받아 쓸 수 있는 공식 표준 양식 모음입니다.</p>
+          </div>
+          <button onclick="openAddVaultModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="file-up" class="w-3.5 h-3.5"></i> 공용 서식 파일 올리기
+          </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-emerald-100 text-emerald-800 inline-block mb-3"><i data-lucide="file-spreadsheet" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">4주 청구서 & 출근부 표준 서식</h5>
-              <p class="text-xs text-stone-500 mt-1">시수 계산 및 4주 정산 수식이 포함된 공식 엑셀 템플릿입니다.</p>
-            </div>
-            <button onclick="downloadSampleExcel()" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">서식 다운로드 (.xlsx)</button>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-sky-100 text-sky-800 inline-block mb-3"><i data-lucide="file-text" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">강사 청렴서약서 및 계약 양식</h5>
-              <p class="text-xs text-stone-500 mt-1">학교 및 센터 행정실 제출용 필수 강사 구비 서류 모음 PDF 양식입니다.</p>
-            </div>
-            <button onclick="alert('표준 강사 서약서 양식이 준비되었습니다.')" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">양식 다운로드 (.pdf)</button>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-            <div>
-              <span class="p-2 rounded-xl bg-rose-100 text-rose-800 inline-block mb-3"><i data-lucide="alert-triangle" class="w-5 h-5"></i></span>
-              <h5 class="font-bold text-stone-900 text-sm">안전사고 보고서 & 결강확인서</h5>
-              <p class="text-xs text-stone-500 mt-1">긴급 상황 및 결강·보강 시 본사에 제출하는 표준 보고 양식입니다.</p>
-            </div>
-            <button onclick="alert('안전사고 보고서 양식이 준비되었습니다.')" class="mt-4 w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">서식 다운로드 (.hwp)</button>
-          </div>
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-stone-50 text-stone-500 font-bold border-b border-stone-200">
+              <tr>
+                <th class="py-3 px-4">등록일</th>
+                <th class="py-3 px-4">서식 파일명</th>
+                <th class="py-3 px-3 text-center">미리보기</th>
+                <th class="py-3 px-3 text-center">다운로드</th>
+                <th class="py-3 px-3 text-center">삭제</th>
+              </tr>
+            </thead>
+            <tbody id="vault-table-body" class="divide-y divide-stone-100"></tbody>
+          </table>
         </div>
       </section>
 
@@ -877,6 +868,28 @@
     </div>
   </div>
 
+  <!-- 8-1. 공용 서식 파일 업로드 모달 (신규 추가) -->
+  <div id="modal-add-vault" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 공용 서식 파일 올리기
+        </h3>
+        <button onclick="closeModal('modal-add-vault')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form onsubmit="handleSaveVault(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">서식 파일 첨부 (.xlsx, .pdf, .hwp 등)</label>
+          <input type="file" id="vault-input-file" required class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-vault')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">업로드</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 9. 업무 메모 작성 모달 -->
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
@@ -990,7 +1003,7 @@
       { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 업로드해주신 2026년 전체 184개 마스터 강사 명단 내장 반영
+    // 업로드해주신 2026년 전체 184개 마스터 강사 명단 전수 반영
     const fullMasterTeachersData = [
       { school: '경원초', subject: '창의과학', name: '강현정', day: '월,수', phone: '010-5386-7502' },
       { school: '경원초', subject: '피아노Ⅰ', name: '최정아', day: '월,수', phone: '010-9814-1024' },
@@ -1144,6 +1157,11 @@
 
     let billings = load('billings', []);
     let masterTeachers = load('masterTeachers', fullMasterTeachersData);
+    let vaultFiles = load('vaultFiles', [
+      { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
+      { id: 'v_2', date: '2026-03-02', name: '강사_청렴서약서_및_계약양식.pdf' },
+      { id: 'v_3', date: '2026-03-02', name: '안전사고_보고서_및_결강확인서.hwp' }
+    ]);
     let expenses = load('expenses', []);
     let attendances = load('attendances', []);
     let notices = load('notices', []);
@@ -1201,6 +1219,7 @@
         if (t === tId) {
           v.classList.remove('hidden');
           b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm";
+          if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
           b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200";
@@ -1353,6 +1372,7 @@
       renderExpenseAndAttendance();
       renderNotices();
       renderMemos();
+      renderVaultFiles();
     }
 
     // ---------- 6. TAB 0: CHECKLIST BOARD ----------
@@ -1944,6 +1964,70 @@
         save('notices', notices);
         renderNotices();
         renderChecklist();
+      }
+    }
+
+    // ---------- 10-1. TAB 6: FORMS VAULT (공용 서식 자료실 업로드/다운로드/삭제) ----------
+    function renderVaultFiles() {
+      const tbody = document.getElementById('vault-table-body');
+      tbody.innerHTML = '';
+
+      if (vaultFiles.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-stone-400">등록된 공용 서식이 없습니다. [+ 공용 서식 파일 올리기]를 눌러보세요.</td></tr>`;
+      } else {
+        vaultFiles.forEach(f => {
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-amber-50/20";
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono text-stone-500">${f.date}</td>
+            <td class="py-3 px-4 font-bold text-stone-900">${f.name}</td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="previewFile('${f.id}', '${f.name.endsWith('.pdf') ? 'pdf' : 'excel'}', '${f.name}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
+                미리보기
+              </button>
+            </td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="downloadFileFromDB('${f.id}', '${f.name}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
+                다운
+              </button>
+            </td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="deleteVaultFile('${f.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+      lucide.createIcons();
+    }
+
+    function openAddVaultModal() {
+      document.getElementById('vault-input-file').value = '';
+      openModal('modal-add-vault');
+    }
+
+    async function handleSaveVault(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('vault-input-file');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const fileId = 'v_' + Date.now();
+      const today = new Date().toISOString().split('T')[0];
+
+      await storeFile(fileId, file);
+
+      vaultFiles.push({ id: fileId, date: today, name: file.name });
+      save('vaultFiles', vaultFiles);
+      closeModal('modal-add-vault');
+      renderVaultFiles();
+    }
+
+    function deleteVaultFile(id) {
+      if (confirm('해당 공용 서식 파일을 삭제하시겠습니까?')) {
+        vaultFiles = vaultFiles.filter(f => f.id !== id);
+        save('vaultFiles', vaultFiles);
+        renderVaultFiles();
       }
     }
 

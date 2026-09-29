@@ -11,6 +11,10 @@
   <!-- SheetJS (Excel Engine) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   
+  <!-- Firebase SDK (실시간 클라우드 동기화용) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
   <!-- 가독성 웹폰트: 나눔스퀘어라운드 & GmarketSans -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
@@ -100,9 +104,7 @@
         </button>
       </div>
 
-      <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1">
-        <!-- JS 렌더링 -->
-      </div>
+      <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1"></div>
     </div>
 
     <!-- 서류 제출 현황 요약 위젯 -->
@@ -154,10 +156,7 @@
           (주)밝은생각 협업룸
         </h2>
       </div>
-
-      <div class="flex items-center gap-2">
-        <!-- 메인 헤더 불필요 버튼 제거 완료 -->
-      </div>
+      <div class="flex items-center gap-2"></div>
     </header>
 
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
@@ -328,7 +327,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE (과목명 기준 스마트 그룹 카드) ================= -->
+      <!-- ================= TAB 2: TIMETABLE ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -336,14 +335,13 @@
               <span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 관리</span>
               <h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">기관별 요일 강좌 및 강사 시간표</h4>
             </div>
-            <p class="text-xs text-stone-500 mt-1">동일 과목과 강사명을 가진 수업은 안내장처럼 하나의 카드에 A, B, C반 시간이 모두 모여서 표시됩니다.</p>
+            <p class="text-xs text-stone-500 mt-1">동일 과목의 여러 반(A, B, C반 등)을 하나의 안내장 카드 형태로 묶어서 보여줍니다.</p>
           </div>
           <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
           </button>
         </div>
 
-        <!-- 월 ~ 금 시간대별 5단 캘린더 그리드 -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5">
             <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
@@ -370,7 +368,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2-1: MASTER TEACHERS (강사 현황 & 과목 검색 탭) ================= -->
+      <!-- ================= TAB 2-1: MASTER TEACHERS ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -396,9 +394,7 @@
         </div>
 
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1">
-            <!-- JS 렌더링 -->
-          </div>
+          <div id="master-teacher-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1"></div>
         </div>
       </section>
 
@@ -818,7 +814,7 @@
 
         <div>
           <label class="block font-bold text-stone-700 mb-1">과목(강좌)명</label>
-          <input type="text" id="sched-input-course" required placeholder="예: 영어 (반 이름 제외하고 입력)" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          <input type="text" id="sched-input-course" required placeholder="예: 영어" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -1035,8 +1031,23 @@
     </div>
   </div>
 
-  <!-- ================= J A V A S C R I P T ================= -->
+  <!-- ================= J A V A S C R I P T (파이어베이스 실시간 동기화 포함) ================= -->
   <script>
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4",
+      authDomain: "bright-afterschool.firebaseapp.com",
+      databaseURL: "https://bright-afterschool-default-rtdb.firebaseio.com",
+      projectId: "bright-afterschool",
+      storageBucket: "bright-afterschool.firebasestorage.app",
+      messagingSenderId: "646660756482",
+      appId: "1:646660756482:web:7354b82be51299277ec31b",
+      measurementId: "G-NGFKL8M5NZ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const dbRef = firebase.database().ref();
+
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
@@ -1309,32 +1320,102 @@
       { school: '창영초', subject: '바이올린', name: '연정윤', day: '화', phone: '010-5298-5076' }
     ];
 
-    function load(key, fb) {
-      const v = localStorage.getItem('bm_perm_' + key);
-      return v ? JSON.parse(v) : fb;
-    }
-    function save(key, val) {
-      localStorage.setItem('bm_perm_' + key, JSON.stringify(val));
+    let dbInstance = null;
+    function initIndexedDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('BrightMind_Permanent_DB_v4', 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('files')) {
+            db.createObjectStore('files', { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+        req.onerror = () => reject('DB Error');
+      });
     }
 
-    let savedSchools = load('schools', null);
-    let schools = (savedSchools && savedSchools.length >= 10) ? savedSchools : fixedMasterSchools;
-    save('schools', schools);
+    async function storeFile(fileId, fileObj) {
+      if (!dbInstance || !fileObj) return;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const tx = dbInstance.transaction('files', 'readwrite');
+          const store = tx.objectStore('files');
+          store.put({
+            id: fileId,
+            name: fileObj.name,
+            type: fileObj.type,
+            data: reader.result
+          });
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => reject('Save Failed');
+        };
+        reader.readAsDataURL(fileObj);
+      });
+    }
 
-    let billings = load('billings', []);
-    let masterTeachers = load('masterTeachers', fullMasterTeachersData);
-    let schedules = load('schedules', []);
-    let presetTimes = load('presetTimes', ['12:50~13:30', '13:40~14:20', '13:40~15:00', '14:30~15:10', '15:10~16:30']);
-    let vaultFiles = load('vaultFiles', [
-      { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
-      { id: 'v_2', date: '2026-03-02', name: '강사_청렴서약서_및_계약양식.pdf' },
-      { id: 'v_3', date: '2026-03-02', name: '안전사고_보고서_및_결강확인서.hwp' }
-    ]);
-    let expenses = load('expenses', []);
-    let attendances = load('attendances', []);
-    let notices = load('notices', []);
-    let memos = load('memos', []);
-    let bannerNotice = load('bannerNotice', '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!');
+    async function getFileFromDB(fileId) {
+      if (!dbInstance) return null;
+      return new Promise((resolve) => {
+        const tx = dbInstance.transaction('files', 'readonly');
+        const store = tx.objectStore('files');
+        const req = store.get(fileId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    async function downloadFileFromDB(fileId, fallbackName) {
+      const fileData = await getFileFromDB(fileId);
+      if (fileData && fileData.data) {
+        const a = document.createElement('a');
+        a.href = fileData.data;
+        a.download = fileData.name || fallbackName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('저장된 파일 원본이 없습니다. 새 서류를 등록해 보세요.');
+      }
+    }
+
+    // 데이터 저장/불러오기 (Firebase 실시간 동기화 + LocalStorage 백업)
+    let appData = {
+      schools: fixedMasterSchools,
+      billings: [],
+      masterTeachers: fullMasterTeachersData,
+      schedules: [],
+      presetTimes: ['12:50~13:30', '13:40~14:20', '13:40~15:00', '14:30~15:10', '15:10~16:30'],
+      vaultFiles: [
+        { id: 'v_1', date: '2026-03-02', name: '4주_청구서_및_출근부_표준서식.xlsx' },
+        { id: 'v_2', date: '2026-03-02', name: '강사_청렴서약서_및_계약양식.pdf' },
+        { id: 'v_3', date: '2026-03-02', name: '안전사고_보고서_및_결강확인서.hwp' }
+      ],
+      expenses: [],
+      attendances: [],
+      notices: [],
+      memos: [],
+      bannerNotice: '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
+    };
+
+    function loadDataFromLocal() {
+      const s = localStorage.getItem('bm_app_data');
+      if (s) {
+        try { appData = JSON.parse(s); } catch(e){}
+      }
+    }
+    loadDataFromLocal();
+
+    function saveData(key, val) {
+      appData[key] = val;
+      localStorage.setItem('bm_app_data', JSON.stringify(appData));
+      // Firebase 실시간 동기화 전송
+      firebase.database().ref('brightmind_data').set(appData);
+    }
 
     let currentSchoolId = 'all';
     let currentQuarter = 1;
@@ -1354,8 +1435,19 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      document.getElementById('banner-notice-text').textContent = bannerNotice;
+      // Firebase 실시간 데이터 수신 리스너 (다른 곳에서 수정하면 실시간 반영)
+      firebase.database().ref('brightmind_data').on('value', (snapshot) => {
+        const remoteData = snapshot.val();
+        if (remoteData) {
+          appData = remoteData;
+          localStorage.setItem('bm_app_data', JSON.stringify(appData));
+          renderSchoolList();
+          renderAllViews();
+          populatePresetTimesDropdown();
+        }
+      });
 
+      document.getElementById('banner-notice-text').textContent = appData.bannerNotice || '';
       renderSchoolList();
       renderAllViews();
       populatePresetTimesDropdown();
@@ -1369,11 +1461,11 @@
     }
 
     function editBannerNotice() {
-      const res = prompt('전체 관리자에게 노출할 띠 배너 공지 내용을 입력하세요:', bannerNotice);
+      const res = prompt('전체 관리자에게 노출할 띠 배너 공지 내용을 입력하세요:', appData.bannerNotice);
       if (res !== null) {
-        bannerNotice = res.trim() || '📢 등록된 긴급 공지가 없습니다.';
-        save('bannerNotice', bannerNotice);
-        document.getElementById('banner-notice-text').textContent = bannerNotice;
+        appData.bannerNotice = res.trim() || '📢 등록된 공지가 없습니다.';
+        saveData('bannerNotice', appData.bannerNotice);
+        document.getElementById('banner-notice-text').textContent = appData.bannerNotice;
       }
     }
 
@@ -1399,9 +1491,10 @@
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
-      document.getElementById('badge-total-schools').textContent = `${schools.length}개소`;
+      const list = (appData.schools && appData.schools.length >= 10) ? appData.schools : fixedMasterSchools;
+      document.getElementById('badge-total-schools').textContent = `${list.length}개소`;
 
-      schools.forEach(sch => {
+      list.forEach(sch => {
         const isActive = currentSchoolId === sch.id;
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
         
@@ -1453,6 +1546,7 @@
       const heroTag = document.getElementById('hero-admin-tag');
       const editBtn = document.getElementById('hero-edit-school-btn');
 
+      const list = appData.schools || fixedMasterSchools;
       if (id === 'all') {
         titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
@@ -1461,7 +1555,7 @@
         heroTag.textContent = '본사 총괄 모드';
         editBtn.classList.add('hidden');
       } else {
-        const sch = schools.find(s => s.id === id);
+        const sch = list.find(s => s.id === id);
         const name = sch ? sch.name : '기관 전용';
         titleEl.textContent = `${name} 협업룸`;
         badgeEl.textContent = name;
@@ -1476,7 +1570,8 @@
 
     function openEditSchoolModal(id, e) {
       if (e) e.stopPropagation();
-      const sch = schools.find(s => s.id === id);
+      const list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === id);
       if (!sch) return;
       document.getElementById('edit-school-id').value = sch.id;
       document.getElementById('edit-school-name').value = sch.name;
@@ -1484,9 +1579,7 @@
     }
 
     function openEditCurrentSchoolModal() {
-      if (currentSchoolId !== 'all') {
-        openEditSchoolModal(currentSchoolId);
-      }
+      if (currentSchoolId !== 'all') openEditSchoolModal(currentSchoolId);
     }
 
     function handleUpdateSchoolName(e) {
@@ -1495,10 +1588,11 @@
       const newName = document.getElementById('edit-school-name').value.trim();
       if (!newName) return;
 
-      const sch = schools.find(s => s.id === id);
+      let list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === id);
       if (sch) {
         sch.name = newName;
-        save('schools', schools);
+        saveData('schools', list);
         closeModal('modal-edit-school');
         renderSchoolList();
         selectSchool(id);
@@ -1507,10 +1601,11 @@
 
     function deleteSchool(id, e) {
       e.stopPropagation();
-      const sch = schools.find(s => s.id === id);
+      let list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === id);
       if (confirm(`'${sch ? sch.name : ''}' 기관을 삭제하시겠습니까?`)) {
-        schools = schools.filter(s => s.id !== id);
-        save('schools', schools);
+        list = list.filter(s => s.id !== id);
+        saveData('schools', list);
         if (currentSchoolId === id) currentSchoolId = 'all';
         renderSchoolList();
         renderAllViews();
@@ -1519,11 +1614,12 @@
 
     function populateSelects() {
       const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
+      const list = appData.schools || fixedMasterSchools;
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         el.innerHTML = '';
-        schools.forEach(s => {
+        list.forEach(s => {
           const opt = document.createElement('option');
           opt.value = s.id;
           opt.textContent = s.name;
@@ -1543,29 +1639,32 @@
       renderVaultFiles();
     }
 
+    // ---------- CHECKLIST ----------
     function renderChecklist() {
       const tbody = document.getElementById('checklist-table-body');
       tbody.innerHTML = '';
-
       let readyCount = 0;
       let missingCount = 0;
       const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
+      const list = appData.schools || fixedMasterSchools;
+      const billList = appData.billings || [];
+      const attList = appData.attendances || [];
+      const expList = appData.expenses || [];
 
-      schools.forEach(sch => {
-        const inst1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && (b.category || 'instructor') === 'instructor');
-        const inst2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && (b.category || 'instructor') === 'instructor');
-        const inst3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && (b.category || 'instructor') === 'instructor');
+      list.forEach(sch => {
+        const inst1 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && (b.category || 'instructor') === 'instructor');
+        const inst2 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && (b.category || 'instructor') === 'instructor');
+        const inst3 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && (b.category || 'instructor') === 'instructor');
 
-        const mat1 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && b.category === 'materials');
-        const mat2 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && b.category === 'materials');
-        const mat3 = billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && b.category === 'materials');
+        const mat1 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && b.category === 'materials');
+        const mat2 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && b.category === 'materials');
+        const mat3 = billList.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && b.category === 'materials');
 
-        const hasAtt = attendances.some(a => a.schoolId === sch.id);
-        const hasExp = expenses.some(e => e.schoolId === sch.id);
+        const hasAtt = attList.some(a => a.schoolId === sch.id);
+        const hasExp = expList.some(e => e.schoolId === sch.id);
 
         const instDoneCount = [inst1, inst2, inst3].filter(Boolean).length;
         let badgeHtml = '';
-
         if (instDoneCount === 3) {
           badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs inline-flex items-center gap-1">🟢 3차완료</span>';
           readyCount++;
@@ -1577,7 +1676,6 @@
         }
 
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
-
         const tr = document.createElement('tr');
         tr.className = "hover:bg-amber-50/30 transition-colors";
         tr.innerHTML = `
@@ -1595,32 +1693,26 @@
             <span class="${mat2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
             <span class="${mat3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
           </td>
-          <td class="py-3 px-4 text-center">
-            ${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}
-          </td>
-          <td class="py-3 px-4 text-center">
-            ${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}
-          </td>
+          <td class="py-3 px-4 text-center">${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
+          <td class="py-3 px-4 text-center">${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
           <td class="py-3 px-4 text-center">${badgeHtml}</td>
           <td class="py-3 px-4 text-center">
-            <button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">
-              이동 →
-            </button>
+            <button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">이동 →</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
 
       document.getElementById('stat-ready-count').textContent = readyCount;
-      document.getElementById('stat-pending-count').textContent = schools.length - readyCount - missingCount;
+      document.getElementById('stat-pending-count').textContent = list.length - readyCount - missingCount;
       document.getElementById('stat-missing-count').textContent = missingCount;
     }
 
+    // ---------- BILLING ----------
     function switchBillingCategory(cat) {
       currentBillingCategory = cat;
       const instBtn = document.getElementById('sub-billing-btn-instructor');
       const matBtn = document.getElementById('sub-billing-btn-materials');
-
       if (cat === 'instructor') {
         instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
         matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
@@ -1628,7 +1720,6 @@
         matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
         instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
       }
-
       renderBilling();
     }
 
@@ -1637,9 +1728,7 @@
       for (let i = 1; i <= 4; i++) {
         const b = document.getElementById(`btn-q-${i}`);
         if (b) {
-          b.className = (i === q) 
-            ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" 
-            : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
+          b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
         }
       }
       renderBilling();
@@ -1650,6 +1739,8 @@
       const allView = document.getElementById('billing-all-schools-view');
       const singleView = document.getElementById('billing-single-school-view');
       const viewHint = document.getElementById('billing-view-hint');
+      const list = appData.schools || fixedMasterSchools;
+      const billList = appData.billings || [];
 
       if (currentSchoolId === 'all') {
         allView.classList.remove('hidden');
@@ -1661,19 +1752,18 @@
         const tbody = document.getElementById('all-schools-summary-tbody');
         tbody.innerHTML = '';
 
-        schools.forEach(sch => {
-          const schInstAmount = billings
+        list.forEach(sch => {
+          const schInstAmount = billList
             .filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && (b.category || 'instructor') === 'instructor')
             .reduce((sum, b) => sum + (b.amount || 0), 0);
 
-          const schMatAmount = billings
+          const schMatAmount = billList
             .filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && b.category === 'materials')
             .reduce((sum, b) => sum + (b.amount || 0), 0);
 
           totalInst += schInstAmount;
           totalMat += schMatAmount;
           const schTotal = schInstAmount + schMatAmount;
-
           const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
 
           const tr = document.createElement('tr');
@@ -1687,9 +1777,7 @@
             <td class="py-3.5 px-4 text-right font-bold text-emerald-800 text-sm">${schMatAmount > 0 ? schMatAmount.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}</td>
             <td class="py-3.5 px-4 text-right font-black text-amber-900 text-sm">${schTotal > 0 ? schTotal.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}</td>
             <td class="py-3.5 px-4 text-center">
-              <button onclick="selectSchool('${sch.id}')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors">
-                1~3차 관리 →
-              </button>
+              <button onclick="selectSchool('${sch.id}')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors">1~3차 관리 →</button>
             </td>
           `;
           tbody.appendChild(tr);
@@ -1704,10 +1792,9 @@
         singleView.classList.remove('hidden');
         viewHint.textContent = `※ ${currentQuarter}분기 1차, 2차, 3차 청구서가 순서대로 표시됩니다.`;
 
-        const sch = schools.find(s => s.id === currentSchoolId);
+        const sch = list.find(s => s.id === currentSchoolId);
         const schName = sch ? sch.name : '기관';
         const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
-
         const tbody = document.getElementById('billing-table-body');
         tbody.innerHTML = '';
 
@@ -1716,7 +1803,7 @@
 
         [1, 2, 3].forEach(period => {
           const periodLabel = `${period}차 (${(period-1)*4 + 1}~${period*4}주)`;
-          const item = billings.find(b => 
+          const item = billList.find(b => 
             b.schoolId === currentSchoolId && 
             (b.category || 'instructor') === currentBillingCategory && 
             b.quarter === currentQuarter && 
@@ -1729,62 +1816,37 @@
           if (item) {
             singleQuarterAmount += (item.amount || 0);
             registeredCount++;
-
             tr.innerHTML = `
               <td class="py-3 px-4 font-bold text-stone-900">${schName}</td>
               <td class="py-3 px-3 text-center">
-                <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                  currentBillingCategory === 'instructor' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'
-                }">${catName}</span>
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${currentBillingCategory === 'instructor' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'}">${catName}</span>
               </td>
               <td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td>
               <td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${periodLabel}</td>
               <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td>
               <td class="py-3 px-4 text-center">
-                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono">
-                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}
-                </span>
+                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono"><i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}</span>
               </td>
-              <td class="py-3 px-3 text-center">
-                <button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
-                  미리보기
-                </button>
-              </td>
-              <td class="py-3 px-3 text-center">
-                <button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
-                  다운
-                </button>
-              </td>
-              <td class="py-3 px-3 text-center">
-                <button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200" title="수정">
-                  수정
-                </button>
-              </td>
-              <td class="py-3 px-3 text-center">
-                <button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-              </td>
+              <td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">미리보기</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">다운</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
             `;
           } else {
             tr.innerHTML = `
               <td class="py-3 px-4 font-bold text-stone-500">${schName}</td>
-              <td class="py-3 px-3 text-center text-stone-400 font-medium">${catName}</td>
-              <td class="py-3 px-3 text-center text-stone-400 font-medium">${currentQuarter}분기</td>
+              <td class="py-3 px-3 text-center text-stone-400">${catName}</td>
+              <td class="py-3 px-3 text-center text-stone-400">${currentQuarter}분기</td>
               <td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${periodLabel}</td>
-              <td class="py-3 px-4 text-right text-stone-300 font-mono">-</td>
+              <td class="py-3 px-4 text-right text-stone-300">-</td>
               <td class="py-3 px-4 text-center">
-                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto transition-colors">
+                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto">
                   <i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록
                 </button>
               </td>
-              <td class="py-3 px-3 text-center text-stone-300">-</td>
-              <td class="py-3 px-3 text-center text-stone-300">-</td>
-              <td class="py-3 px-3 text-center text-stone-300">-</td>
-              <td class="py-3 px-3 text-center text-stone-300">-</td>
+              <td colspan="4" class="text-center text-stone-300">-</td>
             `;
           }
-
           tbody.appendChild(tr);
         });
 
@@ -1793,21 +1855,22 @@
         document.getElementById('total-billing-count').textContent = `${registeredCount} / 3 차수 등록 완료`;
         document.getElementById('billing-table-title').textContent = `${schName} ${currentQuarter}분기 ${catName} 청구서 내역 (1차 · 2차 · 3차)`;
       }
-
       lucide.createIcons();
     }
 
     function deleteBilling(id) {
-      if (confirm('해당 청구서를 삭제하시겠습니까? (삭제 시 빈 슬롯으로 복구됩니다)')) {
-        billings = billings.filter(b => b.id !== id);
-        save('billings', billings);
+      if (confirm('해당 청구서를 삭제하시겠습니까?')) {
+        let billList = appData.billings || [];
+        billList = billList.filter(b => b.id !== id);
+        saveData('billings', billList);
         renderBilling();
         renderChecklist();
       }
     }
 
     function openAddBillingModalForSlot(schoolId, period) {
-      const sch = schools.find(s => s.id === schoolId);
+      const list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
 
@@ -1823,7 +1886,6 @@
 
       document.getElementById('billing-input-amount').value = '';
       document.getElementById('billing-input-file').value = '';
-
       openModal('modal-add-billing');
     }
 
@@ -1837,50 +1899,45 @@
       const fileInput = document.getElementById('billing-input-file');
       const file = fileInput.files[0];
 
-      const sch = schools.find(s => s.id === schoolId);
+      const list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catLabel = category === 'instructor' ? '강사료' : '교재비';
-
       const fileId = 'b_' + Date.now();
       const fileName = file ? file.name : `${schName}_${quarter}분기_${period}차_${catLabel}청구서.xlsx`;
 
       if (file) await storeFile(fileId, file);
 
-      const existingIdx = billings.findIndex(b => 
-        b.schoolId === schoolId && 
-        (b.category || 'instructor') === category && 
-        b.quarter === quarter && 
-        b.period === period
-      );
-
+      let billList = appData.billings || [];
+      const existingIdx = billList.findIndex(b => b.schoolId === schoolId && (b.category || 'instructor') === category && b.quarter === quarter && b.period === period);
       if (existingIdx > -1) {
-        billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName };
+        billList[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName };
       } else {
-        billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
+        billList.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
       }
 
-      save('billings', billings);
+      saveData('billings', billList);
       closeModal('modal-add-billing');
       renderBilling();
       renderChecklist();
     }
 
     function openEditBillingModal(billingId) {
-      const item = billings.find(b => b.id === billingId);
+      const billList = appData.billings || [];
+      const item = billList.find(b => b.id === billingId);
       if (!item) return;
-
-      const sch = schools.find(s => s.id === item.schoolId);
+      const list = appData.schools || fixedMasterSchools;
+      const sch = list.find(s => s.id === item.schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = (item.category || 'instructor') === 'instructor' ? '강사료' : '교재비';
 
       document.getElementById('edit-billing-id').value = item.id;
       document.getElementById('edit-billing-school-badge').textContent = schName;
       document.getElementById('edit-billing-cat-badge').textContent = catName;
-      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차 (${(item.period-1)*4 + 1}~${item.period*4}주)`;
+      document.getElementById('edit-billing-period-text').textContent = `${item.quarter}분기 ${item.period}차`;
       document.getElementById('edit-billing-amount').value = item.amount || '';
       document.getElementById('edit-billing-current-filename').textContent = item.fileName || '등록된 파일 없음';
       document.getElementById('edit-billing-file').value = '';
-
       openModal('modal-edit-billing');
     }
 
@@ -1891,7 +1948,8 @@
       const fileInput = document.getElementById('edit-billing-file');
       const file = fileInput.files[0];
 
-      const item = billings.find(b => b.id === id);
+      let billList = appData.billings || [];
+      const item = billList.find(b => b.id === id);
       if (!item) return;
 
       item.amount = amount;
@@ -1900,21 +1958,23 @@
         await storeFile(item.id, file);
       }
 
-      save('billings', billings);
+      saveData('billings', billList);
       closeModal('modal-edit-billing');
       renderBilling();
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE (과목명 표준화 스마트 그룹 카드) ----------
+    // ---------- TIMETABLE ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
+      const list = appData.schools || fixedMasterSchools;
+      const schedList = appData.schedules || [];
 
       if (currentSchoolId === 'all') {
         gridTitle.innerHTML = `🎒 전체 기관 통합 시간표 <span class="text-xs font-normal text-stone-400 ml-2">(좌측에서 특정 학교를 선택하면 해당 학교 시간표가 뜹니다)</span>`;
       } else {
-        const sch = schools.find(s => s.id === currentSchoolId);
+        const sch = list.find(s => s.id === currentSchoolId);
         gridTitle.innerHTML = `🎒 [${sch ? sch.name : '기관'}] 월~금 요일별 시간표`;
       }
 
@@ -1923,7 +1983,7 @@
         if (!col) return;
         col.innerHTML = '';
 
-        let items = schedules.filter(s => s.day === d);
+        let items = schedList.filter(s => s.day === d);
         if (currentSchoolId !== 'all') {
           items = items.filter(s => s.schoolId === currentSchoolId);
         }
@@ -1931,35 +1991,25 @@
         if (items.length === 0) {
           col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
         } else {
-          // 과목명에서 A반, B반 등의 접미사를 깔끔하게 정규화하여 그룹화
           const groupMap = new Map();
           items.forEach(item => {
-            // "영어A", "영어 B반" 등에서 순수 과목명 추출 (예: "영어")
-            let cleanCourse = item.course.replace(/[A-Za-z반급ⅠⅡⅢⅣⅤ]+$/, '').trim();
+            let cleanCourse = item.course.replace(/[ABCabc123반파트ⅠⅡⅢ]+$/g, '').trim();
             if (!cleanCourse) cleanCourse = item.course;
-
-            const key = `${cleanCourse}_${item.teacher}`;
+            const key = `${cleanCourse}_${item.teacher.trim()}`;
             if (!groupMap.has(key)) {
-              groupMap.set(key, {
-                displayCourse: cleanCourse,
-                teacher: item.teacher,
-                phone: item.phone,
-                slots: []
-              });
+              groupMap.set(key, { displayCourse: cleanCourse, teacher: item.teacher, phone: item.phone, slots: [] });
             }
-            groupMap.get(key).slots.push({ id: item.id, time: item.time, rawCourse: item.course });
+            groupMap.get(key).slots.push({ id: item.id, time: item.time });
           });
 
           groupMap.forEach((group) => {
-            // 시간순 정렬
             group.slots.sort((a, b) => a.time.localeCompare(b.time));
-
             const card = document.createElement('div');
             card.className = "p-3.5 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between mb-2";
             
             let slotsHtml = '';
             group.slots.forEach((s, idx) => {
-              const label = String.fromCharCode(65 + idx); // A, B, C...
+              const label = String.fromCharCode(65 + idx);
               slotsHtml += `<div class="font-mono text-stone-700 mt-0.5">• ${label}) ${s.time}</div>`;
             });
 
@@ -1971,13 +2021,9 @@
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
-                <div class="mt-1.5 space-y-0.5">
-                  ${slotsHtml}
-                </div>
+                <div class="mt-1.5 space-y-0.5">${slotsHtml}</div>
               </div>
-              <div class="mt-2.5 pt-1.5 border-t border-stone-100 text-[11px] font-mono text-stone-400">
-                <span>${group.phone || ''}</span>
-              </div>
+              <div class="mt-2.5 pt-1.5 border-t border-stone-100 text-[11px] font-mono text-stone-400"><span>${group.phone || ''}</span></div>
             `;
             col.appendChild(card);
           });
@@ -1986,16 +2032,19 @@
       lucide.createIcons();
     }
 
-    function deleteScheduleGroup(displayCourse, teacher, day) {
-      if (confirm(`'${displayCourse} (${teacher})' 강좌의 모든 시간대를 삭제하시겠습니까?`)) {
-        schedules = schedules.filter(s => {
-          let clean = s.course.replace(/[A-Za-z반급ⅠⅡⅢⅣⅤ]+$/, '').trim();
+    function deleteScheduleGroup(course, teacher, day) {
+      if (confirm(`'${course} (${teacher})' 강좌의 모든 시간대를 삭제하시겠습니까?`)) {
+        let schedList = appData.schedules || [];
+        schedList = schedList.filter(s => {
+          let clean = s.course.replace(/[ABCabc123반파트ⅠⅡⅢ]+$/g, '').trim();
           if (!clean) clean = s.course;
-          const match = (clean === displayCourse && s.teacher === teacher && s.day === day);
-          const sameSchool = (currentSchoolId === 'all' || s.schoolId === currentSchoolId);
-          return !(match && sameSchool);
+          const matchCourse = (clean === course || s.course === course);
+          const matchTeacher = (s.teacher.trim() === teacher.trim());
+          const matchDay = (s.day === day);
+          const matchSchool = (currentSchoolId === 'all' || s.schoolId === currentSchoolId);
+          return !(matchCourse && matchTeacher && matchDay && matchSchool);
         });
-        save('schedules', schedules);
+        saveData('schedules', schedList);
         renderSchoolTimetableGrid();
       }
     }
@@ -2003,8 +2052,9 @@
     function populatePresetTimesDropdown() {
       const select = document.getElementById('preset-time-select');
       if (!select) return;
+      const pTimes = appData.presetTimes || ['12:50~13:30', '13:40~14:20', '13:40~15:00', '14:30~15:10', '15:10~16:30'];
       select.innerHTML = '<option value="">-- 시간 선택하기 (탭) --</option>';
-      presetTimes.forEach(pt => {
+      pTimes.forEach(pt => {
         const opt = document.createElement('option');
         opt.value = pt;
         opt.textContent = pt;
@@ -2021,9 +2071,10 @@
       const newTime = prompt('새로 추가할 수업 시간대를 입력하세요 (예: 15:30~16:50):');
       if (newTime && newTime.trim()) {
         const trimmed = newTime.trim();
-        if (!presetTimes.includes(trimmed)) {
-          presetTimes.push(trimmed);
-          save('presetTimes', presetTimes);
+        let pTimes = appData.presetTimes || [];
+        if (!pTimes.includes(trimmed)) {
+          pTimes.push(trimmed);
+          saveData('presetTimes', pTimes);
           populatePresetTimesDropdown();
           document.getElementById('sched-input-time').value = trimmed;
         }
@@ -2052,38 +2103,34 @@
       const teacher = document.getElementById('sched-input-teacher').value.trim();
       const phone = document.getElementById('sched-input-phone').value.trim();
 
-      schedules.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
-      save('schedules', schedules);
+      let schedList = appData.schedules || [];
+      schedList.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
+      saveData('schedules', schedList);
       closeModal('modal-add-schedule');
       renderSchoolTimetableGrid();
     }
 
-    // ---------- 8-1. TAB 2-1: MASTER TEACHERS ----------
+    // ---------- MASTER TEACHERS ----------
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input').value.trim().toLowerCase();
       const grid = document.getElementById('master-teacher-grid');
       const countTitle = document.getElementById('search-result-count-title');
       grid.innerHTML = '';
 
-      let list = masterTeachers;
+      let list = appData.masterTeachers || fullMasterTeachersData;
+      const listSch = appData.schools || fixedMasterSchools;
       if (currentSchoolId !== 'all') {
-        const sch = schools.find(s => s.id === currentSchoolId);
+        const sch = listSch.find(s => s.id === currentSchoolId);
         if (sch) list = list.filter(t => t.school === sch.name);
       }
 
       if (query) {
-        list = list.filter(t => 
-          t.subject.toLowerCase().includes(query) || 
-          t.name.toLowerCase().includes(query) || 
-          t.school.toLowerCase().includes(query) ||
-          t.day.toLowerCase().includes(query)
-        );
+        list = list.filter(t => t.subject.toLowerCase().includes(query) || t.name.toLowerCase().includes(query) || t.school.toLowerCase().includes(query) || t.day.toLowerCase().includes(query));
       }
 
       countTitle.textContent = `전체 위탁기관 강사 및 과목 현황 (총 ${list.length}건)`;
-
       if (list.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">검색 결과가 없습니다. 과목명이나 강사 성함을 다시 확인해 보세요.</div>`;
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">검색 결과가 없습니다.</div>`;
         return;
       }
 
@@ -2101,9 +2148,7 @@
           </div>
           <div class="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between">
             <span class="font-mono text-stone-600 font-semibold">${t.phone || '연락처 없음'}</span>
-            <button onclick="copyToClipboard('${t.phone}')" class="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 rounded-lg text-[11px] font-bold border border-stone-200">
-              번호 복사
-            </button>
+            <button onclick="copyToClipboard('${t.phone}')" class="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 rounded-lg text-[11px] font-bold border border-stone-200">번호 복사</button>
           </div>
         `;
         grid.appendChild(card);
@@ -2131,10 +2176,7 @@
           let headerIdx = -1;
           for (let r = 0; r < Math.min(rows.length, 5); r++) {
             const rowStr = rows[r].join(' ');
-            if (rowStr.includes('강사명') && rowStr.includes('과목')) {
-              headerIdx = r;
-              break;
-            }
+            if (rowStr.includes('강사명') && rowStr.includes('과목')) { headerIdx = r; break; }
           }
 
           if (headerIdx !== -1) {
@@ -2159,21 +2201,14 @@
 
               if (name && name !== 'nan' && name !== '강사명') {
                 if (status.includes('퇴사') || status.includes('폐강')) continue;
-                newParsedTeachers.push({
-                  school: sheetName,
-                  subject: subj || '기타과목',
-                  name: name,
-                  day: day || '요일미정',
-                  phone: phone || '연락처없음'
-                });
+                newParsedTeachers.push({ school: sheetName, subject: subj || '기타과목', name: name, day: day || '요일미정', phone: phone || '연락처없음' });
               }
             }
           }
         });
 
         if (newParsedTeachers.length > 0) {
-          masterTeachers = newParsedTeachers;
-          save('masterTeachers', masterTeachers);
+          saveData('masterTeachers', newParsedTeachers);
           closeModal('modal-upload-teacher-excel');
           alert(`성공적으로 총 ${newParsedTeachers.length}명의 강사 명단이 업데이트되었습니다!`);
           renderMasterTeacherList();
@@ -2187,14 +2222,8 @@
 
     function downloadMasterTeacherExcel() {
       const wb = XLSX.utils.book_new();
-      const exportData = masterTeachers.map((t, idx) => ({
-        '순번': idx + 1,
-        '학교명': t.school,
-        '과목명': t.subject,
-        '강사명': t.name,
-        '수업요일': t.day,
-        '연락처': t.phone
-      }));
+      const list = appData.masterTeachers || fullMasterTeachersData;
+      const exportData = list.map((t, idx) => ({ '순번': idx + 1, '학교명': t.school, '과목명': t.subject, '강사명': t.name, '수업요일': t.day, '연락처': t.phone }));
       const ws = XLSX.utils.json_to_sheet(exportData);
       XLSX.utils.book_append_sheet(wb, ws, '전체강사명단');
       XLSX.writeFile(wb, '밝은생각_전체강사명단.xlsx');
@@ -2211,7 +2240,7 @@
       alert('강사 연락처가 복사되었습니다: ' + text);
     }
 
-    // ---------- 9. TAB 3: EXPENSE & ATTENDANCE ----------
+    // ---------- EXPENSES & ATTENDANCE ----------
     function changeMonth(m) {
       currentMonth = parseInt(m, 10);
       renderExpenseAndAttendance();
@@ -2221,15 +2250,15 @@
     function renderExpenseAndAttendance() {
       const expBody = document.getElementById('expense-table-body');
       expBody.innerHTML = '';
-      let expList = expenses.filter(e => e.month === currentMonth);
-      if (currentSchoolId !== 'all') expList = expList.filter(e => e.schoolId === currentSchoolId);
+      const expList = (appData.expenses || []).filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
+      const listSch = appData.schools || fixedMasterSchools;
 
       let totalExp = 0;
       if (expList.length === 0) {
         expBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 지출 내역이 없습니다.</td></tr>`;
       } else {
         expList.forEach(e => {
-          const sch = schools.find(s => s.id === e.schoolId);
+          const sch = listSch.find(s => s.id === e.schoolId);
           totalExp += (e.amount || 0);
           const tr = document.createElement('tr');
           tr.className = "hover:bg-emerald-50/30";
@@ -2237,15 +2266,9 @@
             <td class="p-2.5 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
             <td class="p-2.5 font-bold text-emerald-950 font-mono">${e.month}월</td>
             <td class="p-2.5 text-right font-bold text-emerald-800">${(e.amount || 0).toLocaleString()}원</td>
-            <td class="p-2.5 text-center">
-              <button onclick="previewFile('${e.id}', 'pdf', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
-            </td>
-            <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
-            </td>
-            <td class="p-2.5 text-center">
-              <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </td>
+            <td class="p-2.5 text-center"><button onclick="previewFile('${e.id}', 'pdf', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
+            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button></td>
+            <td class="p-2.5 text-center"><button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           expBody.appendChild(tr);
         });
@@ -2254,29 +2277,22 @@
 
       const attBody = document.getElementById('attendance-table-body');
       attBody.innerHTML = '';
-      let attList = attendances.filter(a => a.month === currentMonth);
-      if (currentSchoolId !== 'all') attList = attList.filter(a => a.schoolId === currentSchoolId);
+      const attList = (appData.attendances || []).filter(a => a.month === currentMonth && (currentSchoolId === 'all' || a.schoolId === currentSchoolId));
 
       if (attList.length === 0) {
         attBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 강사 출근부가 없습니다.</td></tr>`;
       } else {
         attList.forEach(a => {
-          const sch = schools.find(s => s.id === a.schoolId);
+          const sch = listSch.find(s => s.id === a.schoolId);
           const tr = document.createElement('tr');
           tr.className = "hover:bg-sky-50/30";
           tr.innerHTML = `
             <td class="p-2.5 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
             <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
             <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
-            <td class="p-2.5 text-center">
-              <button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
-            </td>
-            <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button>
-            </td>
-            <td class="p-2.5 text-center">
-              <button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </td>
+            <td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
+            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
+            <td class="p-2.5 text-center"><button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           attBody.appendChild(tr);
         });
@@ -2286,31 +2302,29 @@
 
     function deleteExpense(id) {
       if (confirm('해당 지출결의서를 삭제하시겠습니까?')) {
-        expenses = expenses.filter(e => e.id !== id);
-        save('expenses', expenses);
+        let list = appData.expenses || [];
+        list = list.filter(e => e.id !== id);
+        saveData('expenses', list);
         renderExpenseAndAttendance();
         renderChecklist();
       }
     }
     function deleteAttendance(id) {
       if (confirm('해당 출근부를 삭제하시겠습니까?')) {
-        attendances = attendances.filter(a => a.id !== id);
-        save('attendances', attendances);
+        let list = appData.attendances || [];
+        list = list.filter(a => a.id !== id);
+        saveData('attendances', list);
         renderExpenseAndAttendance();
         renderChecklist();
       }
     }
 
-    // ---------- 10. TAB 4: NOTICES ----------
+    // ---------- NOTICES ----------
     function filterNoticeQuarter(q) {
       currentNoticeQuarter = q;
       ['all', '1', '2', '3', '4'].forEach(n => {
         const b = document.getElementById(`btn-nq-${n}`);
-        if (b) {
-          b.className = (n === q) 
-            ? "px-3 py-1 rounded-xl text-xs font-bold bg-amber-500 text-white" 
-            : "px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600";
-        }
+        if (b) b.className = (n === q) ? "px-3 py-1 rounded-xl text-xs font-bold bg-amber-500 text-white" : "px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600";
       });
       renderNotices();
     }
@@ -2318,15 +2332,16 @@
     function renderNotices() {
       const tbody = document.getElementById('notices-table-body');
       tbody.innerHTML = '';
-      let list = notices;
+      let list = appData.notices || [];
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
       if (currentNoticeQuarter !== 'all') list = list.filter(n => String(n.quarter) === currentNoticeQuarter);
+      const listSch = appData.schools || fixedMasterSchools;
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
       } else {
         list.forEach(n => {
-          const sch = schools.find(s => s.id === n.schoolId);
+          const sch = listSch.find(s => s.id === n.schoolId);
           const schName = sch ? sch.name : '기관';
           const tr = document.createElement('tr');
           tr.className = "hover:bg-amber-50/20";
@@ -2335,19 +2350,9 @@
             <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-bold">${n.quarter || 1}분기</span></td>
             <td class="py-3 px-4 font-bold text-stone-900">${schName}</td>
             <td class="py-3 px-4 font-semibold text-stone-900">${schName} ${n.quarter || 1}분기 안내장</td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="previewFile('${n.id}', 'pdf', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
-                미리보기
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">
-                다운
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="deleteNotice('${n.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </td>
+            <td class="py-3 px-3 text-center"><button onclick="previewFile('${n.id}', 'pdf', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">미리보기</button></td>
+            <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${n.id}', '${n.fileName || '안내장.pdf'}')" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">다운</button></td>
+            <td class="py-3 px-3 text-center"><button onclick="deleteNotice('${n.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           tbody.appendChild(tr);
         });
@@ -2357,40 +2362,32 @@
 
     function deleteNotice(id) {
       if (confirm('해당 안내장을 삭제하시겠습니까?')) {
-        notices = notices.filter(n => n.id !== id);
-        save('notices', notices);
+        let list = appData.notices || [];
+        list = list.filter(n => n.id !== id);
+        saveData('notices', list);
         renderNotices();
         renderChecklist();
       }
     }
 
-    // ---------- 10-1. TAB 6: FORMS VAULT ----------
+    // ---------- VAULT ----------
     function renderVaultFiles() {
       const tbody = document.getElementById('vault-table-body');
       tbody.innerHTML = '';
+      const list = appData.vaultFiles || [];
 
-      if (vaultFiles.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-stone-400">등록된 공용 서식이 없습니다. [+ 공용 서식 파일 올리기]를 눌러보세요.</td></tr>`;
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-stone-400">등록된 공용 서식이 없습니다.</td></tr>`;
       } else {
-        vaultFiles.forEach(f => {
+        list.forEach(f => {
           const tr = document.createElement('tr');
           tr.className = "hover:bg-amber-50/20";
           tr.innerHTML = `
             <td class="py-3 px-4 font-mono text-stone-500">${f.date}</td>
             <td class="py-3 px-4 font-bold text-stone-900">${f.name}</td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="previewFile('${f.id}', '${f.name.endsWith('.pdf') ? 'pdf' : 'excel'}', '${f.name}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">
-                미리보기
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="downloadFileFromDB('${f.id}', '${f.name}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">
-                다운
-              </button>
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="deleteVaultFile('${f.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </td>
+            <td class="py-3 px-3 text-center"><button onclick="previewFile('${f.id}', '${f.name.endsWith('.pdf') ? 'pdf' : 'excel'}', '${f.name}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">미리보기</button></td>
+            <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${f.id}', '${f.name}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">다운</button></td>
+            <td class="py-3 px-3 text-center"><button onclick="deleteVaultFile('${f.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           tbody.appendChild(tr);
         });
@@ -2411,36 +2408,37 @@
 
       const fileId = 'v_' + Date.now();
       const today = new Date().toISOString().split('T')[0];
-
       await storeFile(fileId, file);
 
-      vaultFiles.push({ id: fileId, date: today, name: file.name });
-      save('vaultFiles', vaultFiles);
+      let list = appData.vaultFiles || [];
+      list.push({ id: fileId, date: today, name: file.name });
+      saveData('vaultFiles', list);
       closeModal('modal-add-vault');
       renderVaultFiles();
     }
 
     function deleteVaultFile(id) {
       if (confirm('해당 공용 서식 파일을 삭제하시겠습니까?')) {
-        vaultFiles = vaultFiles.filter(f => f.id !== id);
-        save('vaultFiles', vaultFiles);
+        let list = appData.vaultFiles || [];
+        list = list.filter(f => f.id !== id);
+        saveData('vaultFiles', list);
         renderVaultFiles();
       }
     }
 
-    // ---------- 11. TAB 5: MEMOS ----------
+    // ---------- MEMOS ----------
     function renderMemos() {
       const container = document.getElementById('memo-list-container');
       container.innerHTML = '';
-
-      let list = memos;
+      let list = appData.memos || [];
       if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
+      const listSch = appData.schools || fixedMasterSchools;
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다. [+ 새 업무 메모 작성]을 눌러 특이사항을 기록해 보세요.</div>`;
+        container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다.</div>`;
       } else {
         list.slice().reverse().forEach(m => {
-          const sch = schools.find(s => s.id === m.schoolId);
+          const sch = listSch.find(s => s.id === m.schoolId);
           const card = document.createElement('div');
           card.className = "p-4 bg-white rounded-2xl border border-stone-200 shadow-2xs flex flex-col justify-between";
           card.innerHTML = `
@@ -2466,13 +2464,14 @@
 
     function deleteMemo(id) {
       if (confirm('해당 업무 메모를 삭제하시겠습니까?')) {
-        memos = memos.filter(m => m.id !== id);
-        save('memos', memos);
+        let list = appData.memos || [];
+        list = list.filter(m => m.id !== id);
+        saveData('memos', list);
         renderMemos();
       }
     }
 
-    // ---------- 12. ADVANCED FILE PREVIEW VIEWER ----------
+    // ---------- ADVANCED FILE PREVIEW VIEWER ----------
     async function previewFile(fileId, fileType, fileName) {
       const fileData = await getFileFromDB(fileId);
       const modal = document.getElementById('modal-file-preview');
@@ -2512,22 +2511,14 @@
         try {
           const base64 = fileData.data.split(',')[1];
           currentWorkbook = XLSX.read(base64, { type: 'base64', cellStyles: true, cellNF: true });
-          
           tabsEl.innerHTML = '';
           tabsEl.classList.remove('hidden');
 
           currentWorkbook.SheetNames.forEach((sheetName, index) => {
             const tabBtn = document.createElement('button');
-            tabBtn.className = `px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              index === 0 
-                ? 'bg-white text-emerald-800 shadow-xs border border-stone-300' 
-                : 'text-stone-600 hover:bg-stone-300/60'
-            }`;
+            tabBtn.className = `px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${index === 0 ? 'bg-white text-emerald-800 shadow-xs border border-stone-300' : 'text-stone-600 hover:bg-stone-300/60'}`;
             tabBtn.textContent = sheetName;
-            tabBtn.onclick = () => {
-              currentActiveSheetName = sheetName;
-              renderExcelContent();
-            };
+            tabBtn.onclick = () => { currentActiveSheetName = sheetName; renderExcelContent(); };
             tabsEl.appendChild(tabBtn);
           });
 
@@ -2538,10 +2529,9 @@
           tabsEl.classList.add('hidden');
           zoomControls.classList.add('hidden');
           viewSwitchBtns.classList.add('hidden');
-          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다. (다운로드하여 확인해 주세요)</div>`;
+          bodyEl.innerHTML = `<div class="p-8 text-center text-xs text-rose-500">엑셀 시트를 파싱하는 중 오류가 발생했습니다.</div>`;
         }
       }
-
       modal.classList.remove('hidden');
       lucide.createIcons();
     }
@@ -2550,7 +2540,6 @@
       currentExcelViewMode = mode;
       const btnSmart = document.getElementById('btn-view-smart');
       const btnRaw = document.getElementById('btn-view-raw');
-
       if (mode === 'smart') {
         btnSmart.className = "px-3 py-1 rounded-lg bg-white text-stone-900 shadow-2xs";
         btnRaw.className = "px-3 py-1 rounded-lg text-stone-600 hover:bg-stone-300";
@@ -2558,35 +2547,21 @@
         btnRaw.className = "px-3 py-1 rounded-lg bg-white text-stone-900 shadow-2xs";
         btnSmart.className = "px-3 py-1 rounded-lg text-stone-600 hover:bg-stone-300";
       }
-
       renderExcelContent();
     }
 
     function renderExcelContent() {
       if (!currentWorkbook || !currentActiveSheetName) return;
-
-      if (currentExcelViewMode === 'smart') {
-        renderSmartExcelView(currentActiveSheetName);
-      } else {
-        renderRawExcelView(currentActiveSheetName);
-      }
+      if (currentExcelViewMode === 'smart') renderSmartExcelView(currentActiveSheetName);
+      else renderRawExcelView(currentActiveSheetName);
     }
 
     function renderSmartExcelView(sheetName) {
       const sheet = currentWorkbook.Sheets[sheetName];
       const bodyEl = document.getElementById('preview-body');
-
-      if (!sheet || !sheet['!ref']) {
-        bodyEl.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">선택한 시트에 데이터가 없습니다.</div>`;
-        return;
-      }
+      if (!sheet || !sheet['!ref']) { bodyEl.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">데이터가 없습니다.</div>`; return; }
 
       const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-      if (!rawRows || rawRows.length === 0) {
-        bodyEl.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">데이터를 읽을 수 없습니다.</div>`;
-        return;
-      }
-
       let colIdx = { course: -1, teacher: -1, students: -1, sessions: -1, unitPrice: -1, fee: -1, total: -1 };
       let headerRowIdx = -1;
 
@@ -2595,17 +2570,13 @@
         row.forEach((text, c) => {
           if (colIdx.course === -1 && (text.includes('강좌') || text.includes('부서') || text.includes('프로그램') || text.includes('과목'))) colIdx.course = c;
           if (colIdx.teacher === -1 && (text.includes('강사') || text.includes('지도강사') || text.includes('성명') || text.includes('이름'))) colIdx.teacher = c;
-          if (colIdx.students === -1 && (text.includes('수강생') || text.includes('인원') || text.includes('학생수') || text.includes('수량'))) colIdx.students = c;
-          if (colIdx.sessions === -1 && (text.includes('횟수') || text.includes('시수') || text.includes('차시') || text.includes('시간'))) colIdx.sessions = c;
-          if (colIdx.unitPrice === -1 && (text.includes('수강료단가') || text.includes('단가') || text.includes('1인단가'))) colIdx.unitPrice = c;
-          if (colIdx.fee === -1 && (text.includes('수용비') || text.includes('관리비') || text.includes('수수료'))) colIdx.fee = c;
-          if (colIdx.total === -1 && (text.includes('최종단가') || text.includes('청구액') || text.includes('지급액') || text.includes('합계') || text.includes('금액'))) colIdx.total = c;
+          if (colIdx.students === -1 && (text.includes('수강생') || text.includes('인원') || text.includes('학생수'))) colIdx.students = c;
+          if (colIdx.sessions === -1 && (text.includes('횟수') || text.includes('시수') || text.includes('차시'))) colIdx.sessions = c;
+          if (colIdx.unitPrice === -1 && (text.includes('수강료단가') || text.includes('단가'))) colIdx.unitPrice = c;
+          if (colIdx.fee === -1 && (text.includes('수용비') || text.includes('관리비'))) colIdx.fee = c;
+          if (colIdx.total === -1 && (text.includes('최종단가') || text.includes('청구액') || text.includes('합계') || text.includes('금액'))) colIdx.total = c;
         });
-
-        if (colIdx.course > -1 || colIdx.total > -1) {
-          headerRowIdx = r;
-          break;
-        }
+        if (colIdx.course > -1 || colIdx.total > -1) { headerRowIdx = r; break; }
       }
 
       let parsedList = [];
@@ -2615,101 +2586,38 @@
       for (let r = headerRowIdx + 1; r < rawRows.length; r++) {
         const row = rawRows[r];
         if (!row || row.length === 0) continue;
-
         const courseVal = colIdx.course > -1 ? String(row[colIdx.course] || '').trim() : '';
-        const totalValRaw = colIdx.total > -1 ? row[colIdx.total] : '';
-        const totalNum = parseInt(String(totalValRaw).replace(/[^0-9-]/g, ''), 10) || 0;
-
-        if (courseVal.includes('합계') || courseVal.includes('총액') || courseVal.includes('소계')) continue;
-        if (!courseVal && totalNum === 0) continue;
-
-        const teacherVal = colIdx.teacher > -1 ? String(row[colIdx.teacher] || '').trim() : '-';
-        const studentsNum = colIdx.students > -1 ? (parseInt(String(row[colIdx.students]).replace(/[^0-9]/g, ''), 10) || 0) : 0;
-        const sessionsNum = colIdx.sessions > -1 ? (parseInt(String(row[colIdx.sessions]).replace(/[^0-9]/g, ''), 10) || 0) : 0;
-        const unitPriceNum = colIdx.unitPrice > -1 ? (parseInt(String(row[colIdx.unitPrice]).replace(/[^0-9]/g, ''), 10) || 0) : 0;
-        const feeNum = colIdx.fee > -1 ? (parseInt(String(row[colIdx.fee]).replace(/[^0-9]/g, ''), 10) || 0) : 0;
+        const totalNum = parseInt(String(colIdx.total > -1 ? row[colIdx.total] : '').replace(/[^0-9-]/g, ''), 10) || 0;
+        if (courseVal.includes('합계') || courseVal.includes('총액') || (!courseVal && totalNum === 0)) continue;
 
         parsedList.push({
           course: courseVal || `프로그램 ${parsedList.length + 1}`,
-          teacher: teacherVal || '-',
-          students: studentsNum,
-          sessions: sessionsNum,
-          unitPrice: unitPriceNum,
-          fee: feeNum,
+          teacher: colIdx.teacher > -1 ? String(row[colIdx.teacher] || '').trim() : '-',
+          students: colIdx.students > -1 ? (parseInt(String(row[colIdx.students]).replace(/[^0-9]/g, ''), 10) || 0) : 0,
+          sessions: colIdx.sessions > -1 ? (parseInt(String(row[colIdx.sessions]).replace(/[^0-9]/g, ''), 10) || 0) : 0,
+          unitPrice: colIdx.unitPrice > -1 ? (parseInt(String(row[colIdx.unitPrice]).replace(/[^0-9]/g, ''), 10) || 0) : 0,
+          fee: colIdx.fee > -1 ? (parseInt(String(row[colIdx.fee]).replace(/[^0-9]/g, ''), 10) || 0) : 0,
           total: totalNum
         });
-
         grandTotal += totalNum;
-        totalStudents += studentsNum;
       }
 
       let html = `
         <div class="w-[850px] max-w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
           <div class="border-b-2 border-stone-800 pb-4 mb-4 flex justify-between items-end">
-            <div>
-              <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-stone-950 font-bold text-xs">밝은생각 표준 정산서</span>
-              <h2 class="text-xl md:text-2xl font-brand text-stone-900 mt-1">${currentExcelFileName}</h2>
-            </div>
-            <div class="text-right">
-              <span class="text-xs text-stone-400">정산 총액</span>
-              <p class="text-2xl font-brand text-amber-800">${grandTotal.toLocaleString()}원</p>
-            </div>
+            <div><span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-stone-950 font-bold text-xs">밝은생각 표준 정산서</span><h2 class="text-xl md:text-2xl font-brand text-stone-900 mt-1">${currentExcelFileName}</h2></div>
+            <div class="text-right"><span class="text-xs text-stone-400">정산 총액</span><p class="text-2xl font-brand text-amber-800">${grandTotal.toLocaleString()}원</p></div>
           </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border border-stone-300">
-              <thead class="bg-stone-100 text-stone-700 font-bold border-b border-stone-300">
-                <tr>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-center w-12">NO</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300">강좌명</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-center">강사명</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-right">수강생수</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-right">수업횟수</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-right">수강료단가</th>
-                  <th class="py-2.5 px-3 border-r border-stone-300 text-right">수용비</th>
-                  <th class="py-2.5 px-3 text-right">최종단가(청구액)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-stone-200">
+          <table class="w-full text-left text-xs border border-stone-300">
+            <thead class="bg-stone-100 text-stone-700 font-bold border-b border-stone-300">
+              <tr><th class="py-2.5 px-3 border-r border-stone-300 text-center w-12">NO</th><th class="py-2.5 px-3 border-r border-stone-300">강좌명</th><th class="py-2.5 px-3 border-r border-stone-300 text-center">강사명</th><th class="py-2.5 px-3 border-r border-stone-300 text-right">수강생수</th><th class="py-2.5 px-3 border-r border-stone-300 text-right">수업횟수</th><th class="py-2.5 px-3 border-r border-stone-300 text-right">수강료단가</th><th class="py-2.5 px-3 border-r border-stone-300 text-right">수용비</th><th class="py-2.5 px-3 text-right">최종단가(청구액)</th></tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200">
       `;
-
-      if (parsedList.length === 0) {
-        html += `<tr><td colspan="8" class="p-6 text-center text-stone-400">자동 추출된 항목이 없습니다. 상단 [📄 원본 엑셀] 버튼을 눌러 원본 시트를 열람해 보세요.</td></tr>`;
-      } else {
-        parsedList.forEach((item, idx) => {
-          html += `
-            <tr class="hover:bg-amber-50/30">
-              <td class="py-2 px-3 border-r border-stone-200 text-center font-mono text-stone-400">${idx + 1}</td>
-              <td class="py-2 px-3 border-r border-stone-200 font-bold text-stone-900">${item.course}</td>
-              <td class="py-2 px-3 border-r border-stone-200 text-center text-stone-800">${item.teacher}</td>
-              <td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.students > 0 ? item.students + '명' : '-'}</td>
-              <td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.sessions > 0 ? item.sessions + '회' : '-'}</td>
-              <td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.unitPrice > 0 ? item.unitPrice.toLocaleString() + '원' : '-'}</td>
-              <td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.fee > 0 ? item.fee.toLocaleString() + '원' : '-'}</td>
-              <td class="py-2 px-3 text-right font-bold font-mono text-amber-800 text-sm">${item.total.toLocaleString()}원</td>
-            </tr>
-          `;
-        });
-
-        html += `
-          <tr class="bg-amber-50/80 font-bold border-t-2 border-stone-400">
-            <td colspan="3" class="py-3 px-3 border-r border-stone-300 text-center text-stone-900">총 합계 (${parsedList.length}개 강좌)</td>
-            <td class="py-3 px-3 border-r border-stone-300 text-right font-mono text-stone-900">${totalStudents > 0 ? totalStudents + '명' : '-'}</td>
-            <td class="py-3 px-3 border-r border-stone-300 text-right font-mono text-stone-400">-</td>
-            <td class="py-3 px-3 border-r border-stone-300 text-right font-mono text-stone-400">-</td>
-            <td class="py-3 px-3 border-r border-stone-300 text-right font-mono text-stone-400">-</td>
-            <td class="py-3 px-3 text-right font-black font-mono text-amber-900 text-base">${grandTotal.toLocaleString()}원</td>
-          </tr>
-        `;
-      }
-
-      html += `
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `;
-
+      parsedList.forEach((item, idx) => {
+        html += `<tr class="hover:bg-amber-50/30"><td class="py-2 px-3 border-r border-stone-200 text-center font-mono text-stone-400">${idx + 1}</td><td class="py-2 px-3 border-r border-stone-200 font-bold text-stone-900">${item.course}</td><td class="py-2 px-3 border-r border-stone-200 text-center">${item.teacher}</td><td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.students || '-'}</td><td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.sessions || '-'}</td><td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.unitPrice ? item.unitPrice.toLocaleString()+'원' : '-'}</td><td class="py-2 px-3 border-r border-stone-200 text-right font-mono">${item.fee ? item.fee.toLocaleString()+'원' : '-'}</td><td class="py-2 px-3 text-right font-bold font-mono text-amber-800 text-sm">${item.total.toLocaleString()}원</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
       bodyEl.innerHTML = html;
       setTimeout(() => setExcelZoom('fit'), 50);
     }
@@ -2717,69 +2625,17 @@
     function renderRawExcelView(sheetName) {
       const sheet = currentWorkbook.Sheets[sheetName];
       const bodyEl = document.getElementById('preview-body');
-
-      if (!sheet || !sheet['!ref']) {
-        bodyEl.innerHTML = `<div class="p-8 text-center text-stone-400 text-xs">표시할 데이터가 없습니다.</div>`;
-        return;
-      }
-
+      if (!sheet || !sheet['!ref']) return;
       const range = XLSX.utils.decode_range(sheet['!ref']);
-      const merges = sheet['!merges'] || [];
-
-      const mergeMap = {};
-      const skipCells = new Set();
-
-      merges.forEach(m => {
-        const startKey = `${m.s.r}_${m.s.c}`;
-        mergeMap[startKey] = { rowspan: m.e.r - m.s.r + 1, colspan: m.e.c - m.s.c + 1 };
-        for (let R = m.s.r; R <= m.e.r; ++R) {
-          for (let C = m.s.c; C <= m.e.c; ++C) {
-            if (R === m.s.r && C === m.s.c) continue;
-            skipCells.add(`${R}_${C}`);
-          }
-        }
-      });
-
-      let html = '<table id="actual-excel-table" class="excel-paper-table">';
-      html += '<tbody>';
-
+      let html = '<table class="excel-paper-table"><tbody>';
       for (let R = range.s.r; R <= range.e.r; ++R) {
         html += '<tr>';
         for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cellKey = `${R}_${C}`;
-          if (skipCells.has(cellKey)) continue;
-
-          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-          const cell = sheet[cellAddress];
-
-          let mergeAttrs = '';
-          if (mergeMap[cellKey]) {
-            mergeAttrs = ` rowspan="${mergeMap[cellKey].rowspan}" colspan="${mergeMap[cellKey].colspan}"`;
-          }
-
-          let value = '';
-          let alignStyle = 'center';
-
-          if (cell) {
-            value = (cell.w !== undefined) ? cell.w : (cell.v !== undefined ? cell.v : '');
-            if (typeof cell.v === 'number') {
-              alignStyle = 'right';
-            } else if (typeof cell.v === 'string' && cell.v.length > 10) {
-              alignStyle = 'left';
-            }
-          }
-
-          let customClasses = '';
-          if (String(value).includes('청구서') || String(value).includes('합계') || String(value).includes('총액') || R < 6) {
-            customClasses = 'font-bold';
-            if (String(value).includes('청구서')) customClasses += ' text-base bg-amber-50/50';
-          }
-
-          html += `<td${mergeAttrs} class="${customClasses}" style="text-align: ${alignStyle};">${value}</td>`;
+          const cell = sheet[XLSX.utils.encode_cell({ r: R, c: C })];
+          html += `<td>${cell ? (cell.w !== undefined ? cell.w : cell.v) : ''}</td>`;
         }
         html += '</tr>';
       }
-
       html += '</tbody></table>';
       bodyEl.innerHTML = html;
       setTimeout(() => setExcelZoom('fit'), 50);
@@ -2790,77 +2646,50 @@
       const bodyEl = document.getElementById('preview-body');
       const viewport = document.getElementById('preview-viewport');
       const zoomText = document.getElementById('zoom-level-text');
-
       if (!wrapper || !bodyEl || !viewport) return;
-
       if (mode === 'fit') {
         const tableWidth = bodyEl.scrollWidth;
         const availableWidth = viewport.clientWidth - 40;
-
         if (tableWidth > 0 && availableWidth > 0) {
-          if (tableWidth > availableWidth) {
-            currentZoomScale = Math.max(0.45, Math.min(1.0, availableWidth / tableWidth));
-          } else {
-            currentZoomScale = 1.0;
-          }
+          currentZoomScale = tableWidth > availableWidth ? Math.max(0.45, Math.min(1.0, availableWidth / tableWidth)) : 1.0;
         }
       } else if (typeof mode === 'number') {
         currentZoomScale = Math.max(0.3, Math.min(2.0, mode));
       }
-
       wrapper.style.transform = `scale(${currentZoomScale})`;
       zoomText.textContent = `${Math.round(currentZoomScale * 100)}%`;
     }
 
-    function changeExcelZoom(delta) {
-      setExcelZoom(currentZoomScale + delta);
-    }
+    function changeExcelZoom(delta) { setExcelZoom(currentZoomScale + delta); }
 
     function printPreviewSheet() {
       const printContents = document.getElementById('preview-body').innerHTML;
       const win = window.open('', '', 'width=900,height=700');
-      win.document.write(`
-        <html>
-          <head>
-            <title>청구서 인쇄 미리보기</title>
-            <style>
-              body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; }
-              table { border-collapse: collapse; width: 100%; font-size: 11px; }
-              th, td { border: 1px solid #333; padding: 4px 6px; }
-            </style>
-          </head>
-          <body>
-            ${printContents}
-            <script>window.onload = function() { window.print(); window.close(); }<\/script>
-          </body>
-        </html>
-      `);
+      win.document.write(`<html><head><title>인쇄</title><style>body{font-family:'Malgun Gothic',sans-serif;padding:20px;}table{border-collapse:collapse;width:100%;font-size:11px;}th,td{border:1px solid #333;padding:4px 6px;}</style></head><body>${printContents}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
       win.document.close();
     }
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-    function openAddSchoolModal() {
-      document.getElementById('new-school-name').value = '';
-      openModal('modal-add-school');
-    }
+    function openAddSchoolModal() { document.getElementById('new-school-name').value = ''; openModal('modal-add-school'); }
 
     function handleSaveSchool(e) {
       e.preventDefault();
       const name = document.getElementById('new-school-name').value.trim();
       if (!name) return;
+      let list = appData.schools || fixedMasterSchools;
       const newId = 'sch_' + Date.now();
-      schools.push({ id: newId, name });
-      save('schools', schools);
+      list.push({ id: newId, name });
+      saveData('schools', list);
       closeModal('modal-add-school');
       renderSchoolList();
       selectSchool(newId);
     }
 
     function openAddExpenseModal() {
-      if (schools.length === 0) return alert('기관을 먼저 추가해 주세요!');
-      document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? schools[0].id : currentSchoolId;
+      const list = appData.schools || fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('exp-input-month').value = currentMonth;
       document.getElementById('exp-input-amount').value = '';
       document.getElementById('exp-input-file').value = '';
@@ -2874,18 +2703,16 @@
       const amount = parseInt(document.getElementById('exp-input-amount').value, 10);
       const fileInput = document.getElementById('exp-input-file');
       const file = fileInput.files[0];
-
-      const sch = schools.find(s => s.id === schoolId);
-      const schName = sch ? sch.name : '기관';
+      const listSch = appData.schools || fixedMasterSchools;
+      const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'e_' + Date.now();
-      const fileName = file ? file.name : `${schName}_${month}월_지출결의서.pdf`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_지출결의서.pdf`;
 
       if (file) await storeFile(fileId, file);
-
-      expenses.push({ id: fileId, month: month, schoolId, amount, fileName });
-      save('expenses', expenses);
+      let expList = appData.expenses || [];
+      expList.push({ id: fileId, month, schoolId, amount, fileName });
+      saveData('expenses', expList);
       closeModal('modal-add-expense');
-
       currentMonth = month;
       document.getElementById('select-month').value = month;
       renderExpenseAndAttendance();
@@ -2893,8 +2720,9 @@
     }
 
     function openAddAttendanceModal() {
-      if (schools.length === 0) return alert('기관을 먼저 추가해 주세요!');
-      document.getElementById('att-input-school').value = currentSchoolId === 'all' ? schools[0].id : currentSchoolId;
+      const list = appData.schools || fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('att-input-teacher').value = '';
       document.getElementById('att-input-course').value = '';
       document.getElementById('att-input-file').value = '';
@@ -2909,23 +2737,24 @@
       const days = parseInt(document.getElementById('att-input-days').value, 10);
       const fileInput = document.getElementById('att-input-file');
       const file = fileInput.files[0];
-
-      const sch = schools.find(s => s.id === schoolId);
+      const listSch = appData.schools || fixedMasterSchools;
+      const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
       const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.pdf`;
 
       if (file) await storeFile(fileId, file);
-
-      attendances.push({ id: fileId, month: currentMonth, schoolId, teacher, course, days, fileName });
-      save('attendances', attendances);
+      let attList = appData.attendances || [];
+      attList.push({ id: fileId, month: currentMonth, schoolId, teacher, course, days, fileName });
+      saveData('attendances', attList);
       closeModal('modal-add-attendance');
       renderExpenseAndAttendance();
       renderChecklist();
     }
 
     function openAddNoticeModal() {
-      if (schools.length === 0) return alert('기관을 먼저 추가해 주세요!');
-      document.getElementById('not-input-school').value = currentSchoolId === 'all' ? schools[0].id : currentSchoolId;
+      const list = appData.schools || fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
       document.getElementById('not-input-file').value = '';
       openModal('modal-add-notice');
@@ -2937,25 +2766,25 @@
       const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
       const fileInput = document.getElementById('not-input-file');
       const file = fileInput.files[0];
-
-      const sch = schools.find(s => s.id === schoolId);
-      const schName = sch ? sch.name : '기관';
+      const listSch = appData.schools || fixedMasterSchools;
+      const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'n_' + Date.now();
       const today = new Date().toISOString().split('T')[0];
-      const fileName = file ? file.name : `${schName}_${quarter}분기_안내장.pdf`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${quarter}분기_안내장.pdf`;
 
       if (file) await storeFile(fileId, file);
-
-      notices.push({ id: fileId, schoolId, quarter, date: today, fileName });
-      save('notices', notices);
+      let notList = appData.notices || [];
+      notList.push({ id: fileId, schoolId, quarter, date: today, fileName });
+      saveData('notices', notList);
       closeModal('modal-add-notice');
       renderNotices();
       renderChecklist();
     }
 
     function openAddMemoModal() {
-      if (schools.length === 0) return alert('기관을 먼저 추가해 주세요!');
-      document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? schools[0].id : currentSchoolId;
+      const list = appData.schools || fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('memo-input-text').value = '';
       openModal('modal-add-memo');
     }
@@ -2967,8 +2796,9 @@
       const text = document.getElementById('memo-input-text').value.trim();
       const today = new Date().toISOString().split('T')[0];
 
-      memos.push({ id: 'm_' + Date.now(), schoolId, author, text, date: today });
-      save('memos', memos);
+      let memList = appData.memos || [];
+      memList.push({ id: 'm_' + Date.now(), schoolId, author, text, date: today });
+      saveData('memos', memList);
       closeModal('modal-add-memo');
       renderMemos();
     }

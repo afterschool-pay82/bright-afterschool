@@ -328,7 +328,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE (공문 안내장 스타일 그룹 카드) ================= -->
+      <!-- ================= TAB 2: TIMETABLE (과목명 기준 스마트 그룹 카드) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -336,7 +336,7 @@
               <span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 관리</span>
               <h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">기관별 요일 강좌 및 강사 시간표</h4>
             </div>
-            <p class="text-xs text-stone-500 mt-1">동일 과목의 여러 반(A, B, C반 등)을 하나의 안내장 카드 형태로 묶어서 보여줍니다.</p>
+            <p class="text-xs text-stone-500 mt-1">동일 과목과 강사명을 가진 수업은 안내장처럼 하나의 카드에 A, B, C반 시간이 모두 모여서 표시됩니다.</p>
           </div>
           <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
@@ -818,7 +818,7 @@
 
         <div>
           <label class="block font-bold text-stone-700 mb-1">과목(강좌)명</label>
-          <input type="text" id="sched-input-course" required placeholder="예: 영어 A반" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          <input type="text" id="sched-input-course" required placeholder="예: 영어 (반 이름 제외하고 입력)" class="w-full p-2.5 rounded-xl border border-stone-200" />
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -1035,7 +1035,7 @@
     </div>
   </div>
 
-  <!-- ================= J A V A S C R I PT ================= -->
+  <!-- ================= J A V A S C R I P T ================= -->
   <script>
     let dbInstance = null;
     function initIndexedDB() {
@@ -1342,14 +1342,12 @@
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
 
-    // 엑셀 뷰어 캐시
     let currentWorkbook = null;
     let currentExcelViewMode = 'smart';
     let currentExcelFileName = '';
     let currentActiveSheetName = '';
     let currentZoomScale = 1.0;
 
-    // ---------- 3. Lifecycle Initialization ----------
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
       updateClock();
@@ -1379,7 +1377,6 @@
       }
     }
 
-    // ---------- 4. Tab Switcher ----------
     function switchTab(tId) {
       ['checklist', 'billing', 'timetable', 'master-teachers', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
         const v = document.getElementById(`view-${t}`);
@@ -1399,7 +1396,6 @@
       lucide.createIcons();
     }
 
-    // ---------- 5. School List ----------
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
@@ -1547,7 +1543,6 @@
       renderVaultFiles();
     }
 
-    // ---------- 6. TAB 0: CHECKLIST BOARD ----------
     function renderChecklist() {
       const tbody = document.getElementById('checklist-table-body');
       tbody.innerHTML = '';
@@ -1621,7 +1616,6 @@
       document.getElementById('stat-missing-count').textContent = missingCount;
     }
 
-    // ---------- 7. TAB 1: BILLING ----------
     function switchBillingCategory(cat) {
       currentBillingCategory = cat;
       const instBtn = document.getElementById('sub-billing-btn-instructor');
@@ -1912,7 +1906,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE (안내장 스타일 그룹 카드) ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE (과목명 표준화 스마트 그룹 카드) ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
@@ -1937,19 +1931,23 @@
         if (items.length === 0) {
           col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
         } else {
-          // [과목 + 강사명] 기준 그룹화 (안내장 스타일)
+          // 과목명에서 A반, B반 등의 접미사를 깔끔하게 정규화하여 그룹화
           const groupMap = new Map();
           items.forEach(item => {
-            const key = `${item.course}_${item.teacher}`;
+            // "영어A", "영어 B반" 등에서 순수 과목명 추출 (예: "영어")
+            let cleanCourse = item.course.replace(/[A-Za-z반급ⅠⅡⅢⅣⅤ]+$/, '').trim();
+            if (!cleanCourse) cleanCourse = item.course;
+
+            const key = `${cleanCourse}_${item.teacher}`;
             if (!groupMap.has(key)) {
               groupMap.set(key, {
-                course: item.course,
+                displayCourse: cleanCourse,
                 teacher: item.teacher,
                 phone: item.phone,
                 slots: []
               });
             }
-            groupMap.get(key).slots.push({ id: item.id, time: item.time });
+            groupMap.get(key).slots.push({ id: item.id, time: item.time, rawCourse: item.course });
           });
 
           groupMap.forEach((group) => {
@@ -1968,8 +1966,8 @@
             card.innerHTML = `
               <div>
                 <div class="flex items-center justify-between">
-                  <h5 class="font-black text-stone-900 text-sm">${group.course} <span class="text-amber-800 font-semibold text-xs">(${group.teacher})</span></h5>
-                  <button onclick="deleteScheduleGroup('${group.course}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제">
+                  <h5 class="font-black text-stone-900 text-sm">${group.displayCourse} <span class="text-amber-800 font-semibold text-xs">(${group.teacher})</span></h5>
+                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -1988,9 +1986,15 @@
       lucide.createIcons();
     }
 
-    function deleteScheduleGroup(course, teacher, day) {
-      if (confirm(`'${course} (${teacher})' 강좌의 모든 시간대를 삭제하시겠습니까?`)) {
-        schedules = schedules.filter(s => !(s.course === course && s.teacher === teacher && s.day === day && (currentSchoolId === 'all' || s.schoolId === currentSchoolId)));
+    function deleteScheduleGroup(displayCourse, teacher, day) {
+      if (confirm(`'${displayCourse} (${teacher})' 강좌의 모든 시간대를 삭제하시겠습니까?`)) {
+        schedules = schedules.filter(s => {
+          let clean = s.course.replace(/[A-Za-z반급ⅠⅡⅢⅣⅤ]+$/, '').trim();
+          if (!clean) clean = s.course;
+          const match = (clean === displayCourse && s.teacher === teacher && s.day === day);
+          const sameSchool = (currentSchoolId === 'all' || s.schoolId === currentSchoolId);
+          return !(match && sameSchool);
+        });
         save('schedules', schedules);
         renderSchoolTimetableGrid();
       }
@@ -2237,7 +2241,7 @@
               <button onclick="previewFile('${e.id}', 'pdf', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button>
             </td>
             <td class="p-2.5 text-center">
-              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
+              <button onclick="downloadFileFromDB('${e.id}', '${e.fileName || '지출결의서.pdf'}')" class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[11px] font-bold border border-emerald-200">다운</button>
             </td>
             <td class="p-2.5 text-center">
               <button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -2834,7 +2838,6 @@
       win.document.close();
     }
 
-    // ---------- 13. MODAL HANDLERS ----------
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -2970,7 +2973,6 @@
       renderMemos();
     }
 
-    // ---------- 14. SAMPLE EXCEL DOWNLOAD ----------
     function downloadSampleExcel() {
       const wb = XLSX.utils.book_new();
       const billingData = [

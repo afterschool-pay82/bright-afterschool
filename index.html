@@ -335,7 +335,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE (월화수목금 학교별 시간표 & 대체강사) ================= -->
+      <!-- ================= TAB 2: TIMETABLE (월화수목금 학교별 공문 스타일 시간표 & 대체강사) ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -343,7 +343,7 @@
               <span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 관리</span>
               <h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">기관별 요일 강좌 및 강사 시간표</h4>
             </div>
-            <p class="text-xs text-stone-500 mt-1">학교별로 요일과 구체적인 수업 시간대, 강좌명, 강사명을 등록하여 월~금 시간표를 관리합니다.</p>
+            <p class="text-xs text-stone-500 mt-1">동일 과목의 여러 시간대는 하나의 카드로 자동 묶여 학교 안내장처럼 깔끔하게 표시됩니다.</p>
           </div>
           <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
@@ -740,7 +740,7 @@
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-edit-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold">수정 저장</button>
+          <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-amber-500 text-white font-bold">수정 저장</button>
         </div>
       </form>
     </div>
@@ -827,7 +827,7 @@
     </div>
   </div>
 
-  <!-- 5. 시간표 강좌 개별 등록 모달 (탭형 드롭다운 및 시간 직접 등록 지원) -->
+  <!-- 5. 시간표 강좌 개별 등록 모달 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -852,7 +852,6 @@
           </div>
         </div>
 
-        <!-- 자주 쓰는 시간 선택 드롭다운 및 추가 버튼 -->
         <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
           <label class="block font-bold text-stone-700">⏰ 자주 쓰는 시간 선택 (탭)</label>
           <div class="flex gap-2">
@@ -1963,7 +1962,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID & SUBSTITUTE FINDER ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID (동일 과목 그룹 카드형식 공문 스타일) ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
@@ -1985,29 +1984,46 @@
           items = items.filter(s => s.schoolId === currentSchoolId);
         }
 
-        // 시간순 정렬
-        items.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
-
         if (items.length === 0) {
           col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
         } else {
+          // 과목명 + 강사명 기준 그룹화 (영어 A반, 영어 B반 등을 하나로 묶기)
+          const groupMap = {};
           items.forEach(item => {
+            const key = `${item.course}_${item.teacher}`;
+            if (!groupMap[key]) {
+              groupMap[key] = {
+                course: item.course,
+                teacher: item.teacher,
+                phone: item.phone,
+                slots: [],
+                ids: []
+              };
+            }
+            groupMap[key].slots.push(item.time);
+            groupMap[key].ids.push(item.id);
+          });
+
+          Object.values(groupMap).forEach(g => {
             const card = document.createElement('div');
             card.className = "p-3.5 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between";
+            
+            let slotsHtml = g.slots.map((s, idx) => `<div class="font-mono text-stone-700 mt-0.5">⏰ ${String.fromCharCode(65+idx)}) ${s}</div>`).join('');
+
             card.innerHTML = `
               <div>
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-stone-900 text-sm">${item.course} <span class="text-amber-800 font-semibold text-xs">(${item.teacher})</span></span>
-                  <button onclick="deleteSchedule('${item.id}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500">
+                <div class="flex items-center justify-between mb-1">
+                  <h5 class="font-black text-stone-900 text-sm">${g.course} <span class="text-amber-800 font-bold text-xs">(${g.teacher})</span></h5>
+                  <button onclick="deleteScheduleGroup('${g.ids.join(',')}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="그룹 삭제">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
-                <div class="mt-1.5 font-mono text-stone-600 font-semibold">
-                  ⏰ ${item.time}
+                <div class="space-y-0.5 mt-1 pt-1 border-t border-stone-100">
+                  ${slotsHtml}
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-stone-100 text-[11px] font-mono text-stone-400 flex justify-between">
-                <span>${item.phone || ''}</span>
+              <div class="mt-2 pt-1 text-[11px] font-mono text-stone-400 flex justify-between">
+                <span>${g.phone || ''}</span>
               </div>
             `;
             col.appendChild(card);
@@ -2075,9 +2091,10 @@
       renderSchoolTimetableGrid();
     }
 
-    function deleteSchedule(id) {
-      if (confirm('해당 강좌 시간표를 삭제하시겠습니까?')) {
-        schedules = schedules.filter(s => s.id !== id);
+    function deleteScheduleGroup(idsStr) {
+      if (confirm('해당 강좌 시간표 그룹을 삭제하시겠습니까?')) {
+        const ids = idsStr.split(',');
+        schedules = schedules.filter(s => !ids.includes(s.id));
         save('schedules', schedules);
         renderSchoolTimetableGrid();
       }

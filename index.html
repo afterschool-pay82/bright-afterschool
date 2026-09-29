@@ -1031,9 +1031,8 @@
     </div>
   </div>
 
-  <!-- ================= J A V A S C R I P T (파이어베이스 실시간 동기화 포함) ================= -->
+  <!-- ================= J A V A S C R I P T (파이어베이스 실시간 동기화 + 로컬백업 복구) ================= -->
   <script>
-    // Firebase 설정
     const firebaseConfig = {
       apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4",
       authDomain: "bright-afterschool.firebaseapp.com",
@@ -1046,7 +1045,6 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref();
 
     let dbInstance = null;
     function initIndexedDB() {
@@ -1308,11 +1306,11 @@
       { school: '창영초', subject: '창의생명과학', name: '신지현', day: '월', phone: '010-2705-1593' },
       { school: '창영초', subject: '컴퓨터&코딩', name: '유진희', day: '월', phone: '010-6562-0653' },
       { school: '창영초', subject: '음악줄넘기', name: '김은선', day: '수', phone: '010-2313-9633' },
-      { school: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
+      { school: '창영초', name: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
       { school: '창영초', subject: '요리&제빵', name: '박경선', day: '금', phone: '010-2686-3150' },
       { school: '창영초', subject: '놀이영어', name: '정혜숙', day: '월', phone: '010-7303-0229' },
       { school: '창영초', subject: '창의미술', name: '김진애', day: '화', phone: '010-2258-4945' },
-      { school: '창영초', subject: '책놀이', name: '이선형', day: '수', phone: '010-2461-9030' },
+      { school: '창영초', subject: '책놀Id', name: '이선형', day: '수', phone: '010-2461-9030' },
       { school: '창영초', subject: '놀이음악', name: '주희정', day: '목', phone: '010-7463-2110' },
       { school: '창영초', subject: '놀이체육', name: '강재건', day: '금', phone: '010-9136-8467' },
       { school: '창영초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
@@ -1320,70 +1318,7 @@
       { school: '창영초', subject: '바이올린', name: '연정윤', day: '화', phone: '010-5298-5076' }
     ];
 
-    let dbInstance = null;
-    function initIndexedDB() {
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v4', 1);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('files')) {
-            db.createObjectStore('files', { keyPath: 'id' });
-          }
-        };
-        req.onsuccess = (e) => {
-          dbInstance = e.target.result;
-          resolve(dbInstance);
-        };
-        req.onerror = () => reject('DB Error');
-      });
-    }
-
-    async function storeFile(fileId, fileObj) {
-      if (!dbInstance || !fileObj) return;
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const tx = dbInstance.transaction('files', 'readwrite');
-          const store = tx.objectStore('files');
-          store.put({
-            id: fileId,
-            name: fileObj.name,
-            type: fileObj.type,
-            data: reader.result
-          });
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = () => reject('Save Failed');
-        };
-        reader.readAsDataURL(fileObj);
-      });
-    }
-
-    async function getFileFromDB(fileId) {
-      if (!dbInstance) return null;
-      return new Promise((resolve) => {
-        const tx = dbInstance.transaction('files', 'readonly');
-        const store = tx.objectStore('files');
-        const req = store.get(fileId);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror = () => resolve(null);
-      });
-    }
-
-    async function downloadFileFromDB(fileId, fallbackName) {
-      const fileData = await getFileFromDB(fileId);
-      if (fileData && fileData.data) {
-        const a = document.createElement('a');
-        a.href = fileData.data;
-        a.download = fileData.name || fallbackName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        alert('저장된 파일 원본이 없습니다. 새 서류를 등록해 보세요.');
-      }
-    }
-
-    // 데이터 저장/불러오기 (Firebase 실시간 동기화 + LocalStorage 백업)
+    // 기본 데이터 구조 설정 (데이터가 없을 때 기본 학교 목록 강제 유지)
     let appData = {
       schools: fixedMasterSchools,
       billings: [],
@@ -1402,18 +1337,9 @@
       bannerNotice: '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
     };
 
-    function loadDataFromLocal() {
-      const s = localStorage.getItem('bm_app_data');
-      if (s) {
-        try { appData = JSON.parse(s); } catch(e){}
-      }
-    }
-    loadDataFromLocal();
-
     function saveData(key, val) {
       appData[key] = val;
       localStorage.setItem('bm_app_data', JSON.stringify(appData));
-      // Firebase 실시간 동기화 전송
       firebase.database().ref('brightmind_data').set(appData);
     }
 
@@ -1435,16 +1361,19 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // Firebase 실시간 데이터 수신 리스너 (다른 곳에서 수정하면 실시간 반영)
+      // Firebase 실시간 데이터 연동 및 초기 데이터가 비어있을 경우 자동 동기화 보호
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
-        if (remoteData) {
+        if (remoteData && remoteData.schools && remoteData.schools.length > 0) {
           appData = remoteData;
-          localStorage.setItem('bm_app_data', JSON.stringify(appData));
-          renderSchoolList();
-          renderAllViews();
-          populatePresetTimesDropdown();
+        } else {
+          // 최초 실행이거나 DB가 비어있으면 기본 데이터 밀어넣기
+          firebase.database().ref('brightmind_data').set(appData);
         }
+        localStorage.setItem('bm_app_data', JSON.stringify(appData));
+        renderSchoolList();
+        renderAllViews();
+        populatePresetTimesDropdown();
       });
 
       document.getElementById('banner-notice-text').textContent = appData.bannerNotice || '';
@@ -1491,7 +1420,7 @@
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       container.innerHTML = '';
-      const list = (appData.schools && appData.schools.length >= 10) ? appData.schools : fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       document.getElementById('badge-total-schools').textContent = `${list.length}개소`;
 
       list.forEach(sch => {
@@ -1546,7 +1475,7 @@
       const heroTag = document.getElementById('hero-admin-tag');
       const editBtn = document.getElementById('hero-edit-school-btn');
 
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (id === 'all') {
         titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
@@ -1570,7 +1499,7 @@
 
     function openEditSchoolModal(id, e) {
       if (e) e.stopPropagation();
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === id);
       if (!sch) return;
       document.getElementById('edit-school-id').value = sch.id;
@@ -1588,7 +1517,7 @@
       const newName = document.getElementById('edit-school-name').value.trim();
       if (!newName) return;
 
-      let list = appData.schools || fixedMasterSchools;
+      let list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === id);
       if (sch) {
         sch.name = newName;
@@ -1601,7 +1530,7 @@
 
     function deleteSchool(id, e) {
       e.stopPropagation();
-      let list = appData.schools || fixedMasterSchools;
+      let list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === id);
       if (confirm(`'${sch ? sch.name : ''}' 기관을 삭제하시겠습니까?`)) {
         list = list.filter(s => s.id !== id);
@@ -1614,7 +1543,7 @@
 
     function populateSelects() {
       const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school'];
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1646,7 +1575,7 @@
       let readyCount = 0;
       let missingCount = 0;
       const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
       const attList = appData.attendances || [];
       const expList = appData.expenses || [];
@@ -1739,7 +1668,7 @@
       const allView = document.getElementById('billing-all-schools-view');
       const singleView = document.getElementById('billing-single-school-view');
       const viewHint = document.getElementById('billing-view-hint');
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
 
       if (currentSchoolId === 'all') {
@@ -1869,7 +1798,7 @@
     }
 
     function openAddBillingModalForSlot(schoolId, period) {
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
@@ -1899,7 +1828,7 @@
       const fileInput = document.getElementById('billing-input-file');
       const file = fileInput.files[0];
 
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catLabel = category === 'instructor' ? '강사료' : '교재비';
@@ -1907,7 +1836,6 @@
       const fileName = file ? file.name : `${schName}_${quarter}분기_${period}차_${catLabel}청구서.xlsx`;
 
       if (file) await storeFile(fileId, file);
-
       let billList = appData.billings || [];
       const existingIdx = billList.findIndex(b => b.schoolId === schoolId && (b.category || 'instructor') === category && b.quarter === quarter && b.period === period);
       if (existingIdx > -1) {
@@ -1926,7 +1854,7 @@
       const billList = appData.billings || [];
       const item = billList.find(b => b.id === billingId);
       if (!item) return;
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === item.schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = (item.category || 'instructor') === 'instructor' ? '강사료' : '교재비';
@@ -1968,7 +1896,7 @@
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const schedList = appData.schedules || [];
 
       if (currentSchoolId === 'all') {
@@ -2118,7 +2046,7 @@
       grid.innerHTML = '';
 
       let list = appData.masterTeachers || fullMasterTeachersData;
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (currentSchoolId !== 'all') {
         const sch = listSch.find(s => s.id === currentSchoolId);
         if (sch) list = list.filter(t => t.school === sch.name);
@@ -2251,7 +2179,7 @@
       const expBody = document.getElementById('expense-table-body');
       expBody.innerHTML = '';
       const expList = (appData.expenses || []).filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       let totalExp = 0;
       if (expList.length === 0) {
@@ -2291,7 +2219,7 @@
             <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
             <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
             <td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
-            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
+            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
             <td class="p-2.5 text-center"><button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           attBody.appendChild(tr);
@@ -2335,7 +2263,7 @@
       let list = appData.notices || [];
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
       if (currentNoticeQuarter !== 'all') list = list.filter(n => String(n.quarter) === currentNoticeQuarter);
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
@@ -2432,7 +2360,7 @@
       container.innerHTML = '';
       let list = appData.memos || [];
       if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다.</div>`;
@@ -2677,7 +2605,7 @@
       e.preventDefault();
       const name = document.getElementById('new-school-name').value.trim();
       if (!name) return;
-      let list = appData.schools || fixedMasterSchools;
+      let list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const newId = 'sch_' + Date.now();
       list.push({ id: newId, name });
       saveData('schools', list);
@@ -2687,7 +2615,7 @@
     }
 
     function openAddExpenseModal() {
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('exp-input-month').value = currentMonth;
@@ -2703,7 +2631,7 @@
       const amount = parseInt(document.getElementById('exp-input-amount').value, 10);
       const fileInput = document.getElementById('exp-input-file');
       const file = fileInput.files[0];
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'e_' + Date.now();
       const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_지출결의서.pdf`;
@@ -2720,7 +2648,7 @@
     }
 
     function openAddAttendanceModal() {
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('att-input-teacher').value = '';
@@ -2737,7 +2665,7 @@
       const days = parseInt(document.getElementById('att-input-days').value, 10);
       const fileInput = document.getElementById('att-input-file');
       const file = fileInput.files[0];
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
       const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.pdf`;
@@ -2752,7 +2680,7 @@
     }
 
     function openAddNoticeModal() {
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
@@ -2766,7 +2694,7 @@
       const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
       const fileInput = document.getElementById('not-input-file');
       const file = fileInput.files[0];
-      const listSch = appData.schools || fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'n_' + Date.now();
       const today = new Date().toISOString().split('T')[0];
@@ -2782,7 +2710,7 @@
     }
 
     function openAddMemoModal() {
-      const list = appData.schools || fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('memo-input-text').value = '';

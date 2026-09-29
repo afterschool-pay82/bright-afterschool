@@ -1963,7 +1963,7 @@
       renderChecklist();
     }
 
-    // ---------- 8. TAB 2: SCHOOL TIMETABLE & SUBSTITUTE FINDER ----------
+    // ---------- 8. TAB 2: SCHOOL TIMETABLE GRID & SUBSTITUTE FINDER ----------
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
@@ -1993,20 +1993,21 @@
         } else {
           items.forEach(item => {
             const card = document.createElement('div');
-            card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between";
+            card.className = "p-3.5 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between";
             card.innerHTML = `
               <div>
                 <div class="flex items-center justify-between">
-                  <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-extrabold text-[11px]">⏰ ${item.time}</span>
+                  <span class="font-bold text-stone-900 text-sm">${item.course} <span class="text-amber-800 font-semibold text-xs">(${item.teacher})</span></span>
                   <button onclick="deleteSchedule('${item.id}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
-                <h5 class="font-extrabold text-stone-900 mt-1.5 text-sm">${item.course}</h5>
-                <p class="font-bold text-amber-800 mt-1">${item.teacher} 강사</p>
+                <div class="mt-1.5 font-mono text-stone-600 font-semibold">
+                  ⏰ ${item.time}
+                </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-400">
-                <span class="font-mono text-stone-600">${item.phone || ''}</span>
+              <div class="mt-2 pt-2 border-t border-stone-100 text-[11px] font-mono text-stone-400 flex justify-between">
+                <span>${item.phone || ''}</span>
               </div>
             `;
             col.appendChild(card);
@@ -2019,7 +2020,7 @@
     function populatePresetTimesDropdown() {
       const select = document.getElementById('preset-time-select');
       if (!select) return;
-      select.innerHTML = '<option value="">-- 시간 선택하기 --</option>';
+      select.innerHTML = '<option value="">-- 시간 선택하기 (탭) --</option>';
       presetTimes.forEach(pt => {
         const opt = document.createElement('option');
         opt.value = pt;

@@ -158,7 +158,7 @@
       </div>
     </header>
 
-    <!-- 학교 선택 여부에 따라 색상 테마가 확 바뀌어 구분되는 히어로 배너 -->
+    <!-- 학교 선택 여부에 따라 색상 테마가 확 바뀌어 구분되는 히어로 배너 (가독성 개선 완료) -->
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 transition-all duration-300">
       <div>
         <div class="flex items-center gap-2">
@@ -1273,7 +1273,6 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // Firebase 실시간 동기화 리스너 (테마 구분에 따른 스타일 전환 포함)
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData && remoteData.schools && remoteData.schools.length > 0) {
@@ -1375,7 +1374,7 @@
       lucide.createIcons();
     }
 
-    // [전체 통합 vs 개별 학교 모드에 따른 시각적 구분 디자인 적용]
+    // [가독성 개선 완료] 학교별 선택 시 화사한 스카이 블루/아쿠아 테마 적용
     function selectSchool(id) {
       currentSchoolId = id;
       renderSchoolList();
@@ -1392,7 +1391,6 @@
       const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       
       if (id === 'all') {
-        // 전체 통합 모드 (오렌지/앰버 테마)
         titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
         badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
@@ -1405,16 +1403,16 @@
         heroTag.textContent = '본사 총괄 모드';
         editBtn.classList.add('hidden');
       } else {
-        // 개별 학교 전담 모드 (네이비/블루 테마로 확실한 구분)
         const sch = list.find(s => s.id === id);
         const name = sch ? sch.name : '기관 전용';
         
         titleEl.textContent = `${name} 협업룸`;
         badgeEl.textContent = `🏫 ${name} 전담 모드`;
-        badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-extrabold bg-blue-100 text-blue-900 border border-blue-300 shadow-2xs';
+        badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-extrabold bg-sky-100 text-sky-900 border border-sky-300 shadow-2xs';
         
-        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white border border-blue-800 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
-        heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-500 text-white';
+        // 글씨가 선명하게 보이는 화사한 스카이/아쿠아 블루톤
+        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-sky-600 via-cyan-600 to-teal-600 text-white border border-sky-400 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
+        heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-white/20 text-white backdrop-blur-xs';
         heroBadgeTag.textContent = '학교별 전담 관리';
         heroName.textContent = `${name} 위탁운영 현황`;
         heroDesc.textContent = `${name}의 청구서, 요일별 시간표, 1:1 업무메모를 단독 관리합니다.`;
@@ -2558,7 +2556,7 @@
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}` + `${currentMonth}월_${teacher}_출근부.pdf`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.pdf`;
 
       if (file) await storeFile(fileId, file);
       let attList = appData.attendances || [];

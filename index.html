@@ -590,7 +590,7 @@
 
   <!-- ================= M O D A L S ================= -->
 
-  <!-- 1. 파일 미리보기 모달 (PDF 및 이미지 지원) -->
+  <!-- 1. 파일 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 md:p-6 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-7xl w-full h-[94vh] flex flex-col shadow-2xl border border-stone-200 overflow-hidden">
       <div class="px-5 py-3 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3 bg-stone-50">
@@ -909,10 +909,6 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">안내장 파일 (PDF 또는 이미지)</label>
           <input type="file" id="not-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-stone-100 file:text-stone-800" />
-        </div>
-        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center gap-2">
-          <input type="checkbox" id="auto-parse-timetable" checked class="w-4 h-4 text-amber-600 rounded" />
-          <label for="auto-parse-timetable" class="font-bold text-stone-800 text-[11px] cursor-pointer">✨ 안내장 등록 시 요일별 시간표 자동 연동</label>
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -2578,7 +2574,6 @@
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
       document.getElementById('not-input-file').value = '';
-      document.getElementById('auto-parse-timetable').checked = true;
       openModal('modal-add-notice');
     }
 
@@ -2588,7 +2583,6 @@
       const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
       const fileInput = document.getElementById('not-input-file');
       const file = fileInput.files[0];
-      const autoParse = document.getElementById('auto-parse-timetable').checked;
 
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
@@ -2603,25 +2597,10 @@
       notList.push({ id: fileId, schoolId, quarter, date: today, fileName });
       saveData('notices', notList);
 
-      if (autoParse) {
-        let schedList = appData.schedules || [];
-        const sampleParsed = [
-          { day: '월요일', time: '13:40~14:20', course: '방과후 특기적성(안내장자동등록)', teacher: '담당강사', phone: '010-0000-0000' },
-          { day: '수요일', time: '14:30~15:10', course: '창의 프로그램(안내장자동등록)', teacher: '담당강사', phone: '010-0000-0000' }
-        ];
-        sampleParsed.forEach(sp => {
-          schedList.push({ id: 's_' + Date.now() + Math.random(), schoolId, day: sp.day, time: sp.time, course: sp.course, teacher: sp.teacher, phone: sp.phone });
-        });
-        saveData('schedules', schedList);
-        alert('안내장 등록 및 요일별 시간표 자동 연동이 완료되었습니다!');
-      } else {
-        alert('분기별 안내장이 성공적으로 등록되었습니다.');
-      }
-
+      alert('분기별 안내장이 성공적으로 등록되었습니다.');
       closeModal('modal-add-notice');
       renderNotices();
       renderChecklist();
-      renderSchoolTimetableGrid();
     }
 
     function openAddMemoModal() {

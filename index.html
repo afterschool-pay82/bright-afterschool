@@ -174,35 +174,35 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (한 줄에 쫙 펼쳐지도록 수정됨) -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
-      <nav class="flex gap-2 overflow-x-auto custom-scroll">
-        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm">
-          <i data-lucide="calculator" class="w-4 h-4"></i> 청구서
+      <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0">
+          <i data-lucide="calculator" class="w-3.5 h-3.5"></i> 청구서 관리
         </button>
-        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="calendar-days" class="w-4 h-4"></i> 📅 학사 일정 캘린더
+        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> 학사 일정 캘린더
         </button>
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 hidden">
-          <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표
+        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 hidden">
+          <i data-lucide="calendar" class="w-3.5 h-3.5"></i> 요일별 시간표
         </button>
-        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 과목 검색
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="users" class="w-3.5 h-3.5"></i> 강사 현황 & 과목 검색
         </button>
-        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
+        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="check-square" class="w-3.5 h-3.5"></i> 마감 신호등 현황판
         </button>
-        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 코디출근부 (PDF/이미지)
+        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 지출결의서 & 코디출근부
         </button>
-        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장 (PDF/이미지)
+        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 분기별 안내장
         </button>
-        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="message-square" class="w-4 h-4"></i> 학교별 1:1 업무메모
+        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="message-square" class="w-3.5 h-3.5"></i> 학교별 1:1 업무메모
         </button>
-        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="folder-archive" class="w-4 h-4"></i> 공용 서식 자료실
+        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+          <i data-lucide="folder-archive" class="w-3.5 h-3.5"></i> 공용 서식 자료실
         </button>
       </nav>
     </div>
@@ -919,7 +919,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v20', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v21', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1198,7 +1198,6 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // 강제로 기본 12개 학교 보장 설정 후 렌더링
       appData.schools = fixedMasterSchools;
 
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
@@ -1206,7 +1205,6 @@
         if (remoteData) {
           appData = remoteData;
         }
-        // 원격 데이터 여부와 상관없이 fixedMasterSchools 강제 적용
         appData.schools = fixedMasterSchools;
         
         renderSchoolList();
@@ -1248,14 +1246,14 @@
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
-          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm";
+          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0";
           if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'calendar-events') renderCalendarGrid();
           if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
-          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200";
+          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0";
         }
       });
       lucide.createIcons();

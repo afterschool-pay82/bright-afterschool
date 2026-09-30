@@ -87,7 +87,6 @@
       </div>
     </div>
 
-    <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
@@ -107,14 +106,13 @@
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1"></div>
     </div>
 
-    <!-- 서류 제출 현황 요약 위젯 -->
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
           <span class="flex items-center gap-1.5 font-bold">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 서류 제출 현황
           </span>
-          <span class="text-[11px] text-stone-400">실시간</span>
+          <span class="text-[11px] text-stone-400">실시간 연동됨</span>
         </div>
         <div class="grid grid-cols-3 gap-1 text-center font-mono">
           <div class="p-1.5 bg-emerald-50 rounded-xl border border-emerald-100">
@@ -156,7 +154,6 @@
           (주)밝은생각 협업룸
         </h2>
       </div>
-      <div class="flex items-center gap-2"></div>
     </header>
 
     <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
@@ -168,7 +165,7 @@
         <h3 class="text-xl font-brand text-stone-900 mt-1.5" id="hero-school-name">전체 위탁기관 종합 현황</h3>
         <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">1분기 강사료 총액과 교재비 총액을 한눈에 간편하게 확인합니다.</p>
       </div>
-      <div class="flex items-center gap-2">
+      <div>
         <button id="hero-edit-school-btn" onclick="openEditCurrentSchoolModal()" class="px-3 py-2 rounded-2xl bg-white hover:bg-stone-50 border border-amber-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs hidden">
           <i data-lucide="pencil" class="w-3.5 h-3.5 text-amber-600"></i> 기관명 수정
         </button>
@@ -218,18 +215,14 @@
             <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
             <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
           </div>
-          <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">
-            ※ 전체 기관 모드에서는 강사료 총액과 교재비 총액이 간단하게 요약됩니다.
-          </div>
+          <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">※ 전체 기관 모드에서는 강사료 총액과 교재비 총액이 간단하게 요약됩니다.</div>
         </div>
 
         <div id="billing-all-schools-view" class="space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white p-6 rounded-3xl shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs font-bold text-amber-100 flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-white"></span> 선택 분기 강사료 총액
-                </p>
+                <p class="text-xs font-bold text-amber-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-white"></span> 선택 분기 강사료 총액</p>
                 <h3 class="text-3xl md:text-4xl font-brand mt-2 tracking-tight" id="all-total-instructor-amount">0원</h3>
                 <p class="text-[11px] text-amber-100 mt-1">전체 기관 1차·2차·3차 정산 합산</p>
               </div>
@@ -238,9 +231,7 @@
 
             <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-sm flex items-center justify-between">
               <div>
-                <p class="text-xs font-bold text-emerald-100 flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-white"></span> 선택 분기 교재비 총액
-                </p>
+                <p class="text-xs font-bold text-emerald-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-white"></span> 선택 분기 교재비 총액</p>
                 <h3 class="text-3xl md:text-4xl font-brand mt-2 tracking-tight" id="all-total-materials-amount">0원</h3>
                 <p class="text-[11px] text-emerald-100 mt-1">전체 기관 교구재 및 재료비 합산</p>
               </div>
@@ -607,36 +598,20 @@
 
         <div class="flex items-center gap-2">
           <div id="excel-view-switch-btns" class="flex items-center bg-stone-200/90 rounded-xl p-1 gap-1 text-xs font-bold">
-            <button onclick="setExcelViewMode('smart')" id="btn-view-smart" class="px-3 py-1 rounded-lg bg-white text-stone-900 shadow-2xs">
-              ✨ 표준 정산서
-            </button>
-            <button onclick="setExcelViewMode('raw')" id="btn-view-raw" class="px-3 py-1 rounded-lg text-stone-600 hover:bg-stone-300">
-              📄 원본 엑셀
-            </button>
+            <button onclick="setExcelViewMode('smart')" id="btn-view-smart" class="px-3 py-1 rounded-lg bg-white text-stone-900 shadow-2xs">✨ 표준 정산서</button>
+            <button onclick="setExcelViewMode('raw')" id="btn-view-raw" class="px-3 py-1 rounded-lg text-stone-600 hover:bg-stone-300">📄 원본 엑셀</button>
           </div>
 
           <div id="excel-zoom-controls" class="flex items-center bg-stone-200/80 rounded-xl p-1 gap-1 text-xs font-bold">
-            <button onclick="setExcelZoom('fit')" class="px-2.5 py-1 rounded-lg bg-white text-stone-800 shadow-2xs hover:bg-stone-50">
-              한 화면 맞춤
-            </button>
-            <button onclick="changeExcelZoom(-0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="축소">
-              <i data-lucide="zoom-out" class="w-3.5 h-3.5"></i>
-            </button>
+            <button onclick="setExcelZoom('fit')" class="px-2.5 py-1 rounded-lg bg-white text-stone-800 shadow-2xs hover:bg-stone-50">한 화면 맞춤</button>
+            <button onclick="changeExcelZoom(-0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="축소"><i data-lucide="zoom-out" class="w-3.5 h-3.5"></i></button>
             <span id="zoom-level-text" class="px-1 font-mono text-[11px] text-stone-600">100%</span>
-            <button onclick="changeExcelZoom(0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="확대">
-              <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
-            </button>
+            <button onclick="changeExcelZoom(0.1)" class="px-2 py-1 rounded-lg hover:bg-stone-300 text-stone-700" title="확대"><i data-lucide="zoom-in" class="w-3.5 h-3.5"></i></button>
           </div>
 
-          <button onclick="printPreviewSheet()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
-            <i data-lucide="printer" class="w-3.5 h-3.5"></i> 인쇄
-          </button>
-          <button id="preview-download-btn" class="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-stone-900 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> 다운로드
-          </button>
-          <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-200">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
+          <button onclick="printPreviewSheet()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs"><i data-lucide="printer" class="w-3.5 h-3.5"></i> 인쇄</button>
+          <button id="preview-download-btn" class="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-stone-900 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs"><i data-lucide="download" class="w-3.5 h-3.5"></i> 다운로드</button>
+          <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-200"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
       </div>
 
@@ -654,9 +629,7 @@
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="school" class="w-5 h-5 text-amber-500"></i> 새 위탁 기관 추가
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="school" class="w-5 h-5 text-amber-500"></i> 새 위탁 기관 추가</h3>
         <button onclick="closeModal('modal-add-school')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveSchool(event)" class="space-y-4">
@@ -697,9 +670,7 @@
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> <span id="add-billing-modal-title">청구서 등록</span>
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> <span id="add-billing-modal-title">청구서 등록</span></h3>
         <button onclick="closeModal('modal-add-billing')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveBilling(event)" class="space-y-3.5 text-xs">
@@ -736,9 +707,7 @@
   <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="pencil" class="w-5 h-5 text-amber-500"></i> 청구서 내역 및 파일 수정
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="pencil" class="w-5 h-5 text-amber-500"></i> 청구서 내역 및 파일 수정</h3>
         <button onclick="closeModal('modal-edit-billing')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleUpdateBilling(event)" class="space-y-3.5 text-xs">
@@ -758,12 +727,9 @@
 
         <div>
           <label class="block font-bold text-stone-700 mb-1">현재 첨부된 파일</label>
-          <div id="edit-billing-current-filename" class="p-2.5 rounded-xl bg-stone-100 font-mono text-stone-600 truncate text-[11px] mb-2">
-            기존파일.xlsx
-          </div>
+          <div id="edit-billing-current-filename" class="p-2.5 rounded-xl bg-stone-100 font-mono text-stone-600 truncate text-[11px] mb-2">기존파일.xlsx</div>
           <label class="block font-bold text-stone-700 mb-1">새 엑셀 파일로 교체 (선택)</label>
           <input type="file" id="edit-billing-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
-          <p class="text-[11px] text-stone-400 mt-1">※ 파일을 다시 올리지 않으면 기존 엑셀 파일이 그대로 유지됩니다.</p>
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -799,16 +765,13 @@
           </div>
         </div>
 
-        <!-- 자주 쓰는 시간 선택 드롭다운 및 추가 버튼 -->
         <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
           <label class="block font-bold text-stone-700">⏰ 자주 쓰는 시간 선택 (탭)</label>
           <div class="flex gap-2">
             <select id="preset-time-select" onchange="onPresetTimeChange(this.value)" class="flex-1 p-2 rounded-xl border border-stone-300 bg-white font-bold outline-none">
               <option value="">-- 시간 선택하기 --</option>
             </select>
-            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0">
-              + 새 시간 추가
-            </button>
+            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0">+ 새 시간 추가</button>
           </div>
         </div>
 
@@ -838,9 +801,7 @@
   <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드</h3>
         <button onclick="closeModal('modal-upload-teacher-excel')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleUploadTeacherExcel(event)" class="space-y-4 text-xs">
@@ -860,9 +821,7 @@
   <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 지출결의서 PDF 등록
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 지출결의서 PDF 등록</h3>
         <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveExpense(event)" class="space-y-3.5 text-xs">
@@ -873,18 +832,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월</label>
           <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
-            <option value="1">1월 지출결의서</option>
-            <option value="2">2월 지출결의서</option>
-            <option value="3" selected>3월 지출결의서</option>
-            <option value="4">4월 지출결의서</option>
-            <option value="5">5월 지출결의서</option>
-            <option value="6">6월 지출결의서</option>
-            <option value="7">7월 지출결의서</option>
-            <option value="8">8월 지출결의서</option>
-            <option value="9">9월 지출결의서</option>
-            <option value="10">10월 지출결의서</option>
-            <option value="11">11월 지출결의서</option>
-            <option value="12">12월 지출결의서</option>
+            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3" selected>3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10">10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
           </select>
         </div>
         <div>
@@ -907,9 +855,7 @@
   <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 강사 출근부 PDF 등록
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 강사 출근부 PDF 등록</h3>
         <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveAttendance(event)" class="space-y-3 text-xs">
@@ -947,9 +893,7 @@
   <div id="modal-add-notice" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-text" class="w-5 h-5 text-amber-500"></i> 분기별 안내장 PDF 등록
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-amber-500"></i> 분기별 안내장 PDF 등록</h3>
         <button onclick="closeModal('modal-add-notice')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveNotice(event)" class="space-y-3.5 text-xs">
@@ -960,10 +904,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당 분기</label>
           <select id="not-input-quarter" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-amber-900 bg-amber-50/50">
-            <option value="1">1분기 안내장</option>
-            <option value="2">2분기 안내장</option>
-            <option value="3">3분기 안내장</option>
-            <option value="4">4분기 안내장</option>
+            <option value="1">1분기 안내장</option><option value="2">2분기 안내장</option><option value="3">3분기 안내장</option><option value="4">4분기 안내장</option>
           </select>
         </div>
         <div>
@@ -982,9 +923,7 @@
   <div id="modal-add-vault" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 공용 서식 파일 올리기
-        </h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 공용 서식 파일 올리기</h3>
         <button onclick="closeModal('modal-add-vault')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveVault(event)" class="space-y-3.5 text-xs">
@@ -1031,7 +970,7 @@
     </div>
   </div>
 
-  <!-- ================= J A V A S C R I P T (파이어베이스 실시간 동기화 + 로컬백업 복구) ================= -->
+  <!-- ================= J A V A S C R I P T ================= -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4",
@@ -1071,12 +1010,7 @@
         reader.onload = () => {
           const tx = dbInstance.transaction('files', 'readwrite');
           const store = tx.objectStore('files');
-          store.put({
-            id: fileId,
-            name: fileObj.name,
-            type: fileObj.type,
-            data: reader.result
-          });
+          store.put({ id: fileId, name: fileObj.name, type: fileObj.type, data: reader.result });
           tx.oncomplete = () => resolve(true);
           tx.onerror = () => reject('Save Failed');
         };
@@ -1110,18 +1044,10 @@
     }
 
     const fixedMasterSchools = [
-      { id: 'sch_1', name: '경원초' },
-      { id: 'sch_2', name: '남부초' },
-      { id: 'sch_3', name: '문남초' },
-      { id: 'sch_4', name: '새말초' },
-      { id: 'sch_5', name: '서화초' },
-      { id: 'sch_6', name: '서흥초' },
-      { id: 'sch_7', name: '숭의초' },
-      { id: 'sch_8', name: '연학초' },
-      { id: 'sch_9', name: '창신초' },
-      { id: 'sch_10', name: '창영초' },
-      { id: 'sch_11', name: '청량초' },
-      { id: 'sch_12', name: '온동네돌봄센터' }
+      { id: 'sch_1', name: '경원초' }, { id: 'sch_2', name: '남부초' }, { id: 'sch_3', name: '문남초' },
+      { id: 'sch_4', name: '새말초' }, { id: 'sch_5', name: '서화초' }, { id: 'sch_6', name: '서흥초' },
+      { id: 'sch_7', name: '숭의초' }, { id: 'sch_8', name: '연학초' }, { id: 'sch_9', name: '창신초' },
+      { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
     const fullMasterTeachersData = [
@@ -1152,7 +1078,6 @@
       { school: '경원초', subject: '토탈공예', name: '신지현', day: '금', phone: '010-2705-1593' },
       { school: '경원초', subject: '웹툰', name: '고아라', day: '금', phone: '010-5745-2989' },
       { school: '경원초', subject: '스마트레고', name: '김혜연', day: '화', phone: '010-2330-9415' },
-      // 남부초
       { school: '남부초', subject: '멀티스포츠', name: '정용호', day: '월', phone: '010-5473-5135' },
       { school: '남부초', subject: '수학교실', name: '송태윤', day: '월,목', phone: '010-3348-5068' },
       { school: '남부초', subject: '영어교실', name: '김지연', day: '화,수', phone: '010-4886-0104' },
@@ -1172,7 +1097,6 @@
       { school: '남부초', subject: '미술', name: '조성경', day: '화', phone: '010-4288-3733' },
       { school: '남부초', subject: '배드민턴', name: '마봉희', day: '수', phone: '010-8225-3744' },
       { school: '남부초', subject: '컴퓨터', name: '홍은미', day: '목', phone: '010-6555-9785' },
-      // 새말초
       { school: '새말초', subject: '음악줄넘기', name: '변혜진', day: '수', phone: '010-8816-6937' },
       { school: '새말초', subject: '영어', name: '서석희', day: '월,수', phone: '010-3314-6287' },
       { school: '새말초', subject: '피아노', name: '양주희', day: '월,수,금', phone: '010-3298-1484' },
@@ -1183,7 +1107,6 @@
       { school: '새말초', subject: '로봇영재', name: '이혜령', day: '목', phone: '010-5311-1025' },
       { school: '새말초', subject: '방송댄스', name: '이다영', day: '금', phone: '010-5746-7971' },
       { school: '새말초', subject: '배드민턴', name: '마봉희', day: '화', phone: '010-8225-3744' },
-      // 문남초
       { school: '문남초', subject: '맞춤형(놀이한글)', name: '윤충', day: '월,수', phone: '010-3701-4867' },
       { school: '문남초', subject: '맞춤형(놀이수학)', name: '윤충', day: '목,금', phone: '010-3701-4867' },
       { school: '문남초', subject: '맞춤형(놀이체육)', name: '최석호', day: '월,수', phone: '010-4574-3568' },
@@ -1207,7 +1130,6 @@
       { school: '문남초', subject: '방과후(바둑)', name: '이연희', day: '화', phone: '010-8876-5833' },
       { school: '문남초', subject: '방과후(웹툰)', name: '고아라', day: '금', phone: '010-5745-2989' },
       { school: '문남초', subject: '방과후(요리)', name: '박경선', day: '목', phone: '010-2686-3150' },
-      // 청량초
       { school: '청량초', subject: '방송댄스', name: '박보교', day: '월', phone: '010-6408-2530' },
       { school: '청량초', subject: '배드민턴', name: '마봉희', day: '월', phone: '010-8225-3744' },
       { school: '청량초', subject: '보드게임', name: '전인자', day: '월', phone: '010-8950-9418' },
@@ -1217,7 +1139,6 @@
       { school: '청량초', subject: '음악줄넘기', name: '윤여원', day: '수', phone: '010-6731-7021' },
       { school: '청량초', subject: '과학실험', name: '이유선', day: '목', phone: '010-6228-9395' },
       { school: '청량초', subject: '요리교실', name: '김수연', day: '목', phone: '010-2823-7744' },
-      // 서화초
       { school: '서화초', subject: '컴퓨터', name: '정소영', day: '월,목', phone: '010-2669-5853' },
       { school: '서화초', subject: '창의생명과학', name: '강희경', day: '월', phone: '010-5310-7258' },
       { school: '서화초', subject: '스마트레고', name: '김혜연', day: '월', phone: '010-2330-9415' },
@@ -1240,7 +1161,6 @@
       { school: '서화초', subject: '피아노', name: '양희', day: '화,목', phone: '010-9814-1024' },
       { school: '서화초', subject: '클레이아트', name: '최세진', day: '수', phone: '010-7301-4540' },
       { school: '서화초', subject: '한자', name: '고옥', day: '금', phone: '010-9042-8836' },
-      // 서흥초
       { school: '서흥초', subject: '영어교실', name: '김현미', day: '월,수', phone: '010-9189-1022' },
       { school: '서흥초', subject: '음악줄넘기', name: '김은선', day: '월', phone: '010-2313-9633' },
       { school: '서흥초', subject: '컴퓨터', name: '최유정', day: '화,목', phone: '010-9768-0206' },
@@ -1257,7 +1177,6 @@
       { school: '서흥초', subject: '창의미술', name: '김진애', day: '수', phone: '010-2258-4945' },
       { school: '서흥초', subject: '놀이체육', name: '강재건', day: '목', phone: '010-9136-8467' },
       { school: '서흥초', subject: '우클렐레', name: '유현경', day: '금', phone: '010-9109-0997' },
-      // 숭의초
       { school: '숭의초', subject: '수학아카데미', name: '정진희', day: '화,목', phone: '010-2326-2453' },
       { school: '숭의초', subject: '영어회화', name: '정혜숙', day: '수,금', phone: '010-7303-0229' },
       { school: '숭의초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
@@ -1277,7 +1196,6 @@
       { school: '숭의초', subject: '클레이아트', name: '최세진', day: '월', phone: '010-7301-4540' },
       { school: '숭의초', subject: '바이올린', name: '주희정', day: '금', phone: '010-7463-2110' },
       { school: '숭의초', subject: '드론', name: '한은주', day: '화', phone: '010-6679-9099' },
-      // 연학초
       { school: '연학초', subject: '요리부', name: '황은주', day: '월', phone: '010-8637-2048' },
       { school: '연학초', subject: '영어부', name: '김지연', day: '월,목', phone: '010-4886-0104' },
       { school: '연학초', subject: '축구부', name: '이경민', day: '월', phone: '010-8770-4537' },
@@ -1291,7 +1209,6 @@
       { school: '연학초', subject: '로봇과학부', name: '이향미', day: '금', phone: '010-8290-6219' },
       { school: '연학초', subject: 'K팝댄스부', name: '이다영', day: '목', phone: '010-5746-7971' },
       { school: '연학초', subject: '독서논술부', name: '안덕희', day: '금', phone: '010-6401-0262' },
-      // 창신초
       { school: '창신초', subject: '컴퓨터', name: '강모래', day: '월,금', phone: '010-9923-9379' },
       { school: '창신초', subject: '영어', name: '이매화', day: '월,수', phone: '010-2335-7510' },
       { school: '창신초', subject: '수학', name: '박종은', day: '화,목', phone: '010-7282-9197' },
@@ -1302,15 +1219,14 @@
       { school: '창신초', subject: '생명과학', name: '강희경', day: '금', phone: '010-5310-7258' },
       { school: '창신초', subject: '역사탐험대', name: '노현진', day: '금', phone: '010-2854-1555' },
       { school: '창신초', subject: '토탈공예', name: '신지현', day: '금', phone: '010-2705-1593' },
-      // 창영초
       { school: '창영초', subject: '창의생명과학', name: '신지현', day: '월', phone: '010-2705-1593' },
       { school: '창영초', subject: '컴퓨터&코딩', name: '유진희', day: '월', phone: '010-6562-0653' },
       { school: '창영초', subject: '음악줄넘기', name: '김은선', day: '수', phone: '010-2313-9633' },
-      { school: '창영초', name: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
+      { school: '창영초', subject: '한자&중국어', name: '박성미', day: '수', phone: '010-4583-6787' },
       { school: '창영초', subject: '요리&제빵', name: '박경선', day: '금', phone: '010-2686-3150' },
       { school: '창영초', subject: '놀이영어', name: '정혜숙', day: '월', phone: '010-7303-0229' },
       { school: '창영초', subject: '창의미술', name: '김진애', day: '화', phone: '010-2258-4945' },
-      { school: '창영초', subject: '책놀Id', name: '이선형', day: '수', phone: '010-2461-9030' },
+      { school: '창영초', subject: '책놀이', name: '이선형', day: '수', phone: '010-2461-9030' },
       { school: '창영초', subject: '놀이음악', name: '주희정', day: '목', phone: '010-7463-2110' },
       { school: '창영초', subject: '놀이체육', name: '강재건', day: '금', phone: '010-9136-8467' },
       { school: '창영초', subject: '주산암산', name: '이은주', day: '화', phone: '010-8582-9875' },
@@ -1318,7 +1234,6 @@
       { school: '창영초', subject: '바이올린', name: '연정윤', day: '화', phone: '010-5298-5076' }
     ];
 
-    // 기본 데이터 구조 설정 (데이터가 없을 때 기본 학교 목록 강제 유지)
     let appData = {
       schools: fixedMasterSchools,
       billings: [],
@@ -1336,6 +1251,12 @@
       memos: [],
       bannerNotice: '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
     };
+
+    // 로컬에 기존 저장된 데이터가 있으면 우선 복구
+    const localSaved = localStorage.getItem('bm_app_data');
+    if (localSaved) {
+      try { appData = JSON.parse(localSaved); } catch(e){}
+    }
 
     function saveData(key, val) {
       appData[key] = val;
@@ -1361,13 +1282,13 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // Firebase 실시간 데이터 연동 및 초기 데이터가 비어있을 경우 자동 동기화 보호
+      // Firebase 실시간 연동 (클라우드 데이터 수신)
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData && remoteData.schools && remoteData.schools.length > 0) {
           appData = remoteData;
         } else {
-          // 최초 실행이거나 DB가 비어있으면 기본 데이터 밀어넣기
+          // 클라우드가 비어있으면 현재 가지고 있는 로컬 데이터를 클라우드에 최초 업로드
           firebase.database().ref('brightmind_data').set(appData);
         }
         localStorage.setItem('bm_app_data', JSON.stringify(appData));
@@ -1442,12 +1363,8 @@
             <span class="truncate text-sm font-extrabold block tracking-tight">${sch.name}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
-            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800" title="기관명 수정">
-              <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600" title="기관 삭제">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
+            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800" title="기관명 수정"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600" title="기관 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </div>
         `;
         container.appendChild(div);
@@ -1608,26 +1525,13 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-amber-50/30 transition-colors";
         tr.innerHTML = `
-          <td class="py-3 px-4 font-bold text-stone-900 flex items-center gap-2">
-            <span class="text-base">${isCenter ? '🏡' : '🎒'}</span>
-            ${sch.name}
-          </td>
-          <td class="py-3 px-4 text-center font-mono text-xs">
-            <span class="${inst1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
-            <span class="${inst2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
-            <span class="${inst3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
-          </td>
-          <td class="py-3 px-4 text-center font-mono text-xs">
-            <span class="${mat1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · 
-            <span class="${mat2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · 
-            <span class="${mat3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span>
-          </td>
+          <td class="py-3 px-4 font-bold text-stone-900 flex items-center gap-2"><span class="text-base">${isCenter ? '🏡' : '🎒'}</span>${sch.name}</td>
+          <td class="py-3 px-4 text-center font-mono text-xs"><span class="${inst1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · <span class="${inst2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · <span class="${inst3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span></td>
+          <td class="py-3 px-4 text-center font-mono text-xs"><span class="${mat1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · <span class="${mat2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · <span class="${mat3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span></td>
           <td class="py-3 px-4 text-center">${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
           <td class="py-3 px-4 text-center">${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
           <td class="py-3 px-4 text-center">${badgeHtml}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">이동 →</button>
-          </td>
+          <td class="py-3 px-4 text-center"><button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">이동 →</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -1656,9 +1560,7 @@
       currentQuarter = q;
       for (let i = 1; i <= 4; i++) {
         const b = document.getElementById(`btn-q-${i}`);
-        if (b) {
-          b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
-        }
+        if (b) b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
       }
       renderBilling();
       renderChecklist();
@@ -1682,13 +1584,8 @@
         tbody.innerHTML = '';
 
         list.forEach(sch => {
-          const schInstAmount = billList
-            .filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && (b.category || 'instructor') === 'instructor')
-            .reduce((sum, b) => sum + (b.amount || 0), 0);
-
-          const schMatAmount = billList
-            .filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && b.category === 'materials')
-            .reduce((sum, b) => sum + (b.amount || 0), 0);
+          const schInstAmount = billList.filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && (b.category || 'instructor') === 'instructor').reduce((sum, b) => sum + (b.amount || 0), 0);
+          const schMatAmount = billList.filter(b => b.schoolId === sch.id && b.quarter === currentQuarter && b.category === 'materials').reduce((sum, b) => sum + (b.amount || 0), 0);
 
           totalInst += schInstAmount;
           totalMat += schMatAmount;
@@ -1698,16 +1595,11 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-amber-50/40 transition-colors";
           tr.innerHTML = `
-            <td class="py-3.5 px-5 font-bold text-stone-900 flex items-center gap-2">
-              <span class="text-base">${isCenter ? '🏡' : '🎒'}</span>
-              ${sch.name}
-            </td>
+            <td class="py-3.5 px-5 font-bold text-stone-900 flex items-center gap-2"><span class="text-base">${isCenter ? '🏡' : '🎒'}</span>${sch.name}</td>
             <td class="py-3.5 px-4 text-right font-bold text-stone-800 text-sm">${schInstAmount > 0 ? schInstAmount.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}</td>
             <td class="py-3.5 px-4 text-right font-bold text-emerald-800 text-sm">${schMatAmount > 0 ? schMatAmount.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}</td>
             <td class="py-3.5 px-4 text-right font-black text-amber-900 text-sm">${schTotal > 0 ? schTotal.toLocaleString() + '원' : '<span class="text-stone-300 font-normal">0원</span>'}</td>
-            <td class="py-3.5 px-4 text-center">
-              <button onclick="selectSchool('${sch.id}')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors">1~3차 관리 →</button>
-            </td>
+            <td class="py-3.5 px-4 text-center"><button onclick="selectSchool('${sch.id}')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors">1~3차 관리 →</button></td>
           `;
           tbody.appendChild(tr);
         });
@@ -1732,12 +1624,7 @@
 
         [1, 2, 3].forEach(period => {
           const periodLabel = `${period}차 (${(period-1)*4 + 1}~${period*4}주)`;
-          const item = billList.find(b => 
-            b.schoolId === currentSchoolId && 
-            (b.category || 'instructor') === currentBillingCategory && 
-            b.quarter === currentQuarter && 
-            b.period === period
-          );
+          const item = billList.find(b => b.schoolId === currentSchoolId && (b.category || 'instructor') === currentBillingCategory && b.quarter === currentQuarter && b.period === period);
 
           const tr = document.createElement('tr');
           tr.className = item ? "hover:bg-amber-50/40 transition-colors" : "hover:bg-stone-50 transition-colors opacity-90";
@@ -1747,15 +1634,11 @@
             registeredCount++;
             tr.innerHTML = `
               <td class="py-3 px-4 font-bold text-stone-900">${schName}</td>
-              <td class="py-3 px-3 text-center">
-                <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${currentBillingCategory === 'instructor' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'}">${catName}</span>
-              </td>
+              <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${currentBillingCategory === 'instructor' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'}">${catName}</span></td>
               <td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td>
               <td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${periodLabel}</td>
               <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td>
-              <td class="py-3 px-4 text-center">
-                <span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono"><i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}</span>
-              </td>
+              <td class="py-3 px-4 text-center"><span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono"><i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}</span></td>
               <td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">미리보기</button></td>
               <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">다운</button></td>
               <td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td>
@@ -1769,9 +1652,7 @@
               <td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${periodLabel}</td>
               <td class="py-3 px-4 text-right text-stone-300">-</td>
               <td class="py-3 px-4 text-center">
-                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto">
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록
-                </button>
+                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto"><i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록</button>
               </td>
               <td colspan="4" class="text-center text-stone-300">-</td>
             `;
@@ -1945,9 +1826,7 @@
               <div>
                 <div class="flex items-center justify-between">
                   <h5 class="font-black text-stone-900 text-sm">${group.displayCourse} <span class="text-amber-800 font-semibold text-xs">(${group.teacher})</span></h5>
-                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
+                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
                 <div class="mt-1.5 space-y-0.5">${slotsHtml}</div>
               </div>

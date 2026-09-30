@@ -87,6 +87,7 @@
       </div>
     </div>
 
+    <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
         <div class="flex items-center gap-2">
@@ -106,6 +107,7 @@
       <div id="school-list-container" class="space-y-1.5 overflow-y-auto custom-scroll pr-1 flex-1"></div>
     </div>
 
+    <!-- 서류 제출 현황 요약 위젯 -->
     <div class="p-3 border-t border-stone-200 bg-amber-50/40">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
@@ -156,10 +158,11 @@
       </div>
     </header>
 
-    <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4">
+    <!-- 학교 선택 여부에 따라 색상 테마가 확 바뀌어 구분되는 히어로 배너 -->
+    <div id="school-hero-banner" class="mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 transition-all duration-300">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영 협업</span>
+          <span id="hero-badge-tag" class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950">위탁운영 협업</span>
           <span id="hero-admin-tag" class="text-xs font-bold text-stone-500">본사 총괄 모드</span>
         </div>
         <h3 class="text-xl font-brand text-stone-900 mt-1.5" id="hero-school-name">전체 위탁기관 종합 현황</h3>
@@ -1252,18 +1255,6 @@
       bannerNotice: '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
     };
 
-    // 로컬에 기존 저장된 데이터가 있으면 우선 복구
-    const localSaved = localStorage.getItem('bm_app_data');
-    if (localSaved) {
-      try { appData = JSON.parse(localSaved); } catch(e){}
-    }
-
-    function saveData(key, val) {
-      appData[key] = val;
-      localStorage.setItem('bm_app_data', JSON.stringify(appData));
-      firebase.database().ref('brightmind_data').set(appData);
-    }
-
     let currentSchoolId = 'all';
     let currentQuarter = 1;
     let currentMonth = 3;
@@ -1282,16 +1273,14 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // Firebase 실시간 연동 (클라우드 데이터 수신)
+      // Firebase 실시간 동기화 리스너 (테마 구분에 따른 스타일 전환 포함)
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData && remoteData.schools && remoteData.schools.length > 0) {
           appData = remoteData;
         } else {
-          // 클라우드가 비어있으면 현재 가지고 있는 로컬 데이터를 클라우드에 최초 업로드
           firebase.database().ref('brightmind_data').set(appData);
         }
-        localStorage.setItem('bm_app_data', JSON.stringify(appData));
         renderSchoolList();
         renderAllViews();
         populatePresetTimesDropdown();
@@ -1302,6 +1291,11 @@
       renderAllViews();
       populatePresetTimesDropdown();
     });
+
+    function saveData(key, val) {
+      appData[key] = val;
+      firebase.database().ref('brightmind_data').set(appData);
+    }
 
     function updateClock() {
       const now = new Date();
@@ -1381,33 +1375,50 @@
       lucide.createIcons();
     }
 
+    // [전체 통합 vs 개별 학교 모드에 따른 시각적 구분 디자인 적용]
     function selectSchool(id) {
       currentSchoolId = id;
       renderSchoolList();
 
       const titleEl = document.getElementById('current-school-title');
       const badgeEl = document.getElementById('current-school-badge');
+      const heroBanner = document.getElementById('school-hero-banner');
       const heroName = document.getElementById('hero-school-name');
       const heroDesc = document.getElementById('hero-school-desc');
       const heroTag = document.getElementById('hero-admin-tag');
+      const heroBadgeTag = document.getElementById('hero-badge-tag');
       const editBtn = document.getElementById('hero-edit-school-btn');
 
       const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      
       if (id === 'all') {
+        // 전체 통합 모드 (오렌지/앰버 테마)
         titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
+        badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
+        
+        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 transition-all duration-300';
+        heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950';
+        heroBadgeTag.textContent = '위탁운영 협업';
         heroName.textContent = '전체 위탁기관 종합 현황';
         heroDesc.textContent = '1분기 강사료 총액과 교재비 총액을 한눈에 간편하게 확인합니다.';
         heroTag.textContent = '본사 총괄 모드';
         editBtn.classList.add('hidden');
       } else {
+        // 개별 학교 전담 모드 (네이비/블루 테마로 확실한 구분)
         const sch = list.find(s => s.id === id);
         const name = sch ? sch.name : '기관 전용';
+        
         titleEl.textContent = `${name} 협업룸`;
-        badgeEl.textContent = name;
-        heroName.textContent = `${name} 위탁운영`;
-        heroDesc.textContent = `${name}의 청구서, 시간표 및 공문을 전용으로 공유합니다.`;
-        heroTag.textContent = `${name} 전담실`;
+        badgeEl.textContent = `🏫 ${name} 전담 모드`;
+        badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-extrabold bg-blue-100 text-blue-900 border border-blue-300 shadow-2xs';
+        
+        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white border border-blue-800 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
+        heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-500 text-white';
+        heroBadgeTag.textContent = '학교별 전담 관리';
+        heroName.textContent = `${name} 위탁운영 현황`;
+        heroDesc.textContent = `${name}의 청구서, 요일별 시간표, 1:1 업무메모를 단독 관리합니다.`;
+        heroTag.textContent = `${name} 전용실`;
         editBtn.classList.remove('hidden');
       }
 
@@ -2098,7 +2109,7 @@
             <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
             <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
             <td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
-            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
+            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
             <td class="p-2.5 text-center"><button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           attBody.appendChild(tr);
@@ -2547,7 +2558,7 @@
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.pdf`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}` + `${currentMonth}월_${teacher}_출근부.pdf`;
 
       if (file) await storeFile(fileId, file);
       let attList = appData.attendances || [];

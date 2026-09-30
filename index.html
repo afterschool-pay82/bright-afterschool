@@ -174,17 +174,14 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (요일별 시간표와 캘린더 통합) -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
         <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm">
           <i data-lucide="calculator" class="w-4 h-4"></i> 청구서
         </button>
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표
-        </button>
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="calendar-days" class="w-4 h-4"></i> 📅 일정 캘린더 (휴강·재량휴일)
+          <i data-lucide="calendar-days" class="w-4 h-4"></i> 📅 캘린더 & 시간표 관리
         </button>
         <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 과목 검색
@@ -286,49 +283,8 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: TIMETABLE ================= -->
-      <section id="view-timetable" class="space-y-6 hidden">
-        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 관리</span>
-              <h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">기관별 요일 강좌 및 강사 시간표</h4>
-            </div>
-            <p class="text-xs text-stone-500 mt-1">동일 과목의 여러 반(A, B, C반 등)을 요일별로 묶어서 보여줍니다.</p>
-          </div>
-          <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
-          </button>
-        </div>
-
-        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5">
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
-              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">월요일</div>
-              <div id="day-col-월요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
-            </div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
-              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">화요일</div>
-              <div id="day-col-화요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
-            </div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
-              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">수요일</div>
-              <div id="day-col-수요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
-            </div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
-              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">목요일</div>
-              <div id="day-col-목요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
-            </div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col">
-              <div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">금요일</div>
-              <div id="day-col-금요일" class="space-y-2.5 flex-1 min-h-[140px]"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB: SCHOOL CALENDAR (진짜 캘린더 틀 구현) ================= -->
-      <section id="view-calendar-events" class="space-y-6 hidden">
+      <!-- ================= TAB: SCHOOL CALENDAR & TIMETABLE (캘린더에 시간표 통합) ================= -->
+      <section id="view-calendar-events" class="space-y-6">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
@@ -336,14 +292,19 @@
               <h3 class="text-lg font-brand text-stone-900" id="calendar-month-title">2026년 3월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <span class="text-xs text-stone-400">| 학교별 분기일정, 휴강일, 재량휴일 공유 캘린더</span>
+            <span class="text-xs text-stone-400">| 학교별 일정(휴강·재량휴일) 및 요일별 시간표 통합 캘린더</span>
           </div>
-          <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 일정 등록하기
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 수업 시간표 등록
+            </button>
+            <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+              <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> 휴강/재량휴일 등록
+            </button>
+          </div>
         </div>
 
-        <!-- 캘린더 그리드 틀 -->
+        <!-- 캘린더 그리드 틀 (요일별 시간표와 학사일정이 날짜 칸마다 자동 매핑됨) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
           <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-xs">
             <div class="py-2 text-rose-600 bg-rose-50 rounded-xl">일</div>
@@ -356,25 +317,6 @@
           </div>
           <div id="calendar-grid-days" class="grid grid-cols-7 gap-2">
             <!-- JS로 렌더링 -->
-          </div>
-        </div>
-
-        <!-- 하단 일정 리스트 요약 -->
-        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <h5 class="font-bold text-stone-900 text-sm mb-3" id="calendar-list-heading">등록된 전체 학사 및 휴강 일정 목록</h5>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-stone-50 text-stone-500 font-bold border-b border-stone-200">
-                <tr>
-                  <th class="py-2.5 px-4">기관명</th>
-                  <th class="py-2.5 px-3 text-center">일정 구분</th>
-                  <th class="py-2.5 px-4 text-center">날짜</th>
-                  <th class="py-2.5 px-5">일정 내용 및 사유</th>
-                  <th class="py-2.5 px-3 text-center">삭제</th>
-                </tr>
-              </thead>
-              <tbody id="calendar-events-tbody" class="divide-y divide-stone-100"></tbody>
-            </table>
           </div>
         </div>
       </section>
@@ -593,12 +535,12 @@
     </div>
   </div>
 
-  <!-- 학교별 일정 등록 모달 -->
+  <!-- 학교별 일정(휴강/재량휴일) 등록 모달 -->
   <div id="modal-add-calendar-event" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-indigo-100">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
-          <i data-lucide="calendar-plus" class="w-5 h-5 text-indigo-600"></i> 학교별 일정 등록 (휴강일·재량휴일 등)
+          <i data-lucide="calendar-plus" class="w-5 h-5 text-indigo-600"></i> 캘린더 일정 등록 (휴강·재량휴일)
         </h3>
         <button onclick="closeModal('modal-add-calendar-event')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
@@ -618,21 +560,21 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold text-stone-700 mb-1">날짜 (숫자만 또는 형식)</label>
-            <input type="text" id="cal-input-daynum" required placeholder="예: 5 (5일인 경우)" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
+            <label class="block font-bold text-stone-700 mb-1">날짜 (일자 숫자만)</label>
+            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 5" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
           </div>
           <div>
-            <label class="block font-bold text-stone-700 mb-1">핵심 키워드</label>
-            <input type="text" id="cal-input-keyword" required placeholder="예: 근로자의 날 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+            <label class="block font-bold text-stone-700 mb-1">핵심 제목</label>
+            <input type="text" id="cal-input-keyword" required placeholder="예: 어린이날 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
           </div>
         </div>
         <div>
-          <label class="block font-bold text-stone-700 mb-1">상세 내용 및 사유</label>
-          <textarea id="cal-input-desc" required rows="3" placeholder="예: 공휴일로 인한 방과후 수업 휴강 안내" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+          <label class="block font-bold text-stone-700 mb-1">상세 사유 및 내용</label>
+          <textarea id="cal-input-desc" required rows="3" placeholder="예: 법정 공휴일로 인한 방과후 수업 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-indigo-600 text-white font-bold">일정 등록</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-indigo-600 text-white font-bold">캘린더에 등록</button>
         </div>
       </form>
     </div>
@@ -935,7 +877,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v6', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v7', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1206,7 +1148,7 @@
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
     let calYear = 2026;
-    let calMonth = 3; // 기본 3월
+    let calMonth = 3;
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1254,14 +1196,13 @@
     }
 
     function switchTab(tId) {
-      ['checklist', 'billing', 'timetable', 'calendar-events', 'master-teachers', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
+      ['checklist', 'billing', 'calendar-events', 'master-teachers', 'expense', 'notices', 'memos', 'vault'].forEach(t => {
         const v = document.getElementById(`view-${t}`);
         const b = document.getElementById(`tab-btn-${t}`);
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
           b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm";
-          if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'calendar-events') renderCalendarGrid();
           if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
@@ -1355,7 +1296,7 @@
         heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-white/25 text-white backdrop-blur-xs';
         heroBadgeTag.textContent = '학교별 전담 관리';
         heroName.textContent = `${name} 위탁운영 현황`;
-        heroDesc.textContent = `${name}의 청구서, 요일별 시간표, 1:1 업무메모를 단독 관리합니다.`;
+        heroDesc.textContent = `${name}의 청구서, 캘린더 일정, 1:1 업무메모를 단독 관리합니다.`;
         heroTag.textContent = `${name} 전용실`;
         editBtn.classList.remove('hidden');
       }
@@ -1425,7 +1366,6 @@
 
     function renderAllViews() {
       renderBilling();
-      renderSchoolTimetableGrid();
       renderCalendarGrid();
       renderMasterTeacherList();
       renderChecklist();
@@ -1692,151 +1632,7 @@
       renderChecklist();
     }
 
-    // ---------- TIMETABLE ----------
-    function renderSchoolTimetableGrid() {
-      const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
-      const gridTitle = document.getElementById('school-timetable-grid-title');
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
-      const schedList = appData.schedules || [];
-
-      if (currentSchoolId === 'all') {
-        gridTitle.innerHTML = `🎒 전체 기관 통합 시간표 <span class="text-xs font-normal text-stone-400 ml-2">(좌측에서 특정 학교를 선택하면 해당 학교 시간표가 뜹니다)</span>`;
-      } else {
-        const sch = list.find(s => s.id === currentSchoolId);
-        gridTitle.innerHTML = `🎒 [${sch ? sch.name : '기관'}] 월~금 요일별 시간표`;
-      }
-
-      days.forEach(d => {
-        const col = document.getElementById(`day-col-${d}`);
-        if (!col) return;
-        col.innerHTML = '';
-
-        let items = schedList.filter(s => s.day === d);
-        if (currentSchoolId !== 'all') {
-          items = items.filter(s => s.schoolId === currentSchoolId);
-        }
-
-        if (items.length === 0) {
-          col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
-        } else {
-          const groupMap = new Map();
-          items.forEach(item => {
-            let cleanCourse = item.course.replace(/[ABCabc123반파트ⅠⅡⅢ]+$/g, '').trim();
-            if (!cleanCourse) cleanCourse = item.course;
-            const key = `${cleanCourse}_${item.teacher.trim()}`;
-            if (!groupMap.has(key)) {
-              groupMap.set(key, { displayCourse: cleanCourse, teacher: item.teacher, phone: item.phone, slots: [] });
-            }
-            groupMap.get(key).slots.push({ id: item.id, time: item.time });
-          });
-
-          groupMap.forEach((group) => {
-            group.slots.sort((a, b) => a.time.localeCompare(b.time));
-            const card = document.createElement('div');
-            card.className = "p-3.5 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs relative group flex flex-col justify-between mb-2";
-            
-            let slotsHtml = '';
-            group.slots.forEach((s, idx) => {
-              const label = String.fromCharCode(65 + idx);
-              slotsHtml += `<div class="font-mono text-stone-700 mt-0.5">• ${label}) ${s.time}</div>`;
-            });
-
-            card.innerHTML = `
-              <div>
-                <div class="flex items-center justify-between">
-                  <h5 class="font-black text-stone-900 text-sm">${group.displayCourse} <span class="text-amber-800 font-semibold text-xs">(${group.teacher})</span></h5>
-                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                </div>
-                <div class="mt-1.5 space-y-0.5">${slotsHtml}</div>
-              </div>
-              <div class="mt-2.5 pt-1.5 border-t border-stone-100 text-[11px] font-mono text-stone-400"><span>${group.phone || ''}</span></div>
-            `;
-            col.appendChild(card);
-          });
-        }
-      });
-      lucide.createIcons();
-    }
-
-    function deleteScheduleGroup(course, teacher, day) {
-      if (confirm(`'${course} (${teacher})' 강좌의 모든 시간대를 삭제하시겠습니까?`)) {
-        let schedList = appData.schedules || [];
-        schedList = schedList.filter(s => {
-          let clean = s.course.replace(/[ABCabc123반파트ⅠⅡⅢ]+$/g, '').trim();
-          if (!clean) clean = s.course;
-          const matchCourse = (clean === course || s.course === course);
-          const matchTeacher = (s.teacher.trim() === teacher.trim());
-          const matchDay = (s.day === day);
-          const matchSchool = (currentSchoolId === 'all' || s.schoolId === currentSchoolId);
-          return !(matchCourse && matchTeacher && matchDay && matchSchool);
-        });
-        saveData('schedules', schedList);
-        renderSchoolTimetableGrid();
-      }
-    }
-
-    function populatePresetTimesDropdown() {
-      const select = document.getElementById('preset-time-select');
-      if (!select) return;
-      const pTimes = appData.presetTimes || ['12:50~13:30', '13:40~14:20', '13:40~15:00', '14:30~15:10', '15:10~16:30'];
-      select.innerHTML = '<option value="">-- 시간 선택하기 (탭) --</option>';
-      pTimes.forEach(pt => {
-        const opt = document.createElement('option');
-        opt.value = pt;
-        opt.textContent = pt;
-        select.appendChild(opt);
-      });
-    }
-
-    function onPresetTimeChange(val) {
-      if (!val) return;
-      document.getElementById('sched-input-time').value = val;
-    }
-
-    function addNewPresetTime() {
-      const newTime = prompt('새로 추가할 수업 시간대를 입력하세요 (예: 15:30~16:50):');
-      if (newTime && newTime.trim()) {
-        const trimmed = newTime.trim();
-        let pTimes = appData.presetTimes || [];
-        if (!pTimes.includes(trimmed)) {
-          pTimes.push(trimmed);
-          saveData('presetTimes', pTimes);
-          populatePresetTimesDropdown();
-          document.getElementById('sched-input-time').value = trimmed;
-        }
-      }
-    }
-
-    function openAddScheduleModal() {
-      if (currentSchoolId === 'all') {
-        alert('좌측 위탁 기관 목록에서 특정 학교(기관)를 먼저 선택해 주세요!');
-        return;
-      }
-      document.getElementById('sched-input-time').value = '';
-      document.getElementById('sched-input-course').value = '';
-      document.getElementById('sched-input-teacher').value = '';
-      document.getElementById('sched-input-phone').value = '';
-      populatePresetTimesDropdown();
-      openModal('modal-add-schedule');
-    }
-
-    function handleSaveSchedule(e) {
-      e.preventDefault();
-      const schoolId = currentSchoolId;
-      const day = document.getElementById('sched-input-day').value;
-      const time = document.getElementById('sched-input-time').value.trim();
-      const course = document.getElementById('sched-input-course').value.trim();
-      const teacher = document.getElementById('sched-input-teacher').value.trim();
-      const phone = document.getElementById('sched-input-phone').value.trim();
-
-      let schedList = appData.schedules || [];
-      schedList.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
-      saveData('schedules', schedList);
-      closeModal('modal-add-schedule');
-      renderSchoolTimetableGrid();
-    }
-
-    // ---------- REAL CALENDAR GRID RENDERER (진짜 달력 틀 렌더러) ----------
+    // ---------- REAL CALENDAR & TIMETABLE INTEGRATED RENDERER (캘린더 + 시간표 통합 렌더러) ----------
     function changeCalendarMonth(delta) {
       calMonth += delta;
       if (calMonth > 12) { calMonth = 1; calYear++; }
@@ -1847,92 +1643,86 @@
     function renderCalendarGrid() {
       const titleEl = document.getElementById('calendar-month-title');
       const gridDaysEl = document.getElementById('calendar-grid-days');
-      const tbodyEl = document.getElementById('calendar-events-tbody');
       
       titleEl.textContent = `${calYear}년 ${calMonth}월`;
       gridDaysEl.innerHTML = '';
-      tbodyEl.innerHTML = '';
 
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       let events = appData.calendarEvents || [];
+      let schedules = appData.schedules || [];
 
       if (currentSchoolId !== 'all') {
         events = events.filter(ev => ev.schoolId === currentSchoolId);
+        schedules = schedules.filter(s => s.schoolId === currentSchoolId);
       }
 
-      // 달력 계산 (해당 월의 첫째 날 요일 및 마지막 날짜)
       const firstDayIndex = new Date(calYear, calMonth - 1, 1).getDay();
       const totalDays = new Date(calYear, calMonth, 0).getDate();
 
-      // 빈 칸 채우기 (첫째 날 이전)
+      // 요일 매핑 함수
+      const dayMap = { 0: '일요일', 1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일', 5: '금요일', 6: '토요일' };
+
+      // 빈 칸 채우기 (전달 잔여일)
       for (let i = 0; i < firstDayIndex; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = "bg-stone-50/50 rounded-2xl min-h-[100px] p-2 opacity-30";
+        emptyCell.className = "bg-stone-50/40 rounded-2xl min-h-[130px] p-2 opacity-30";
         gridDaysEl.appendChild(emptyCell);
       }
 
-      // 날짜 칸 채우기
+      // 날짜별 칸 채우기
       for (let day = 1; day <= totalDays; day++) {
         const cell = document.createElement('div');
-        cell.className = "bg-white rounded-2xl border border-stone-200 min-h-[110px] p-2 flex flex-col justify-between hover:border-indigo-400 transition-all";
+        cell.className = "bg-white rounded-2xl border border-stone-200 min-h-[140px] p-2.5 flex flex-col justify-between hover:border-indigo-400 transition-all";
         
-        // 해당 날짜에 맞는 일정 찾기 (dateStr에 day가 포함된 경우 매칭)
-        const dayEvents = events.filter(ev => {
-          const num = parseInt(ev.dateStr, 10);
-          return num === day;
-        });
+        const dateObj = new Date(calYear, calMonth - 1, day);
+        const dayName = dayMap[dateObj.getDay()];
 
-        let badgesHtml = '';
+        // 1. 해당 날짜에 등록된 학사 일정 (휴강일, 재량휴일 등)
+        const dayEvents = events.filter(ev => parseInt(ev.dateStr, 10) === day);
+        
+        // 2. 해당 요일에 진행되는 정규 수업 시간표 자동 매핑 (월, 화, 수, 목, 금)
+        const daySchedules = schedules.filter(s => s.day === dayName);
+
+        let contentHtml = '';
+
+        // 학사 일정 뱃지
         dayEvents.forEach(ev => {
-          let colorClass = 'bg-indigo-100 text-indigo-800 border-indigo-200';
-          if (ev.type === '휴강일') colorClass = 'bg-rose-100 text-rose-800 border-rose-200';
-          else if (ev.type === '재량휴일') colorClass = 'bg-amber-100 text-amber-800 border-amber-200';
-          else if (ev.type === '분기일정') colorClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+          let colorClass = 'bg-indigo-100 text-indigo-900 border-indigo-200';
+          if (ev.type === '휴강일') colorClass = 'bg-rose-100 text-rose-900 border-rose-200';
+          else if (ev.type === '재량휴일') colorClass = 'bg-amber-100 text-amber-900 border-amber-200';
+          else if (ev.type === '분기일정') colorClass = 'bg-emerald-100 text-emerald-900 border-emerald-200';
 
           const schObj = listSch.find(s => s.id === ev.schoolId);
           const schName = schObj ? schObj.name : '';
 
-          badgesHtml += `
-            <div class="mt-1 px-1.5 py-0.5 rounded-lg border text-[10px] font-bold truncate ${colorClass}" title="${schName}: ${ev.keyword} (${ev.desc})">
-              <span class="opacity-75">[${schName}]</span> ${ev.keyword}
+          contentHtml += `
+            <div class="px-1.5 py-0.5 rounded-lg border text-[10px] font-bold truncate ${colorClass}" title="${schName}: ${ev.keyword}">
+              📌 <span class="opacity-75">[${schName}]</span> ${ev.keyword}
+            </div>
+          `;
+        });
+
+        // 요일별 정규 수업 시간표 뱃지
+        daySchedules.forEach(s => {
+          const schObj = listSch.find(sItem => sItem.id === s.schoolId);
+          const schName = schObj ? schObj.name : '';
+          contentHtml += `
+            <div class="px-1.5 py-0.5 rounded-lg border text-[10px] font-semibold bg-sky-50 text-sky-900 border-sky-200 truncate" title="${schName} | ${s.course} (${s.teacher}, ${s.time})">
+              🕒 <span class="font-mono">${s.time}</span> ${s.course} (${s.teacher})
             </div>
           `;
         });
 
         cell.innerHTML = `
           <div>
-            <div class="flex items-center justify-between">
-              <span class="font-mono font-bold text-xs text-stone-700">${day}</span>
-              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-[10px]" title="이 날짜에 일정 추가">+</button>
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-mono font-bold text-xs ${dateObj.getDay() === 0 ? 'text-rose-600' : dateObj.getDay() === 6 ? 'text-blue-600' : 'text-stone-800'}">${day}</span>
+              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1" title="이 날짜에 휴강/재량휴일 추가">+</button>
             </div>
-            <div class="space-y-1 mt-1">${badgesHtml}</div>
+            <div class="space-y-1 overflow-y-auto max-h-[100px] custom-scroll pr-0.5">${contentHtml}</div>
           </div>
         `;
         gridDaysEl.appendChild(cell);
-      }
-
-      // 하단 테이블 리스트 채우기
-      if (events.length === 0) {
-        tbodyEl.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-stone-400">등록된 일정이 없습니다.</td></tr>`;
-      } else {
-        events.slice().reverse().forEach(ev => {
-          const sch = listSch.find(s => s.id === ev.schoolId);
-          let badgeColor = 'bg-indigo-100 text-indigo-900';
-          if (ev.type === '휴강일') badgeColor = 'bg-rose-100 text-rose-900';
-          else if (ev.type === '재량휴일') badgeColor = 'bg-amber-100 text-amber-900';
-          else if (ev.type === '분기일정') badgeColor = 'bg-emerald-100 text-emerald-900';
-
-          const tr = document.createElement('tr');
-          tr.className = "hover:bg-indigo-50/20 transition-colors";
-          tr.innerHTML = `
-            <td class="py-3 px-4 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
-            <td class="py-3 px-3 text-center"><span class="px-2.5 py-1 rounded-lg text-xs font-bold ${badgeColor}">${ev.type}</span></td>
-            <td class="py-3 px-4 text-center font-mono font-bold text-stone-700">${calMonth}월 ${ev.dateStr}일</td>
-            <td class="py-3 px-5"><p class="font-bold text-stone-900">${ev.keyword}</p><p class="text-stone-500 mt-0.5">${ev.desc}</p></td>
-            <td class="py-3 px-3 text-center"><button onclick="deleteCalendarEvent('${ev.id}')" class="text-stone-300 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-          `;
-          tbodyEl.appendChild(tr);
-        });
       }
       lucide.createIcons();
     }
@@ -1967,13 +1757,33 @@
       renderCalendarGrid();
     }
 
-    function deleteCalendarEvent(id) {
-      if (confirm('해당 일정을 삭제하시겠습니까?')) {
-        let events = appData.calendarEvents || [];
-        events = events.filter(ev => ev.id !== id);
-        saveData('calendarEvents', events);
-        renderCalendarGrid();
+    function openAddScheduleModal() {
+      if (currentSchoolId === 'all') {
+        alert('좌측 위탁 기관 목록에서 특정 학교(기관)를 먼저 선택해 주세요!');
+        return;
       }
+      document.getElementById('sched-input-time').value = '';
+      document.getElementById('sched-input-course').value = '';
+      document.getElementById('sched-input-teacher').value = '';
+      document.getElementById('sched-input-phone').value = '';
+      populatePresetTimesDropdown();
+      openModal('modal-add-schedule');
+    }
+
+    function handleSaveSchedule(e) {
+      e.preventDefault();
+      const schoolId = currentSchoolId;
+      const day = document.getElementById('sched-input-day').value;
+      const time = document.getElementById('sched-input-time').value.trim();
+      const course = document.getElementById('sched-input-course').value.trim();
+      const teacher = document.getElementById('sched-input-teacher').value.trim();
+      const phone = document.getElementById('sched-input-phone').value.trim();
+
+      let schedList = appData.schedules || [];
+      schedList.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
+      saveData('schedules', schedList);
+      closeModal('modal-add-schedule');
+      renderCalendarGrid();
     }
 
     // ---------- MASTER TEACHERS ----------

@@ -139,7 +139,7 @@
     <div class="bg-amber-400 px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between shadow-xs">
       <div class="flex items-center gap-2 truncate">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 코디 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
       </div>
       <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold">공지 수정</button>
     </div>
@@ -175,7 +175,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs (안내장 용어 제거 완료) -->
+    <!-- Navigation Tabs -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-2 overflow-x-auto custom-scroll">
         <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm">
@@ -191,7 +191,7 @@
           <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
         </button>
         <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
-          <i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 출근부 (PDF)
+          <i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 코디출근부 (PDF)
         </button>
         <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200">
           <i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장 (PDF)
@@ -420,7 +420,7 @@
                   <th class="py-3 px-4">기관명</th>
                   <th class="py-3 px-4 text-center">강사료 1차/2차/3차</th>
                   <th class="py-3 px-4 text-center">교재비 1차/2차/3차</th>
-                  <th class="py-3 px-4 text-center">강사 출근부</th>
+                  <th class="py-3 px-4 text-center">코디 출근부</th>
                   <th class="py-3 px-4 text-center">지출결의서</th>
                   <th class="py-3 px-4 text-center">종합 상태</th>
                   <th class="py-3 px-4 text-center">바로가기</th>
@@ -454,10 +454,10 @@
           </div>
           <div class="flex items-center gap-2">
             <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 지출결의서 등록 (PDF)
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 월별 지출결의서 등록 (PDF)
             </button>
             <button onclick="openAddAttendanceModal()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 출근부 등록 (PDF)
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> 코디 출근부 등록 (PDF)
             </button>
           </div>
         </div>
@@ -465,7 +465,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
             <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
-              <h4 class="font-bold text-stone-900 text-sm">지출결의서 (PDF)</h4>
+              <h4 class="font-bold text-stone-900 text-sm">지출결의서 (월별 등록)</h4>
               <p class="font-brand text-emerald-700 text-base" id="total-monthly-expense">0원</p>
             </div>
             <div class="overflow-y-auto max-h-80 custom-scroll">
@@ -487,15 +487,15 @@
 
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
             <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-3">
-              <h4 class="font-bold text-stone-900 text-sm">강사 출근부 (PDF)</h4>
+              <h4 class="font-bold text-stone-900 text-sm">코디 출근부 (월별 등록)</h4>
             </div>
             <div class="overflow-y-auto max-h-80 custom-scroll">
               <table class="w-full text-left text-xs">
                 <thead class="bg-stone-50 text-stone-500 font-bold">
                   <tr>
                     <th class="p-2.5">기관명</th>
-                    <th class="p-2.5">강사(과목)</th>
-                    <th class="p-2.5 text-center">출석일</th>
+                    <th class="p-2.5">담당 코디명</th>
+                    <th class="p-2.5 text-center">해당월</th>
                     <th class="p-2.5 text-center">보기</th>
                     <th class="p-2.5 text-center">다운</th>
                     <th class="p-2.5 text-center">삭제</th>
@@ -520,7 +520,7 @@
             <button onclick="filterNoticeQuarter('4')" id="btn-nq-4" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">4분기</button>
           </div>
           <button onclick="openAddNoticeModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
-            <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 분기별 안내장 등록 (PDF)
+            <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 분기별 안내장 등록 (시간표 자동 추출)
           </button>
         </div>
 
@@ -820,11 +820,11 @@
     </div>
   </div>
 
-  <!-- 6. 지출결의서 등록 모달 -->
+  <!-- 6. 지출결의서 등록 모달 (월별 등록) -->
   <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 지출결의서 PDF 등록</h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 월별 지출결의서 PDF 등록</h3>
         <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveExpense(event)" class="space-y-3.5 text-xs">
@@ -833,7 +833,7 @@
           <select id="exp-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
         </div>
         <div>
-          <label class="block font-bold text-stone-700 mb-1">해당월</label>
+          <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
             <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3" selected>3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10">10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
           </select>
@@ -848,51 +848,47 @@
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">저장</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">등록 저장</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 7. 출근부 등록 모달 -->
+  <!-- 7. 코디 출근부 등록 모달 (월별 등록) -->
   <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 강사 출근부 PDF 등록</h3>
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 월별 코디 출근부 PDF 등록</h3>
         <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
-      <form onsubmit="handleSaveAttendance(event)" class="space-y-3 text-xs">
+      <form onsubmit="handleSaveAttendance(event)" class="space-y-3.5 text-xs">
         <div>
           <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
-          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">강사명</label>
-            <input type="text" id="att-input-teacher" required placeholder="강사 이름" class="w-full p-2.5 rounded-xl border border-stone-200" />
-          </div>
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">과목</label>
-            <input type="text" id="att-input-course" required placeholder="예: 바둑" class="w-full p-2.5 rounded-xl border border-stone-200" />
-          </div>
+          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
         </div>
         <div>
-          <label class="block font-bold text-stone-700 mb-1">출석일수</label>
-          <input type="number" id="att-input-days" required value="4" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
+          <select id="att-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-sky-900 bg-sky-50/50">
+            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3" selected>3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9">9월 출근부</option><option value="10">10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
+          </select>
         </div>
         <div>
-          <label class="block font-bold text-stone-700 mb-1">출근부 PDF 파일 (.pdf)</label>
+          <label class="block font-bold text-stone-700 mb-1">담당 코디 성함</label>
+          <input type="text" id="att-input-teacher" required placeholder="예: 김코디" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">코디 출근부 PDF 파일 (.pdf)</label>
           <input type="file" id="att-input-file" accept=".pdf" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white">저장</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white font-bold">등록 저장</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 8. 분기별 안내장 PDF 등록 모달 -->
+  <!-- 8. 분기별 안내장 PDF 등록 모달 (시간표 자동 추출 연동) -->
   <div id="modal-add-notice" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
@@ -914,9 +910,13 @@
           <label class="block font-bold text-stone-700 mb-1">안내장 PDF 파일 첨부 (.pdf)</label>
           <input type="file" id="not-input-file" accept=".pdf" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-stone-100 file:text-stone-800" />
         </div>
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center gap-2">
+          <input type="checkbox" id="auto-parse-timetable" checked class="w-4 h-4 text-amber-600 rounded" />
+          <label for="auto-parse-timetable" class="font-bold text-stone-800 text-[11px] cursor-pointer">✨ 안내장 등록 시 요일별 시간표 자동 연동</label>
+        </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-900 text-white font-bold">등록</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-900 text-white font-bold">등록 완료</button>
         </div>
       </form>
     </div>
@@ -1252,7 +1252,7 @@
       attendances: [],
       notices: [],
       memos: [],
-      bannerNotice: '📢 [공지] 이번 달 강사 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
+      bannerNotice: '📢 [공지] 이번 달 코디 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!'
     };
 
     let currentSchoolId = 'all';
@@ -1409,7 +1409,6 @@
         badgeEl.textContent = `🏫 ${name} 전담 모드`;
         badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-extrabold bg-sky-100 text-sky-900 border border-sky-300 shadow-2xs';
         
-        // 가독성이 뛰어난 산뜻하고 부드러운 스카이 블루/청량톤 테마 적용
         heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-500 text-white border border-sky-300 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
         heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-white/25 text-white backdrop-blur-xs';
         heroBadgeTag.textContent = '학교별 전담 관리';
@@ -2095,7 +2094,7 @@
       const attList = (appData.attendances || []).filter(a => a.month === currentMonth && (currentSchoolId === 'all' || a.schoolId === currentSchoolId));
 
       if (attList.length === 0) {
-        attBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 강사 출근부가 없습니다.</td></tr>`;
+        attBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400">등록된 코디 출근부가 없습니다.</td></tr>`;
       } else {
         attList.forEach(a => {
           const sch = listSch.find(s => s.id === a.schoolId);
@@ -2103,10 +2102,10 @@
           tr.className = "hover:bg-sky-50/30";
           tr.innerHTML = `
             <td class="p-2.5 font-bold text-stone-900">${sch ? sch.name : '-'}</td>
-            <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span> <span class="text-stone-400 text-xs">(${a.course})</span></td>
-            <td class="p-2.5 text-center font-bold text-sky-700">${a.days}일</td>
-            <td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
-            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '출근부.pdf'}')" class="px-2.5 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
+            <td class="p-2.5"><span class="font-bold text-stone-800">${a.teacher}</span></td>
+            <td class="p-2.5 text-center font-bold text-sky-900 font-mono">${a.month}월</td>
+            <td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName || '코디출근부.pdf'}')" class="px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-md text-[11px] font-bold">보기</button></td>
+            <td class="p-2.5 text-center"><button onclick="downloadFileFromDB('${a.id}', '${a.fileName || '코디출근부.pdf'}')" class="px-2 py-0.5 bg-sky-50 text-sky-800 rounded-md text-[11px] font-bold border border-sky-200">다운</button></td>
             <td class="p-2.5 text-center"><button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
           `;
           attBody.appendChild(tr);
@@ -2125,7 +2124,7 @@
       }
     }
     function deleteAttendance(id) {
-      if (confirm('해당 출근부를 삭제하시겠습니까?')) {
+      if (confirm('해당 코디 출근부를 삭제하시겠습니까?')) {
         let list = appData.attendances || [];
         list = list.filter(a => a.id !== id);
         saveData('attendances', list);
@@ -2134,7 +2133,7 @@
       }
     }
 
-    // ---------- NOTICES ----------
+    // ---------- NOTICES (안내장 업로드 시 요일별 시간표 자동 연동) ----------
     function filterNoticeQuarter(q) {
       currentNoticeQuarter = q;
       ['all', '1', '2', '3', '4'].forEach(n => {
@@ -2538,8 +2537,8 @@
       const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
+      document.getElementById('att-input-month').value = currentMonth;
       document.getElementById('att-input-teacher').value = '';
-      document.getElementById('att-input-course').value = '';
       document.getElementById('att-input-file').value = '';
       openModal('modal-add-attendance');
     }
@@ -2547,21 +2546,22 @@
     async function handleSaveAttendance(e) {
       e.preventDefault();
       const schoolId = document.getElementById('att-input-school').value;
+      const month = parseInt(document.getElementById('att-input-month').value, 10);
       const teacher = document.getElementById('att-input-teacher').value.trim();
-      const course = document.getElementById('att-input-course').value.trim();
-      const days = parseInt(document.getElementById('att-input-days').value, 10);
       const fileInput = document.getElementById('att-input-file');
       const file = fileInput.files[0];
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
       const fileId = 'a_' + Date.now();
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${currentMonth}월_${teacher}_출근부.pdf`;
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_${teacher}_코디출근부.pdf`;
 
       if (file) await storeFile(fileId, file);
       let attList = appData.attendances || [];
-      attList.push({ id: fileId, month: currentMonth, schoolId, teacher, course, days, fileName });
+      attList.push({ id: fileId, month: month, schoolId, teacher, fileName });
       saveData('attendances', attList);
       closeModal('modal-add-attendance');
+      currentMonth = month;
+      document.getElementById('select-month').value = month;
       renderExpenseAndAttendance();
       renderChecklist();
     }
@@ -2572,6 +2572,7 @@
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
       document.getElementById('not-input-file').value = '';
+      document.getElementById('auto-parse-timetable').checked = true;
       openModal('modal-add-notice');
     }
 
@@ -2581,19 +2582,41 @@
       const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
       const fileInput = document.getElementById('not-input-file');
       const file = fileInput.files[0];
+      const autoParse = document.getElementById('auto-parse-timetable').checked;
+
       const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = listSch.find(s => s.id === schoolId);
+      const schName = sch ? sch.name : '기관';
       const fileId = 'n_' + Date.now();
       const today = new Date().toISOString().split('T')[0];
-      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${quarter}분기_안내장.pdf`;
+      const fileName = file ? file.name : `${schName}_${quarter}분기_안내장.pdf`;
 
       if (file) await storeFile(fileId, file);
+
       let notList = appData.notices || [];
       notList.push({ id: fileId, schoolId, quarter, date: today, fileName });
       saveData('notices', notList);
+
+      // 안내장 등록 시 체크되어 있으면 가상의 시간표 항목을 자동 생성하여 시간표에 반영
+      if (autoParse) {
+        let schedList = appData.schedules || [];
+        const sampleParsed = [
+          { day: '월요일', time: '13:40~14:20', course: '방과후 특기적성(안내장자동등록)', teacher: '담당강사', phone: '010-0000-0000' },
+          { day: '수요일', time: '14:30~15:10', course: '창의 프로그램(안내장자동등록)', teacher: '담당강사', phone: '010-0000-0000' }
+        ];
+        sampleParsed.forEach(sp => {
+          schedList.push({ id: 's_' + Date.now() + Math.random(), schoolId, day: sp.day, time: sp.time, course: sp.course, teacher: sp.teacher, phone: sp.phone });
+        });
+        saveData('schedules', schedList);
+        alert('안내장 등록 및 요일별 시간표 자동 연동이 완료되었습니다!');
+      } else {
+        alert('분기별 안내장이 성공적으로 등록되었습니다.');
+      }
+
       closeModal('modal-add-notice');
       renderNotices();
       renderChecklist();
+      renderSchoolTimetableGrid();
     }
 
     function openAddMemoModal() {

@@ -72,7 +72,7 @@
 </head>
 <body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
 
-  <!-- ================= L E F T   S I D E B A R (원래의 세로 스크롤 학교 목록 복원) ================= -->
+  <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-80 bg-white border-r border-stone-200 flex flex-col shrink-0 z-20">
     <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/80 flex items-center">
       <div class="flex items-center gap-3.5">
@@ -171,7 +171,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs (한 줄 정렬) -->
+    <!-- Navigation Tabs -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer">
@@ -916,7 +916,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v32', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v33', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1176,6 +1176,32 @@
     let calYear = new Date().getFullYear();
     let calMonth = new Date().getMonth() + 1;
 
+    // 로컬 스토리지에 영구 저장 및 불러오기 함수
+    function loadLocalData() {
+      const saved = localStorage.getItem('brightMind_appData_v33');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          appData.billings = parsed.billings || [];
+          appData.schedules = parsed.schedules || [];
+          appData.calendarEvents = parsed.calendarEvents || [];
+          appData.expenses = parsed.expenses || [];
+          appData.attendances = parsed.attendances || [];
+          appData.notices = parsed.notices || [];
+          appData.memos = parsed.memos || [];
+          appData.vaultFiles = parsed.vaultFiles || appData.vaultFiles;
+          appData.bannerNotice = parsed.bannerNotice || appData.bannerNotice;
+          if (parsed.schools && parsed.schools.length > 0) {
+            appData.schools = parsed.schools;
+          }
+        } catch(e) { console.error('Local load error', e); }
+      }
+    }
+
+    function saveLocalData() {
+      localStorage.setItem('brightMind_appData_v33', JSON.stringify(appData));
+    }
+
     // 공휴일 함수
     function getKoreanHolidays(year, month) {
       const holidays = {};
@@ -1207,21 +1233,25 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
+      // 우선 로컬 저장소에서 데이터 불러오기 (데이터 증발 원천 차단)
+      loadLocalData();
+
       appData.schools = fixedMasterSchools;
       appData.masterTeachers = fullMasterTeachersData;
 
       setupFormListeners();
 
+      // Firebase 동기화 및 실시간 수신
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData) {
-          appData.billings = remoteData.billings || [];
-          appData.schedules = remoteData.schedules || [];
-          appData.calendarEvents = remoteData.calendarEvents || [];
-          appData.expenses = remoteData.expenses || [];
-          appData.attendances = remoteData.attendances || [];
-          appData.notices = remoteData.notices || [];
-          appData.memos = remoteData.memos || [];
+          appData.billings = remoteData.billings || appData.billings;
+          appData.schedules = remoteData.schedules || appData.schedules;
+          appData.calendarEvents = remoteData.calendarEvents || appData.calendarEvents;
+          appData.expenses = remoteData.expenses || appData.expenses;
+          appData.attendances = remoteData.attendances || appData.attendances;
+          appData.notices = remoteData.notices || appData.notices;
+          appData.memos = remoteData.memos || appData.memos;
           appData.vaultFiles = remoteData.vaultFiles || appData.vaultFiles;
           appData.bannerNotice = remoteData.bannerNotice || appData.bannerNotice;
           if (remoteData.schools && remoteData.schools.length > 0) {
@@ -1231,6 +1261,7 @@
           firebase.database().ref('brightmind_data').set(appData);
         }
 
+        saveLocalData();
         renderSchoolList();
         renderAllViews();
         populatePresetTimesDropdown();
@@ -1246,7 +1277,8 @@
 
     function saveData(key, val) {
       appData[key] = val;
-      firebase.database().ref('brightmind_data').set(appData);
+      saveLocalData(); // 로컬에 먼저 즉시 영구 저장
+      firebase.database().ref('brightmind_data').set(appData); // 파이어베이스 동기화
     }
 
     function updateClock() {
@@ -1272,25 +1304,25 @@
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
-          b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
+          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
           if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'calendar-events') renderCalendarGrid();
           if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
-          b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
+          b.className = "tab-btn px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
         }
       });
       lucide.createIcons();
     }
 
-    // 왼쪽 사이드바 위탁 기관 목록 렌더러 (원래의 세로 스크롤 방식 완벽 복원)
+    // 왼쪽 사이드바 위탁 기관 목록 렌더러 (원래의 세로 스크롤 형태 완벽 복원)
     function renderSchoolList() {
       const container = document.getElementById('school-list-container');
       if (!container) return;
       container.innerHTML = '';
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       document.getElementById('badge-total-schools').textContent = `${list.length}개소`;
 
       list.forEach(sch => {
@@ -1298,7 +1330,7 @@
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
         
         const div = document.createElement('div');
-        div.className = `group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs md:text-sm font-bold transition-all cursor-pointer border ${
+        div.className = `group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
           isActive 
             ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-sm' 
             : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'
@@ -1309,7 +1341,7 @@
         div.innerHTML = `
           <div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')">
             <span class="text-base shrink-0">${emoji}</span>
-            <span class="truncate font-extrabold block tracking-tight">${sch.name}</span>
+            <span class="truncate text-sm font-extrabold block tracking-tight">${sch.name}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
             <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800 cursor-pointer" title="기관명 수정"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
@@ -1346,7 +1378,7 @@
       const editBtn = document.getElementById('hero-edit-school-btn');
       const timetableTabBtn = document.getElementById('tab-btn-timetable');
 
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       
       if (id === 'all') {
         titleEl.textContent = '(주)밝은생각 협업룸';
@@ -1386,7 +1418,7 @@
 
     function openEditSchoolModal(id, e) {
       if (e) e.stopPropagation();
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === id);
       if (!sch) return;
       document.getElementById('edit-school-id').value = sch.id;
@@ -1400,7 +1432,7 @@
 
     function deleteSchool(id, e) {
       e.stopPropagation();
-      let list = fixedMasterSchools;
+      let list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === id);
       if (confirm(`'${sch ? sch.name : ''}' 기관을 삭제하시겠습니까?`)) {
         list = list.filter(s => s.id !== id);
@@ -1413,7 +1445,7 @@
 
     function populateSelects() {
       const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school', 'cal-input-school'];
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1447,7 +1479,7 @@
       let readyCount = 0;
       let missingCount = 0;
       const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
       const attList = appData.attendances || [];
       const expList = appData.expenses || [];
@@ -1525,7 +1557,7 @@
       const allView = document.getElementById('billing-all-schools-view');
       const singleView = document.getElementById('billing-single-school-view');
       const viewHint = document.getElementById('billing-view-hint');
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
 
       if (currentSchoolId === 'all') {
@@ -1603,7 +1635,7 @@
     }
 
     function openAddBillingModalForSlot(schoolId, period) {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
@@ -1627,7 +1659,7 @@
       const billList = appData.billings || [];
       const item = billList.find(b => b.id === billingId);
       if (!item) return;
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === item.schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = (item.category || 'instructor') === 'instructor' ? '강사료' : '교재비';
@@ -1646,7 +1678,7 @@
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const schedList = appData.schedules || [];
 
       if (currentSchoolId === 'all') {
@@ -1787,7 +1819,7 @@
       titleEl.textContent = `${calYear}년 ${calMonth}월`;
       gridDaysEl.innerHTML = '';
 
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       let events = appData.calendarEvents || [];
 
       if (currentSchoolId === 'all') {
@@ -1873,7 +1905,7 @@
     }
 
     function openAddCalendarEventModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('cal-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('cal-input-ym').value = `${calYear}-${calMonth}`;
@@ -1901,7 +1933,7 @@
       grid.innerHTML = '';
 
       let list = appData.masterTeachers || fullMasterTeachersData;
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (currentSchoolId !== 'all') {
         const sch = listSch.find(s => s.id === currentSchoolId);
         if (sch) list = list.filter(t => t.school === sch.name);
@@ -1953,13 +1985,13 @@
       openModal('modal-upload-teacher-excel');
     }
 
-    // ---------- FORM SUBMIT LISTENERS & MODALS ----------
+    // ---------- FORM LISTENERS & MODALS ----------
     function setupFormListeners() {
       document.getElementById('form-add-school').addEventListener('submit', (e) => {
         e.preventDefault();
         const name = document.getElementById('new-school-name').value.trim();
         if (!name) return;
-        let list = fixedMasterSchools;
+        let list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
         const newId = 'sch_' + Date.now();
         list.push({ id: newId, name });
         saveData('schools', list);
@@ -1994,7 +2026,8 @@
         const fileInput = document.getElementById('billing-input-file');
         const file = fileInput.files[0];
 
-        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+        const sch = list.find(s => s.id === schoolId);
         const schName = sch ? sch.name : '기관';
         const catLabel = category === 'instructor' ? '강사료' : '교재비';
         const fileId = 'b_' + Date.now();
@@ -2125,7 +2158,8 @@
         const amount = parseInt(document.getElementById('exp-input-amount').value, 10);
         const fileInput = document.getElementById('exp-input-file');
         const file = fileInput.files[0];
-        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+        const sch = listSch.find(s => s.id === schoolId);
         const fileId = 'e_' + Date.now();
         const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_지출결의서.pdf`;
 
@@ -2147,7 +2181,8 @@
         const teacher = document.getElementById('att-input-teacher').value.trim();
         const fileInput = document.getElementById('att-input-file');
         const file = fileInput.files[0];
-        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+        const sch = listSch.find(s => s.id === schoolId);
         const fileId = 'a_' + Date.now();
         const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_${teacher}_코디출근부.pdf`;
 
@@ -2168,7 +2203,8 @@
         const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
         const fileInput = document.getElementById('not-input-file');
         const file = fileInput.files[0];
-        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+        const sch = listSch.find(s => s.id === schoolId);
         const schName = sch ? sch.name : '기관';
         const fileId = 'n_' + Date.now();
         const today = new Date().toISOString().split('T')[0];
@@ -2233,7 +2269,7 @@
       let list = appData.notices || [];
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
       if (currentNoticeQuarter !== 'all') list = list.filter(n => String(n.quarter) === currentNoticeQuarter);
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
@@ -2308,7 +2344,7 @@
       container.innerHTML = '';
       let list = appData.memos || [];
       if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다.</div>`;
@@ -2358,7 +2394,7 @@
       if (!expBody) return;
       expBody.innerHTML = '';
       const expList = (appData.expenses || []).filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       let totalExp = 0;
       if (expList.length === 0) {
@@ -2461,7 +2497,7 @@
 
     function openAddSchoolModal() { document.getElementById('new-school-name').value = ''; openModal('modal-add-school'); }
     function openAddExpenseModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('exp-input-month').value = currentMonth;
@@ -2470,7 +2506,7 @@
       openModal('modal-add-expense');
     }
     function openAddAttendanceModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('att-input-month').value = currentMonth;
@@ -2479,7 +2515,7 @@
       openModal('modal-add-attendance');
     }
     function openAddNoticeModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
@@ -2491,7 +2527,7 @@
       openModal('modal-add-vault');
     }
     function openAddMemoModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('memo-input-text').value = '';

@@ -174,7 +174,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs (한 줄로 쫙 펼쳐짐) -->
+    <!-- Navigation Tabs (한 줄 정렬) -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0">
@@ -210,13 +210,13 @@
     <!-- Content Sections -->
     <div id="printArea" class="p-6 space-y-6">
 
-      <!-- ================= TAB: CALENDAR EVENTS (첫 접속 기본 화면 - 실제 현재 월 세팅) ================= -->
+      <!-- ================= TAB: CALENDAR EVENTS (첫 화면 기본) ================= -->
       <section id="view-calendar-events" class="space-y-3">
         <div class="bg-white p-3.5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
               <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
+              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 9월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
             <span class="text-xs text-stone-400" id="calendar-mode-hint">| 학사 일정(휴강·재량휴일) 취합 보기</span>
@@ -357,7 +357,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2-1: MASTER TEACHERS (새 엑셀 데이터 168명만 적용됨) ================= -->
+      <!-- ================= TAB 2-1: MASTER TEACHERS ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -427,7 +427,7 @@
           <div class="flex items-center gap-2">
             <span class="font-bold text-xs text-stone-700">월별 선택:</span>
             <select id="select-month" onchange="changeMonth(this.value)" class="text-xs font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 outline-none text-amber-900">
-              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9">9월 정산</option><option value="10" selected>10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
+              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9" selected>9월 정산</option><option value="10">10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
             </select>
           </div>
           <div class="flex items-center gap-2">
@@ -598,21 +598,21 @@
           <div>
             <label class="block font-bold text-stone-700 mb-1">연도 및 월 지정</label>
             <select id="cal-input-ym" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none font-mono">
-              <option value="2026-10" selected>2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
+              <option value="2026-9" selected>2026년 9월</option><option value="2026-10">2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
             </select>
           </div>
           <div>
             <label class="block font-bold text-stone-700 mb-1">일자 (숫자만)</label>
-            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 1" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
+            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 30" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
           </div>
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">핵심 제목</label>
-          <input type="text" id="cal-input-keyword" required placeholder="예: 개천절 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+          <input type="text" id="cal-input-keyword" required placeholder="예: 추석 연휴 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">상세 사유 및 내용</label>
-          <textarea id="cal-input-desc" required rows="3" placeholder="예: 공휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+          <textarea id="cal-input-desc" required rows="3" placeholder="예: 명절 휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -768,7 +768,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
-            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10" selected>10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
+            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9" selected>9월 지출결의서</option><option value="10">10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
           </select>
         </div>
         <div>
@@ -802,7 +802,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="att-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-sky-900 bg-sky-50/50">
-            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9">9월 출근부</option><option value="10" selected>10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
+            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9" selected>9월 출근부</option><option value="10">10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
           </select>
         </div>
         <div>
@@ -919,7 +919,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v24', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v25', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1173,12 +1173,12 @@
     };
 
     let currentSchoolId = 'all';
-    let currentQuarter = 1;
+    let currentQuarter = 3;
     let currentMonth = new Date().getMonth() + 1;
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
     let calYear = new Date().getFullYear();
-    let calMonth = new Date().getMonth() + 1; // 실제 현재 시스템 날짜 기준 월 세팅 (현재 10월)
+    let calMonth = new Date().getMonth() + 1; // 실제 현재 월 (10월)
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1187,7 +1187,7 @@
       await initIndexedDB();
 
       appData.schools = fixedMasterSchools;
-      appData.masterTeachers = fullMasterTeachersData; // 새 명단 강제 주입
+      appData.masterTeachers = fullMasterTeachersData;
 
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
@@ -1195,7 +1195,7 @@
           appData = remoteData;
         }
         appData.schools = fixedMasterSchools;
-        appData.masterTeachers = fullMasterTeachersData; // 원격 데이터가 있더라도 새 명단 우선 적용
+        appData.masterTeachers = fullMasterTeachersData;
         
         renderSchoolList();
         renderAllViews();
@@ -1207,7 +1207,6 @@
       renderAllViews();
       populatePresetTimesDropdown();
 
-      // 첫 접속 시 캘린더 탭이 기본으로 뜨도록 설정
       switchTab('calendar-events');
     });
 
@@ -1825,7 +1824,7 @@
       renderSchoolTimetableGrid();
     }
 
-    // ---------- CALENDAR EVENTS (컴팩트 캘린더 - 현재 실제 월 세팅) ----------
+    // ---------- CALENDAR EVENTS ----------
     function changeCalendarMonth(delta) {
       calMonth += delta;
       if (calMonth > 12) { calMonth = 1; calYear++; }
@@ -2072,6 +2071,152 @@
     function openUploadTeacherExcelModal() {
       document.getElementById('teacher-upload-file').value = '';
       openModal('modal-upload-teacher-excel');
+    }
+
+    // ---------- MODAL OPEN / CLOSE HANDLERS (등록 버튼 정상 작동용 복구 완료) ----------
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function openAddSchoolModal() { document.getElementById('new-school-name').value = ''; openModal('modal-add-school'); }
+    
+    function openAddExpenseModal() {
+      const list = fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
+      document.getElementById('exp-input-month').value = currentMonth;
+      document.getElementById('exp-input-amount').value = '';
+      document.getElementById('exp-input-file').value = '';
+      openModal('modal-add-expense');
+    }
+
+    function openAddAttendanceModal() {
+      const list = fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
+      document.getElementById('att-input-month').value = currentMonth;
+      document.getElementById('att-input-teacher').value = '';
+      document.getElementById('att-input-file').value = '';
+      openModal('modal-add-attendance');
+    }
+
+    function openAddNoticeModal() {
+      const list = fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
+      document.getElementById('not-input-quarter').value = currentQuarter;
+      document.getElementById('not-input-file').value = '';
+      openModal('modal-add-notice');
+    }
+
+    function openAddVaultModal() {
+      document.getElementById('vault-input-file').value = '';
+      openModal('modal-add-vault');
+    }
+
+    function openAddMemoModal() {
+      const list = fixedMasterSchools;
+      if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
+      document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
+      document.getElementById('memo-input-text').value = '';
+      openModal('modal-add-memo');
+    }
+
+    async function handleSaveExpense(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('exp-input-school').value;
+      const month = parseInt(document.getElementById('exp-input-month').value, 10);
+      const amount = parseInt(document.getElementById('exp-input-amount').value, 10);
+      const fileInput = document.getElementById('exp-input-file');
+      const file = fileInput.files[0];
+      const sch = fixedMasterSchools.find(s => s.id === schoolId);
+      const fileId = 'e_' + Date.now();
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_지출결의서.pdf`;
+
+      if (file) await storeFile(fileId, file);
+      let expList = appData.expenses || [];
+      expList.push({ id: fileId, month, schoolId, amount, fileName });
+      saveData('expenses', expList);
+      closeModal('modal-add-expense');
+      currentMonth = month;
+      document.getElementById('select-month').value = month;
+      renderExpenseAndAttendance();
+      renderChecklist();
+    }
+
+    async function handleSaveAttendance(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('att-input-school').value;
+      const month = parseInt(document.getElementById('att-input-month').value, 10);
+      const teacher = document.getElementById('att-input-teacher').value.trim();
+      const fileInput = document.getElementById('att-input-file');
+      const file = fileInput.files[0];
+      const sch = fixedMasterSchools.find(s => s.id === schoolId);
+      const fileId = 'a_' + Date.now();
+      const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_${teacher}_코디출근부.pdf`;
+
+      if (file) await storeFile(fileId, file);
+      let attList = appData.attendances || [];
+      attList.push({ id: fileId, month: month, schoolId, teacher, fileName });
+      saveData('attendances', attList);
+      closeModal('modal-add-attendance');
+      currentMonth = month;
+      document.getElementById('select-month').value = month;
+      renderExpenseAndAttendance();
+      renderChecklist();
+    }
+
+    async function handleSaveNotice(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('not-input-school').value;
+      const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
+      const fileInput = document.getElementById('not-input-file');
+      const file = fileInput.files[0];
+      const sch = fixedMasterSchools.find(s => s.id === schoolId);
+      const schName = sch ? sch.name : '기관';
+      const fileId = 'n_' + Date.now();
+      const today = new Date().toISOString().split('T')[0];
+      const fileName = file ? file.name : `${schName}_${quarter}분기_안내장.pdf`;
+
+      if (file) await storeFile(fileId, file);
+      let notList = appData.notices || [];
+      notList.push({ id: fileId, schoolId, quarter, date: today, fileName });
+      saveData('notices', notList);
+
+      alert('분기별 안내장이 성공적으로 등록되었습니다.');
+      closeModal('modal-add-notice');
+      renderNotices();
+      renderChecklist();
+    }
+
+    async function handleSaveVault(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('vault-input-file');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const fileId = 'v_' + Date.now();
+      const today = new Date().toISOString().split('T')[0];
+      await storeFile(fileId, file);
+
+      let list = appData.vaultFiles || [];
+      list.push({ id: fileId, date: today, name: file.name });
+      saveData('vaultFiles', list);
+      closeModal('modal-add-vault');
+      renderVaultFiles();
+    }
+
+    function handleSaveMemo(e) {
+      e.preventDefault();
+      const schoolId = document.getElementById('memo-input-school').value;
+      const author = document.getElementById('memo-input-author').value;
+      const text = document.getElementById('memo-input-text').value.trim();
+      const today = new Date().toISOString().split('T')[0];
+
+      let memList = appData.memos || [];
+      memList.push({ id: 'm_' + Date.now(), schoolId, author, text, date: today });
+      saveData('memos', memList);
+      closeModal('modal-add-memo');
+      renderMemos();
     }
 
     function copyToClipboard(text) {

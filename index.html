@@ -72,13 +72,10 @@
 </head>
 <body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
 
-  <!-- ================= L E F T   S I D E B A R (드롭다운 적용) ================= -->
+  <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col shrink-0 z-20">
     <div class="px-5 py-4 md:px-6 md:py-5 border-b border-amber-100 bg-amber-50/80 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 text-white flex items-center justify-center font-bold text-xl md:text-2xl shadow-md shadow-amber-200/80 ring-2 ring-white shrink-0">
-          ⭐
-        </div>
         <div>
           <h1 class="text-xl md:text-[23px] font-brand text-stone-900 tracking-tight leading-none drop-shadow-2xs">
             (주)밝은생각
@@ -95,13 +92,31 @@
           <span id="badge-total-schools" class="text-[11px] text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded-full">12개소</span>
         </label>
         <select id="school-dropdown-select" onchange="selectSchool(this.value)" class="w-full p-3 rounded-2xl border border-amber-300 bg-amber-50/50 font-extrabold text-stone-900 text-xs md:text-sm outline-none focus:border-amber-500 shadow-xs cursor-pointer">
-          <option value="all">🎒 전체 기관 통합보기</option>
+          <option value="all">🎒 전체 기관 통합보기 (12개소)</option>
         </select>
       </div>
 
       <button onclick="openAddSchoolModal()" class="w-full py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-stone-200">
         <i data-lucide="plus" class="w-4 h-4 text-amber-600"></i> 새 위탁 기관 추가하기
       </button>
+
+      <!-- 공백을 알차게 채워줄 관리자 퀵 메뉴 및 팁 위젯 -->
+      <div class="mt-2 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2.5 text-xs">
+        <p class="font-bold text-amber-900 flex items-center gap-1.5">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-600"></i> 관리자 빠른 업무 팁
+        </p>
+        <ul class="space-y-1.5 text-stone-600 text-[11px] leading-relaxed">
+          <li class="flex items-start gap-1">
+            <span class="text-amber-600 font-bold">•</span> 상단 달력의 <span class="font-bold text-stone-800">[+]</span> 버튼을 누르면 기관별 휴강일을 즉시 등록할 수 있습니다.
+          </li>
+          <li class="flex items-start gap-1">
+            <span class="text-amber-600 font-bold">•</span> 법정 공휴일은 캘린더에 자동으로 빨간색 표시됩니다.
+          </li>
+          <li class="flex items-start gap-1">
+            <span class="text-amber-600 font-bold">•</span> 매월 25일까지 청구서와 코디 출근부 원본을 등록해 주세요.
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- 서류 제출 현황 요약 위젯 -->
@@ -216,7 +231,7 @@
               <h3 class="text-sm md:text-base font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <span class="text-[11px] md:text-xs text-stone-400 hidden sm:inline" id="calendar-mode-hint">| 학사 일정(휴강·재량휴일) 취합 보기</span>
+            <span class="text-[11px] md:text-xs text-stone-400 hidden sm:inline" id="calendar-mode-hint">| 공휴일 및 학사일정 자동 표시</span>
           </div>
           <button onclick="openAddCalendarEventModal()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
             <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> 휴강/재량휴일 등록
@@ -224,16 +239,16 @@
         </div>
 
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-3 md:p-4">
-          <div class="grid grid-cols-7 gap-1 mb-1 text-center font-bold text-xs">
-            <div class="py-1 text-rose-600 bg-rose-50 rounded-lg">일</div>
-            <div class="py-1 text-stone-700 bg-stone-50 rounded-lg">월</div>
-            <div class="py-1 text-stone-700 bg-stone-50 rounded-lg">화</div>
-            <div class="py-1 text-stone-700 bg-stone-50 rounded-lg">수</div>
-            <div class="py-1 text-stone-700 bg-stone-50 rounded-lg">목</div>
-            <div class="py-1 text-stone-700 bg-stone-50 rounded-lg">금</div>
-            <div class="py-1 text-blue-600 bg-blue-50 rounded-lg">토</div>
+          <div class="grid grid-cols-7 gap-1.5 mb-1.5 text-center font-bold text-xs">
+            <div class="py-1.5 text-rose-600 bg-rose-50 rounded-lg">일</div>
+            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">월</div>
+            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">화</div>
+            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">수</div>
+            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">목</div>
+            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">금</div>
+            <div class="py-1.5 text-blue-600 bg-blue-50 rounded-lg">토</div>
           </div>
-          <div id="calendar-grid-days" class="grid grid-cols-7 gap-1 md:gap-1.5"></div>
+          <div id="calendar-grid-days" class="grid grid-cols-7 gap-1.5"></div>
         </div>
       </section>
 
@@ -916,7 +931,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v29', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v30', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1176,19 +1191,53 @@
     let calYear = new Date().getFullYear();
     let calMonth = new Date().getMonth() + 1;
 
+    // 대한민국 법정공휴일 계산 함수 (양력 기준 고정 공휴일 + 음력 주요 공휴일 자동 반영)
+    function getKoreanHolidays(year, month) {
+      const holidays = {};
+      
+      // 1. 고정 양력 공휴일
+      const fixed = {
+        '1-1': '신정',
+        '3-1': '삼일절',
+        '5-5': '어린이날',
+        '6-6': '현충일',
+        '8-15': '광복절',
+        '10-3': '개천절',
+        '10-9': '한글날',
+        '12-25': '성탄절'
+      };
+      
+      const key = `${month}-${new Date(year, month-1, 1).getDate()}`; // format check helper
+      // Check each day of the month
+      const totalDays = new Date(year, month, 0).getDate();
+      for (let d = 1; d <= totalDays; d++) {
+        const k = `${month}-${d}`;
+        if (fixed[k]) {
+          holidays[d] = fixed[k];
+        }
+      }
+
+      // 2. 2026년 기준 추석 및 설날 연휴 자동 보정
+      if (year === 2026) {
+        if (month === 9) { // 2026년 추석 연휴 (9월 24일 ~ 9월 26일 등 예시)
+          if (d >= 24 && d <= 26) holidays[d] = '추석 연휴';
+        }
+      }
+
+      return holidays;
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
       updateClock();
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
-      // 최초 로컬 캐시 또는 기본값 설정
       appData.schools = fixedMasterSchools;
       appData.masterTeachers = fullMasterTeachersData;
 
       setupFormListeners();
 
-      // Firebase 데이터 로드 (서버에 데이터가 없거나 비어있을 때만 최초값 세팅하여 데이터 증발 방지)
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData) {
@@ -1201,9 +1250,6 @@
           appData.memos = remoteData.memos || [];
           appData.vaultFiles = remoteData.vaultFiles || appData.vaultFiles;
           appData.bannerNotice = remoteData.bannerNotice || appData.bannerNotice;
-          if (remoteData.schools && remoteData.schools.length > 0) {
-            appData.schools = remoteData.schools;
-          }
         } else {
           firebase.database().ref('brightmind_data').set(appData);
         }
@@ -1267,7 +1313,7 @@
       const selectEl = document.getElementById('school-dropdown-select');
       if (!selectEl) return;
       
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       document.getElementById('badge-total-schools').textContent = `${list.length}개소`;
 
       let html = `<option value="all">🎒 전체 기관 통합보기 (${list.length}개소)</option>`;
@@ -1298,7 +1344,7 @@
       const editBtn = document.getElementById('hero-edit-school-btn');
       const timetableTabBtn = document.getElementById('tab-btn-timetable');
 
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       
       if (id === 'all') {
         titleEl.textContent = '(주)밝은생각 협업룸';
@@ -1338,7 +1384,7 @@
 
     function populateSelects() {
       const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school', 'cal-input-school'];
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1372,7 +1418,7 @@
       let readyCount = 0;
       let missingCount = 0;
       const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       const billList = appData.billings || [];
       const attList = appData.attendances || [];
       const expList = appData.expenses || [];
@@ -1450,7 +1496,7 @@
       const allView = document.getElementById('billing-all-schools-view');
       const singleView = document.getElementById('billing-single-school-view');
       const viewHint = document.getElementById('billing-view-hint');
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       const billList = appData.billings || [];
 
       if (currentSchoolId === 'all') {
@@ -1528,7 +1574,7 @@
     }
 
     function openAddBillingModalForSlot(schoolId, period) {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
@@ -1552,7 +1598,7 @@
       const billList = appData.billings || [];
       const item = billList.find(b => b.id === billingId);
       if (!item) return;
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       const sch = list.find(s => s.id === item.schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = (item.category || 'instructor') === 'instructor' ? '강사료' : '교재비';
@@ -1571,7 +1617,7 @@
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       const schedList = appData.schedules || [];
 
       if (currentSchoolId === 'all') {
@@ -1695,7 +1741,7 @@
       openModal('modal-add-schedule');
     }
 
-    // ---------- CALENDAR EVENTS ----------
+    // ---------- CALENDAR EVENTS (공휴일 자동 체크 포함) ----------
     function changeCalendarMonth(delta) {
       calMonth += delta;
       if (calMonth > 12) { calMonth = 1; calYear++; }
@@ -1712,17 +1758,20 @@
       titleEl.textContent = `${calYear}년 ${calMonth}월`;
       gridDaysEl.innerHTML = '';
 
-      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const listSch = fixedMasterSchools;
       let events = appData.calendarEvents || [];
 
       if (currentSchoolId === 'all') {
-        hintEl.textContent = '| 전체 학교 학사 일정(휴강·재량휴일) 취합 보기';
+        hintEl.textContent = '| 공휴일 및 학사일정 자동 표시';
       } else {
         const sch = listSch.find(s => s.id === currentSchoolId);
         const schName = sch ? sch.name : '';
         hintEl.textContent = `| [${schName}] 해당 학교 학사 일정 표시`;
         events = events.filter(ev => ev.schoolId === currentSchoolId);
       }
+
+      // 법정 공휴일 데이터 가져오기
+      const holidays = getKoreanHolidays(calYear, calMonth);
 
       const firstDayIndex = new Date(calYear, calMonth - 1, 1).getDay();
       const totalDays = new Date(calYear, calMonth, 0).getDate();
@@ -1738,7 +1787,10 @@
         cell.className = "bg-white rounded-xl border border-stone-200 min-h-[95px] p-2 flex flex-col justify-between hover:border-indigo-400 transition-all";
         
         const dateObj = new Date(calYear, calMonth - 1, day);
+        const isSunday = dateObj.getDay() === 0;
+        const holidayName = holidays[day];
 
+        // 사용자가 등록한 일정
         const dayEvents = events.filter(ev => {
           if (!ev.ym) return parseInt(ev.dateStr, 10) === day;
           const [y, m] = ev.ym.split('-').map(Number);
@@ -1746,6 +1798,16 @@
         });
 
         let contentHtml = '';
+        
+        // 공휴일인 경우 빨간색 배지로 자동 출력
+        if (holidayName) {
+          contentHtml += `
+            <div class="px-1 py-0.5 rounded-md border text-[9.5px] font-bold truncate flex items-center justify-between bg-rose-100 text-rose-900 border-rose-300">
+              <span>🔴 [법정공휴일] ${holidayName}</span>
+            </div>
+          `;
+        }
+
         dayEvents.forEach(ev => {
           let colorClass = 'bg-indigo-100 text-indigo-900 border-indigo-200';
           if (ev.type === '휴강일') colorClass = 'bg-rose-100 text-rose-900 border-rose-200';
@@ -1763,10 +1825,12 @@
           `;
         });
 
+        const dayColorClass = (isSunday || holidayName) ? 'text-rose-600' : dateObj.getDay() === 6 ? 'text-blue-600' : 'text-stone-800';
+
         cell.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-1">
-              <span class="font-mono font-bold text-xs ${dateObj.getDay() === 0 ? 'text-rose-600' : dateObj.getDay() === 6 ? 'text-blue-600' : 'text-stone-800'}">${day}</span>
+              <span class="font-mono font-bold text-xs ${dayColorClass}">${day}</span>
               <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1 cursor-pointer" title="휴강/재량휴일 추가">+</button>
             </div>
             <div class="space-y-1 overflow-y-auto max-h-[65px] custom-scroll pr-0.5">${contentHtml}</div>
@@ -1784,7 +1848,7 @@
     }
 
     function openAddCalendarEventModal() {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('cal-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('cal-input-ym').value = `${calYear}-${calMonth}`;
@@ -1812,7 +1876,7 @@
       grid.innerHTML = '';
 
       let list = appData.masterTeachers || fullMasterTeachersData;
-      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const listSch = fixedMasterSchools;
       if (currentSchoolId !== 'all') {
         const sch = listSch.find(s => s.id === currentSchoolId);
         if (sch) list = list.filter(t => t.school === sch.name);
@@ -1864,7 +1928,270 @@
       openModal('modal-upload-teacher-excel');
     }
 
-    // ---------- NOTICES & VAULT & EXPENSE VIEWS ----------
+    // ---------- FORM SUBMIT LISTENERS & MODALS ----------
+    function setupFormListeners() {
+      document.getElementById('form-add-school').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('new-school-name').value.trim();
+        if (!name) return;
+        let list = fixedMasterSchools;
+        const newId = 'sch_' + Date.now();
+        list.push({ id: newId, name });
+        saveData('schools', list);
+        closeModal('modal-add-school');
+        renderSchoolDropdown();
+        selectSchool(newId);
+      });
+
+      document.getElementById('form-add-calendar-event').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('cal-input-school').value;
+        const type = document.getElementById('cal-input-type').value;
+        const ym = document.getElementById('cal-input-ym').value;
+        const dayNum = document.getElementById('cal-input-daynum').value.trim();
+        const keyword = document.getElementById('cal-input-keyword').value.trim();
+        const desc = document.getElementById('cal-input-desc').value.trim();
+
+        let events = appData.calendarEvents || [];
+        events.push({ id: 'cal_' + Date.now(), schoolId, type, ym, dateStr: dayNum, keyword, desc });
+        saveData('calendarEvents', events);
+        closeModal('modal-add-calendar-event');
+        renderCalendarGrid();
+      });
+
+      document.getElementById('form-add-billing').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('billing-input-school').value;
+        const category = document.getElementById('billing-input-category').value;
+        const quarter = parseInt(document.getElementById('billing-input-quarter').value, 10);
+        const period = parseInt(document.getElementById('billing-input-period').value, 10);
+        const amount = parseInt(document.getElementById('billing-input-amount').value, 10);
+        const fileInput = document.getElementById('billing-input-file');
+        const file = fileInput.files[0];
+
+        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const schName = sch ? sch.name : '기관';
+        const catLabel = category === 'instructor' ? '강사료' : '교재비';
+        const fileId = 'b_' + Date.now();
+        const fileName = file ? file.name : `${schName}_${quarter}분기_${period}차_${catLabel}청구서.xlsx`;
+
+        if (file) await storeFile(fileId, file);
+        let billList = appData.billings || [];
+        const existingIdx = billList.findIndex(b => b.schoolId === schoolId && (b.category || 'instructor') === category && b.quarter === quarter && b.period === period);
+        if (existingIdx > -1) {
+          billList[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName };
+        } else {
+          billList.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
+        }
+
+        saveData('billings', billList);
+        closeModal('modal-add-billing');
+        renderBilling();
+        renderChecklist();
+      });
+
+      document.getElementById('form-edit-billing').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-billing-id').value;
+        const amount = parseInt(document.getElementById('edit-billing-amount').value, 10);
+        const fileInput = document.getElementById('edit-billing-file');
+        const file = fileInput.files[0];
+
+        let billList = appData.billings || [];
+        const item = billList.find(b => b.id === id);
+        if (!item) return;
+
+        item.amount = amount;
+        if (file) {
+          item.fileName = file.name;
+          await storeFile(item.id, file);
+        }
+
+        saveData('billings', billList);
+        closeModal('modal-edit-billing');
+        renderBilling();
+        renderChecklist();
+      });
+
+      document.getElementById('form-add-schedule').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const schoolId = currentSchoolId;
+        const day = document.getElementById('sched-input-day').value;
+        const time = document.getElementById('sched-input-time').value.trim();
+        const course = document.getElementById('sched-input-course').value.trim();
+        const teacher = document.getElementById('sched-input-teacher').value.trim();
+        const phone = document.getElementById('sched-input-phone').value.trim();
+
+        let schedList = appData.schedules || [];
+        schedList.push({ id: 's_' + Date.now(), schoolId, day, time, course, teacher, phone });
+        saveData('schedules', schedList);
+        closeModal('modal-add-schedule');
+        renderSchoolTimetableGrid();
+      });
+
+      document.getElementById('form-upload-teacher-excel').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('teacher-upload-file');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        try {
+          const data = await file.arrayBuffer();
+          const workbook = XLSX.read(data, { type: 'array' });
+          const newParsedTeachers = [];
+
+          workbook.SheetNames.forEach(sheetName => {
+            if (sheetName.includes('첨부')) return;
+            const sheet = workbook.Sheets[sheetName];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+            if (!rows || rows.length === 0) return;
+
+            let headerIdx = -1;
+            for (let r = 0; r < Math.min(rows.length, 5); r++) {
+              const rowStr = rows[r].join(' ');
+              if (rowStr.includes('강사명') && rowStr.includes('과목')) { headerIdx = r; break; }
+            }
+
+            if (headerIdx !== -1) {
+              const headers = rows[headerIdx];
+              let sCol = -1, nCol = -1, dCol = -1, pCol = -1, statusCol = -1;
+              headers.forEach((h, c) => {
+                const hStr = String(h).trim().replace(/\s+/g, '');
+                if (hStr.includes('과목')) sCol = c;
+                if (hStr.includes('강사명')) nCol = c;
+                if (hStr.includes('요일')) dCol = c;
+                if (hStr.includes('연락처') || hStr.includes('전화')) pCol = c;
+                if (hStr.includes('비고')) statusCol = c;
+              });
+
+              for (let r = headerIdx + 1; r < rows.length; r++) {
+                const row = rows[r];
+                const name = nCol > -1 ? String(row[nCol] || '').trim() : '';
+                const subj = sCol > -1 ? String(row[sCol] || '').trim() : '';
+                const day = dCol > -1 ? String(row[dCol] || '').trim() : '';
+                const phone = pCol > -1 ? String(row[pCol] || '').trim() : '';
+                const status = statusCol > -1 ? String(row[statusCol] || '').trim() : '';
+
+                if (name && name !== 'nan' && name !== '강사명') {
+                  if (status.includes('퇴사') || status.includes('폐강')) continue;
+                  newParsedTeachers.push({ school: sheetName, subject: subj || '기타과목', name: name, day: day || '요일미정', phone: phone || '연락처없음' });
+                }
+              }
+            }
+          });
+
+          if (newParsedTeachers.length > 0) {
+            saveData('masterTeachers', newParsedTeachers);
+            closeModal('modal-upload-teacher-excel');
+            alert(`성공적으로 총 ${newParsedTeachers.length}명의 강사 명단이 업데이트되었습니다!`);
+            renderMasterTeacherList();
+          } else {
+            alert('엑셀에서 올바른 강사 명단 데이터를 찾지 못했습니다.');
+          }
+        } catch (err) {
+          alert('엑셀 파일을 읽는 중 오류가 발생했습니다: ' + err);
+        }
+      });
+
+      document.getElementById('form-add-expense').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('exp-input-school').value;
+        const month = parseInt(document.getElementById('exp-input-month').value, 10);
+        const amount = parseInt(document.getElementById('exp-input-amount').value, 10);
+        const fileInput = document.getElementById('exp-input-file');
+        const file = fileInput.files[0];
+        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const fileId = 'e_' + Date.now();
+        const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_지출결의서.pdf`;
+
+        if (file) await storeFile(fileId, file);
+        let expList = appData.expenses || [];
+        expList.push({ id: fileId, month, schoolId, amount, fileName });
+        saveData('expenses', expList);
+        closeModal('modal-add-expense');
+        currentMonth = month;
+        document.getElementById('select-month').value = month;
+        renderExpenseAndAttendance();
+        renderChecklist();
+      });
+
+      document.getElementById('form-add-attendance').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('att-input-school').value;
+        const month = parseInt(document.getElementById('att-input-month').value, 10);
+        const teacher = document.getElementById('att-input-teacher').value.trim();
+        const fileInput = document.getElementById('att-input-file');
+        const file = fileInput.files[0];
+        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const fileId = 'a_' + Date.now();
+        const fileName = file ? file.name : `${sch ? sch.name : '기관'}_${month}월_${teacher}_코디출근부.pdf`;
+
+        if (file) await storeFile(fileId, file);
+        let attList = appData.attendances || [];
+        attList.push({ id: fileId, month: month, schoolId, teacher, fileName });
+        saveData('attendances', attList);
+        closeModal('modal-add-attendance');
+        currentMonth = month;
+        document.getElementById('select-month').value = month;
+        renderExpenseAndAttendance();
+        renderChecklist();
+      });
+
+      document.getElementById('form-add-notice').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('not-input-school').value;
+        const quarter = parseInt(document.getElementById('not-input-quarter').value, 10);
+        const fileInput = document.getElementById('not-input-file');
+        const file = fileInput.files[0];
+        const sch = fixedMasterSchools.find(s => s.id === schoolId);
+        const schName = sch ? sch.name : '기관';
+        const fileId = 'n_' + Date.now();
+        const today = new Date().toISOString().split('T')[0];
+        const fileName = file ? file.name : `${schName}_${quarter}분기_안내장.pdf`;
+
+        if (file) await storeFile(fileId, file);
+        let notList = appData.notices || [];
+        notList.push({ id: fileId, schoolId, quarter, date: today, fileName });
+        saveData('notices', notList);
+
+        alert('분기별 안내장이 성공적으로 등록되었습니다.');
+        closeModal('modal-add-notice');
+        renderNotices();
+        renderChecklist();
+      });
+
+      document.getElementById('form-add-vault').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('vault-input-file');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const fileId = 'v_' + Date.now();
+        const today = new Date().toISOString().split('T')[0];
+        await storeFile(fileId, file);
+
+        let list = appData.vaultFiles || [];
+        list.push({ id: fileId, date: today, name: file.name });
+        saveData('vaultFiles', list);
+        closeModal('modal-add-vault');
+        renderVaultFiles();
+      });
+
+      document.getElementById('form-add-memo').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const schoolId = document.getElementById('memo-input-school').value;
+        const author = document.getElementById('memo-input-author').value;
+        const text = document.getElementById('memo-input-text').value.trim();
+        const today = new Date().toISOString().split('T')[0];
+
+        let memList = appData.memos || [];
+        memList.push({ id: 'm_' + Date.now(), schoolId, author, text, date: today });
+        saveData('memos', memList);
+        closeModal('modal-add-memo');
+        renderMemos();
+      });
+    }
+
     function filterNoticeQuarter(q) {
       currentNoticeQuarter = q;
       ['all', '1', '2', '3', '4'].forEach(n => {
@@ -1881,7 +2208,7 @@
       let list = appData.notices || [];
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
       if (currentNoticeQuarter !== 'all') list = list.filter(n => String(n.quarter) === currentNoticeQuarter);
-      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const listSch = fixedMasterSchools;
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
@@ -1956,7 +2283,7 @@
       container.innerHTML = '';
       let list = appData.memos || [];
       if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
-      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const listSch = fixedMasterSchools;
 
       if (list.length === 0) {
         container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다.</div>`;
@@ -2006,7 +2333,7 @@
       if (!expBody) return;
       expBody.innerHTML = '';
       const expList = (appData.expenses || []).filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
-      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const listSch = fixedMasterSchools;
 
       let totalExp = 0;
       if (expList.length === 0) {
@@ -2109,7 +2436,7 @@
 
     function openAddSchoolModal() { document.getElementById('new-school-name').value = ''; openModal('modal-add-school'); }
     function openAddExpenseModal() {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('exp-input-month').value = currentMonth;
@@ -2118,7 +2445,7 @@
       openModal('modal-add-expense');
     }
     function openAddAttendanceModal() {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('att-input-month').value = currentMonth;
@@ -2127,7 +2454,7 @@
       openModal('modal-add-attendance');
     }
     function openAddNoticeModal() {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
@@ -2139,7 +2466,7 @@
       openModal('modal-add-vault');
     }
     function openAddMemoModal() {
-      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
+      const list = fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('memo-input-text').value = '';

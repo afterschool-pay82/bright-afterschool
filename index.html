@@ -89,7 +89,7 @@
 
     <!-- School Switcher -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
-      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs">
+      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs cursor-pointer">
         <div class="flex items-center gap-2">
           <span class="text-lg">🏫</span>
           <span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span>
@@ -99,7 +99,7 @@
 
       <div class="flex items-center justify-between px-2 mb-2">
         <span class="text-xs font-bold text-stone-400 tracking-wider">위탁 기관 목록</span>
-        <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors">
+        <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors cursor-pointer">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> 기관 추가
         </button>
       </div>
@@ -141,7 +141,7 @@
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase">Notice</span>
         <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 코디 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
       </div>
-      <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold">공지 수정</button>
+      <button onclick="editBannerNotice()" class="shrink-0 underline text-xs text-stone-800 hover:text-black ml-3 font-bold cursor-pointer">공지 수정</button>
     </div>
 
     <header class="bg-white sticky top-0 z-10 px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4">
@@ -168,40 +168,40 @@
         <p class="text-xs text-stone-600 mt-0.5" id="hero-school-desc">1분기 강사료 총액과 교재비 총액을 한눈에 간편하게 확인합니다.</p>
       </div>
       <div>
-        <button id="hero-edit-school-btn" onclick="openEditCurrentSchoolModal()" class="px-3 py-2 rounded-2xl bg-white hover:bg-stone-50 border border-amber-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs hidden">
+        <button id="hero-edit-school-btn" onclick="openEditCurrentSchoolModal()" class="px-3 py-2 rounded-2xl bg-white hover:bg-stone-50 border border-amber-200 text-stone-700 font-bold text-xs flex items-center gap-1.5 shadow-2xs hidden cursor-pointer">
           <i data-lucide="pencil" class="w-3.5 h-3.5 text-amber-600"></i> 기관명 수정
         </button>
       </div>
     </div>
 
-    <!-- Navigation Tabs (한 줄 정렬) -->
+    <!-- Navigation Tabs (한 줄 정렬 및 클릭 안정화) -->
     <div class="px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[73px] z-10">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
-        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0">
+        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer">
           <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> 학사 일정 캘린더
         </button>
-        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="calculator" class="w-3.5 h-3.5"></i> 청구서 관리
         </button>
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 hidden">
+        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 hidden cursor-pointer">
           <i data-lucide="calendar" class="w-3.5 h-3.5"></i> 요일별 시간표
         </button>
-        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="users" class="w-3.5 h-3.5"></i> 강사 현황 & 과목 검색
         </button>
-        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="check-square" class="w-3.5 h-3.5"></i> 마감 신호등 현황판
         </button>
-        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 지출결의서 & 코디출근부
         </button>
-        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 분기별 안내장
         </button>
-        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="message-square" class="w-3.5 h-3.5"></i> 학교별 1:1 업무메모
         </button>
-        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0">
+        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
           <i data-lucide="folder-archive" class="w-3.5 h-3.5"></i> 공용 서식 자료실
         </button>
       </nav>
@@ -215,13 +215,13 @@
         <div class="bg-white p-3.5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
-              <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 9월</h3>
-              <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+              <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
+              <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
             <span class="text-xs text-stone-400" id="calendar-mode-hint">| 학사 일정(휴강·재량휴일) 취합 보기</span>
           </div>
-          <button onclick="openAddCalendarEventModal()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+          <button onclick="openAddCalendarEventModal()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
             <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> 휴강/재량휴일 등록
           </button>
         </div>
@@ -245,10 +245,10 @@
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs">1분기 (3~5월)</button>
-            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">2분기 (6~8월)</button>
-            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">3분기 (9~11월)</button>
-            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200">4분기 (12~2월)</button>
+            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">4분기 (12~2월)</button>
           </div>
           <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">※ 좌측 목록에서 학교를 선택하여 세부 1~3차 청구서를 관리하세요.</div>
         </div>
@@ -261,10 +261,10 @@
 
         <div id="billing-single-school-view" class="space-y-5 hidden">
           <div class="bg-amber-50/60 p-2 rounded-2xl border border-amber-200 inline-flex gap-2">
-            <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
+            <button onclick="switchBillingCategory('instructor')" id="sub-billing-btn-instructor" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="user-check" class="w-3.5 h-3.5"></i> 강사료 청구서
             </button>
-            <button onclick="switchBillingCategory('materials')" id="sub-billing-btn-materials" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5">
+            <button onclick="switchBillingCategory('materials')" id="sub-billing-btn-materials" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="book-open" class="w-3.5 h-3.5"></i> 교재비 청구서
             </button>
           </div>
@@ -326,7 +326,7 @@
             </div>
             <p class="text-xs text-stone-500 mt-1">동일 과목의 여러 반(A, B, C반 등)을 요일별로 묶어서 보여줍니다.</p>
           </div>
-          <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+          <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 시간표 등록
           </button>
         </div>
@@ -372,10 +372,10 @@
               <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
               <input type="text" id="teacher-search-input" oninput="renderMasterTeacherList()" placeholder="과목 또는 강사명 검색..." class="text-xs pl-9 pr-4 py-2 rounded-xl border border-stone-300 outline-none focus:border-amber-400 font-bold w-60" />
             </div>
-            <button onclick="downloadMasterTeacherExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <button onclick="downloadMasterTeacherExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
               <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 명단 내보내기
             </button>
-            <button onclick="openUploadTeacherExcelModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <button onclick="openUploadTeacherExcelModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
               <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 강사명단 엑셀 업로드
             </button>
           </div>
@@ -397,7 +397,7 @@
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold text-stone-400">점검 분기:</span>
             <select id="checklist-period" onchange="renderChecklist()" class="text-xs font-bold bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5 outline-none font-mono text-amber-900">
-              <option value="1">1분기 (3~5월)</option><option value="2">2분기 (6~8월)</option><option value="3">3분기 (9~11월)</option><option value="4">4분기 (12~2월)</option>
+              <option value="1">1분기 (3~5월)</option><option value="2">2분기 (6~8월)</option><option value="3" selected>3분기 (9~11월)</option><option value="4">4분기 (12~2월)</option>
             </select>
           </div>
         </div>
@@ -427,14 +427,14 @@
           <div class="flex items-center gap-2">
             <span class="font-bold text-xs text-stone-700">월별 선택:</span>
             <select id="select-month" onchange="changeMonth(this.value)" class="text-xs font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 outline-none text-amber-900">
-              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9" selected>9월 정산</option><option value="10">10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
+              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9">9월 정산</option><option value="10" selected>10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
             </select>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <button onclick="openAddExpenseModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> 월별 지출결의서 등록 (PDF/이미지)
             </button>
-            <button onclick="openAddAttendanceModal()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+            <button onclick="openAddAttendanceModal()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> 코디 출근부 등록 (PDF/이미지)
             </button>
           </div>
@@ -475,13 +475,13 @@
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold text-stone-400">분기 필터:</span>
-            <button onclick="filterNoticeQuarter('all')" id="btn-nq-all" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500 text-white">전체</button>
-            <button onclick="filterNoticeQuarter('1')" id="btn-nq-1" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">1분기</button>
-            <button onclick="filterNoticeQuarter('2')" id="btn-nq-2" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">2분기</button>
-            <button onclick="filterNoticeQuarter('3')" id="btn-nq-3" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">3분기</button>
-            <button onclick="filterNoticeQuarter('4')" id="btn-nq-4" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600">4분기</button>
+            <button onclick="filterNoticeQuarter('all')" id="btn-nq-all" class="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500 text-white cursor-pointer">전체</button>
+            <button onclick="filterNoticeQuarter('1')" id="btn-nq-1" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 cursor-pointer">1분기</button>
+            <button onclick="filterNoticeQuarter('2')" id="btn-nq-2" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 cursor-pointer">2분기</button>
+            <button onclick="filterNoticeQuarter('3')" id="btn-nq-3" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 cursor-pointer">3분기</button>
+            <button onclick="filterNoticeQuarter('4')" id="btn-nq-4" class="px-3 py-1 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 cursor-pointer">4분기</button>
           </div>
-          <button onclick="openAddNoticeModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+          <button onclick="openAddNoticeModal()" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
             <i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 분기별 안내장 등록 (PDF/이미지)
           </button>
         </div>
@@ -502,7 +502,7 @@
             <h4 class="font-bold text-stone-900 text-base">기관별 1:1 업무소통 메모장</h4>
             <p class="text-xs text-stone-400">교실 변경, 학예회/방학 일정, 학교·센터 특이사항을 기록하여 체계적으로 보관합니다.</p>
           </div>
-          <button onclick="openAddMemoModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+          <button onclick="openAddMemoModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 새 업무 메모 작성
           </button>
         </div>
@@ -516,7 +516,7 @@
             <h4 class="font-bold text-stone-900 text-base">공용 행정 서식 자료실</h4>
             <p class="text-xs text-stone-400 mt-0.5">각 기관 관리자가 언제든 내려받아 쓸 수 있는 공식 표준 양식 모음입니다.</p>
           </div>
-          <button onclick="openAddVaultModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm">
+          <button onclick="openAddVaultModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
             <i data-lucide="file-up" class="w-3.5 h-3.5"></i> 공용 서식 파일 올리기
           </button>
         </div>
@@ -543,7 +543,7 @@
           <span id="preview-badge" class="px-2.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 shrink-0">문서 뷰어</span>
           <h3 id="preview-title" class="font-bold text-stone-900 text-sm truncate font-mono">파일 미리보기</h3>
         </div>
-        <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="closeModal('modal-file-preview')" class="text-stone-400 hover:text-stone-700 p-1.5 rounded-xl hover:bg-stone-200 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div id="preview-viewport" class="flex-1 overflow-auto custom-scroll bg-stone-100 p-4 flex justify-center items-start">
         <div id="preview-body" class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 inline-block"></div>
@@ -556,7 +556,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="school" class="w-5 h-5 text-amber-500"></i> 새 위탁 기관 추가</h3>
-        <button onclick="closeModal('modal-add-school')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-school')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveSchool(event)" class="space-y-4">
         <div>
@@ -564,8 +564,8 @@
           <input type="text" id="new-school-name" required placeholder="예: 경원초 또는 온동네돌봄센터" class="w-full text-xs p-3 rounded-xl border border-stone-200 focus:border-amber-400 outline-none font-bold" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-amber-500 text-white font-bold">등록</button>
+          <button type="button" onclick="closeModal('modal-add-school')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-amber-500 text-white font-bold cursor-pointer">등록</button>
         </div>
       </form>
     </div>
@@ -578,7 +578,7 @@
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2">
           <i data-lucide="calendar-plus" class="w-5 h-5 text-indigo-600"></i> 휴강일 및 재량휴일 등록
         </h3>
-        <button onclick="closeModal('modal-add-calendar-event')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-calendar-event')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveCalendarEvent(event)" class="space-y-3.5 text-xs">
         <div>
@@ -598,25 +598,25 @@
           <div>
             <label class="block font-bold text-stone-700 mb-1">연도 및 월 지정</label>
             <select id="cal-input-ym" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none font-mono">
-              <option value="2026-9" selected>2026년 9월</option><option value="2026-10">2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
+              <option value="2026-10" selected>2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
             </select>
           </div>
           <div>
             <label class="block font-bold text-stone-700 mb-1">일자 (숫자만)</label>
-            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 30" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
+            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 1" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
           </div>
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">핵심 제목</label>
-          <input type="text" id="cal-input-keyword" required placeholder="예: 추석 연휴 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+          <input type="text" id="cal-input-keyword" required placeholder="예: 개천절 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">상세 사유 및 내용</label>
-          <textarea id="cal-input-desc" required rows="3" placeholder="예: 명절 휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+          <textarea id="cal-input-desc" required rows="3" placeholder="예: 공휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-indigo-600 text-white font-bold">캘린더에 등록</button>
+          <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-indigo-600 text-white font-bold cursor-pointer">캘린더에 등록</button>
         </div>
       </form>
     </div>
@@ -627,7 +627,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> <span id="add-billing-modal-title">청구서 등록</span></h3>
-        <button onclick="closeModal('modal-add-billing')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveBilling(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" />
@@ -644,8 +644,8 @@
           <input type="file" id="billing-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold">등록 완료</button>
+          <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold cursor-pointer">등록 완료</button>
         </div>
       </form>
     </div>
@@ -656,7 +656,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="pencil" class="w-5 h-5 text-amber-500"></i> 청구서 내역 및 파일 수정</h3>
-        <button onclick="closeModal('modal-edit-billing')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-edit-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleUpdateBilling(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="edit-billing-id" />
@@ -675,8 +675,8 @@
           <input type="file" id="edit-billing-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-edit-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold">수정 저장</button>
+          <button type="button" onclick="closeModal('modal-edit-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold cursor-pointer">수정 저장</button>
         </div>
       </form>
     </div>
@@ -687,7 +687,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900">새 강좌 시간표 등록</h3>
-        <button onclick="closeModal('modal-add-schedule')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-schedule')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveSchedule(event)" class="space-y-3 text-xs">
         <div class="grid grid-cols-2 gap-2">
@@ -708,7 +708,7 @@
             <select id="preset-time-select" onchange="onPresetTimeChange(this.value)" class="flex-1 p-2 rounded-xl border border-stone-300 bg-white font-bold outline-none">
               <option value="">-- 시간 선택하기 --</option>
             </select>
-            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0">+ 시간 추가</button>
+            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0 cursor-pointer">+ 시간 추가</button>
           </div>
         </div>
         <div>
@@ -726,8 +726,8 @@
           </div>
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
+          <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white cursor-pointer">등록</button>
         </div>
       </form>
     </div>
@@ -738,7 +738,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드</h3>
-        <button onclick="closeModal('modal-upload-teacher-excel')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-upload-teacher-excel')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleUploadTeacherExcel(event)" class="space-y-4 text-xs">
         <div>
@@ -746,8 +746,8 @@
           <input type="file" id="teacher-upload-file" required accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-upload-teacher-excel')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">명단 업데이트</button>
+          <button type="button" onclick="closeModal('modal-upload-teacher-excel')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">명단 업데이트</button>
         </div>
       </form>
     </div>
@@ -758,7 +758,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 월별 지출결의서 등록</h3>
-        <button onclick="closeModal('modal-add-expense')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-expense')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveExpense(event)" class="space-y-3.5 text-xs">
         <div>
@@ -768,7 +768,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
-            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9" selected>9월 지출결의서</option><option value="10">10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
+            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10" selected>10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
           </select>
         </div>
         <div>
@@ -780,8 +780,8 @@
           <input type="file" id="exp-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">등록 저장</button>
+          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">등록 저장</button>
         </div>
       </form>
     </div>
@@ -792,7 +792,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 월별 코디 출근부 등록</h3>
-        <button onclick="closeModal('modal-add-attendance')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-attendance')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveAttendance(event)" class="space-y-3.5 text-xs">
         <div>
@@ -802,7 +802,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="att-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-sky-900 bg-sky-50/50">
-            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9" selected>9월 출근부</option><option value="10">10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
+            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9">9월 출근부</option><option value="10" selected>10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
           </select>
         </div>
         <div>
@@ -814,8 +814,8 @@
           <input type="file" id="att-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white font-bold">등록 저장</button>
+          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white font-bold cursor-pointer">등록 저장</button>
         </div>
       </form>
     </div>
@@ -826,7 +826,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-amber-500"></i> 분기별 안내장 등록</h3>
-        <button onclick="closeModal('modal-add-notice')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-notice')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveNotice(event)" class="space-y-3.5 text-xs">
         <div>
@@ -836,7 +836,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당 분기</label>
           <select id="not-input-quarter" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-amber-900 bg-amber-50/50">
-            <option value="1">1분기 안내장</option><option value="2">2분기 안내장</option><option value="3">3분기 안내장</option><option value="4">4분기 안내장</option>
+            <option value="1">1분기 안내장</option><option value="2">2분기 안내장</option><option value="3" selected>3분기 안내장</option><option value="4">4분기 안내장</option>
           </select>
         </div>
         <div>
@@ -844,8 +844,8 @@
           <input type="file" id="not-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-stone-100 file:text-stone-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-900 text-white font-bold">등록 완료</button>
+          <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-900 text-white font-bold cursor-pointer">등록 완료</button>
         </div>
       </form>
     </div>
@@ -856,7 +856,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 공용 서식 파일 올리기</h3>
-        <button onclick="closeModal('modal-add-vault')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-vault')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveVault(event)" class="space-y-3.5 text-xs">
         <div>
@@ -864,8 +864,8 @@
           <input type="file" id="vault-input-file" required class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-vault')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold">업로드</button>
+          <button type="button" onclick="closeModal('modal-add-vault')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">업로드</button>
         </div>
       </form>
     </div>
@@ -876,7 +876,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-base font-bold text-stone-900">기관 업무 메모 작성</h3>
-        <button onclick="closeModal('modal-add-memo')"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+        <button onclick="closeModal('modal-add-memo')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
       </div>
       <form onsubmit="handleSaveMemo(event)" class="space-y-3 text-xs">
         <div>
@@ -894,8 +894,8 @@
           <textarea id="memo-input-text" required rows="4" placeholder="예: 다음 주 수요일 과학실 공사로 2층 도서실로 수업 이동 예정입니다." class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-add-memo')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
-          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white">등록</button>
+          <button type="button" onclick="closeModal('modal-add-memo')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white cursor-pointer">등록</button>
         </div>
       </form>
     </div>
@@ -919,7 +919,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v25', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v26', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -981,7 +981,6 @@
       { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 새로 주신 파일 데이터만 완벽하게 반영된 168명 강사 명단
     const fullMasterTeachersData = [
       {"school": "경원초", "subject": "창의과학", "name": "강현정", "phone": "010-5386-7502", "day": "월,수"},
       {"school": "경원초", "subject": "피아노Ⅰ", "name": "최정아", "phone": "010-9814-1024", "day": "월,수"},
@@ -1178,7 +1177,7 @@
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
     let calYear = new Date().getFullYear();
-    let calMonth = new Date().getMonth() + 1; // 실제 현재 월 (10월)
+    let calMonth = new Date().getMonth() + 1;
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1238,14 +1237,14 @@
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
-          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0";
+          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
           if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'calendar-events') renderCalendarGrid();
           if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
-          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0";
+          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
         }
       });
       lucide.createIcons();
@@ -1278,8 +1277,8 @@
             <span class="truncate text-sm font-extrabold block tracking-tight">${sch.name}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
-            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800" title="기관명 수정"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600" title="기관 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800 cursor-pointer" title="기관명 수정"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600 cursor-pointer" title="기관 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </div>
         `;
         container.appendChild(div);
@@ -1288,9 +1287,9 @@
       const allBtn = document.getElementById('btn-school-all');
       if (allBtn) {
         if (currentSchoolId === 'all') {
-          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm";
+          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer";
         } else {
-          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700";
+          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700 cursor-pointer";
         }
       }
 
@@ -1469,7 +1468,7 @@
           <td class="py-3 px-4 text-center">${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
           <td class="py-3 px-4 text-center">${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td>
           <td class="py-3 px-4 text-center">${badgeHtml}</td>
-          <td class="py-3 px-4 text-center"><button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px]">이동 →</button></td>
+          <td class="py-3 px-4 text-center"><button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-[11px] cursor-pointer">이동 →</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -1485,11 +1484,11 @@
       const instBtn = document.getElementById('sub-billing-btn-instructor');
       const matBtn = document.getElementById('sub-billing-btn-materials');
       if (cat === 'instructor') {
-        instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
-        matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
+        instBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer";
+        matBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer";
       } else {
-        matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5";
-        instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5";
+        matBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer";
+        instBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer";
       }
       renderBilling();
     }
@@ -1498,7 +1497,7 @@
       currentQuarter = q;
       for (let i = 1; i <= 4; i++) {
         const b = document.getElementById(`btn-q-${i}`);
-        if (b) b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200";
+        if (b) b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer";
       }
       renderBilling();
       renderChecklist();
@@ -1546,10 +1545,10 @@
               <td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${periodLabel}</td>
               <td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td>
               <td class="py-3 px-4 text-center"><span class="inline-flex items-center gap-1 text-xs text-stone-600 font-mono"><i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i> ${item.fileName || '청구서.xlsx'}</span></td>
-              <td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">미리보기</button></td>
-              <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200">다운</button></td>
-              <td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td>
-              <td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+              <td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold cursor-pointer">미리보기</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName || '청구서.xlsx'}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200 cursor-pointer">다운</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200 cursor-pointer">수정</button></td>
+              <td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500 cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
             `;
           } else {
             tr.innerHTML = `
@@ -1559,7 +1558,7 @@
               <td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${periodLabel}</td>
               <td class="py-3 px-4 text-right text-stone-300">-</td>
               <td class="py-3 px-4 text-center">
-                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto"><i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록</button>
+                <button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto cursor-pointer"><i data-lucide="plus" class="w-3.5 h-3.5"></i> ${period}차 청구서 등록</button>
               </td>
               <td colspan="4" class="text-center text-stone-300">-</td>
             `;
@@ -1733,7 +1732,7 @@
               <div>
                 <div class="flex items-center justify-between">
                   <h5 class="font-black text-stone-900 text-sm">${group.displayCourse} <span class="text-amber-800 font-semibold text-xs">(${group.teacher})</span></h5>
-                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500" title="전체 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                  <button onclick="deleteScheduleGroup('${group.displayCourse}', '${group.teacher}', '${d}')" class="opacity-0 group-hover:opacity-100 text-stone-300 hover:text-red-500 cursor-pointer" title="전체 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                 </div>
                 <div class="mt-1.5 space-y-0.5">${slotsHtml}</div>
               </div>
@@ -1887,7 +1886,7 @@
           contentHtml += `
             <div class="px-1 py-0.5 rounded-md border text-[9.5px] font-bold truncate flex items-center justify-between ${colorClass}" title="${schName}: ${ev.keyword}">
               <span>📌 ${currentSchoolId === 'all' ? '['+schName+'] ' : ''}${ev.keyword}</span>
-              <button onclick="deleteCalendarEvent('${ev.id}')" class="text-stone-400 hover:text-red-600 ml-0.5">×</button>
+              <button onclick="deleteCalendarEvent('${ev.id}')" class="text-stone-400 hover:text-red-600 ml-0.5 cursor-pointer">×</button>
             </div>
           `;
         });
@@ -1896,7 +1895,7 @@
           <div>
             <div class="flex items-center justify-between mb-1">
               <span class="font-mono font-bold text-xs ${dateObj.getDay() === 0 ? 'text-rose-600' : dateObj.getDay() === 6 ? 'text-blue-600' : 'text-stone-800'}">${day}</span>
-              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1" title="휴강/재량휴일 추가">+</button>
+              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1 cursor-pointer" title="휴강/재량휴일 추가">+</button>
             </div>
             <div class="space-y-1 overflow-y-auto max-h-[65px] custom-scroll pr-0.5">${contentHtml}</div>
           </div>
@@ -1987,7 +1986,7 @@
           </div>
           <div class="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between">
             <span class="font-mono text-stone-600 font-semibold">${t.phone || '연락처 없음'}</span>
-            <button onclick="copyToClipboard('${t.phone}')" class="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 rounded-lg text-[11px] font-bold border border-stone-200">번호 복사</button>
+            <button onclick="copyToClipboard('${t.phone}')" class="px-2 py-1 bg-white hover:bg-stone-100 text-stone-700 rounded-lg text-[11px] font-bold border border-stone-200 cursor-pointer">번호 복사</button>
           </div>
         `;
         grid.appendChild(card);
@@ -2073,7 +2072,7 @@
       openModal('modal-upload-teacher-excel');
     }
 
-    // ---------- MODAL OPEN / CLOSE HANDLERS (등록 버튼 정상 작동용 복구 완료) ----------
+    // ---------- MODAL OPEN / CLOSE HANDLERS ----------
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 

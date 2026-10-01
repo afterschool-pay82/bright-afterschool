@@ -210,13 +210,13 @@
     <!-- Content Sections -->
     <div id="printArea" class="p-6 space-y-6">
 
-      <!-- ================= TAB: CALENDAR EVENTS (첫 접속 기본 화면 - 9월 세팅) ================= -->
+      <!-- ================= TAB: CALENDAR EVENTS (첫 접속 기본 화면 - 실제 현재 월 세팅) ================= -->
       <section id="view-calendar-events" class="space-y-3">
         <div class="bg-white p-3.5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
               <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 9월</h3>
+              <h3 class="text-base font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
             <span class="text-xs text-stone-400" id="calendar-mode-hint">| 학사 일정(휴강·재량휴일) 취합 보기</span>
@@ -357,7 +357,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2-1: MASTER TEACHERS (새 엑셀 데이터 반영됨) ================= -->
+      <!-- ================= TAB 2-1: MASTER TEACHERS (새 엑셀 데이터 168명만 적용됨) ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -427,7 +427,7 @@
           <div class="flex items-center gap-2">
             <span class="font-bold text-xs text-stone-700">월별 선택:</span>
             <select id="select-month" onchange="changeMonth(this.value)" class="text-xs font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 outline-none text-amber-900">
-              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9" selected>9월 정산</option><option value="10">10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
+              <option value="3">3월 정산</option><option value="4">4월 정산</option><option value="5">5월 정산</option><option value="6">6월 정산</option><option value="7">7월 정산</option><option value="8">8월 정산</option><option value="9">9월 정산</option><option value="10" selected>10월 정산</option><option value="11">11월 정산</option><option value="12">12월 정산</option><option value="1">1월 정산</option><option value="2">2월 정산</option>
             </select>
           </div>
           <div class="flex items-center gap-2">
@@ -598,21 +598,21 @@
           <div>
             <label class="block font-bold text-stone-700 mb-1">연도 및 월 지정</label>
             <select id="cal-input-ym" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none font-mono">
-              <option value="2026-9" selected>2026년 9월</option><option value="2026-10">2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
+              <option value="2026-10" selected>2026년 10월</option><option value="2026-11">2026년 11월</option><option value="2026-12">2026년 12월</option><option value="2027-1">2027년 1월</option><option value="2027-2">2027년 2월</option><option value="2027-3">2027년 3월</option>
             </select>
           </div>
           <div>
             <label class="block font-bold text-stone-700 mb-1">일자 (숫자만)</label>
-            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 30" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
+            <input type="number" id="cal-input-daynum" required min="1" max="31" placeholder="예: 1" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold font-mono" />
           </div>
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">핵심 제목</label>
-          <input type="text" id="cal-input-keyword" required placeholder="예: 추석 연휴 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+          <input type="text" id="cal-input-keyword" required placeholder="예: 개천절 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">상세 사유 및 내용</label>
-          <textarea id="cal-input-desc" required rows="3" placeholder="예: 명절 휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+          <textarea id="cal-input-desc" required rows="3" placeholder="예: 공휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button>
@@ -768,7 +768,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
-            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9" selected>9월 지출결의서</option><option value="10">10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
+            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10" selected>10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
           </select>
         </div>
         <div>
@@ -802,7 +802,7 @@
         <div>
           <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
           <select id="att-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-sky-900 bg-sky-50/50">
-            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9" selected>9월 출근부</option><option value="10">10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
+            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9">9월 출근부</option><option value="10" selected>10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
           </select>
         </div>
         <div>
@@ -919,7 +919,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v23', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v24', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -981,189 +981,176 @@
       { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 새로 업로드된 엑셀 파일에서 파싱된 168건의 최신 강사 명단 데이터 반영
+    // 새로 주신 파일 데이터만 완벽하게 반영된 168명 강사 명단
     const fullMasterTeachersData = [
-      { school: '경원초', subject: '창의과학', name: '강현정', phone: '010-5386-7502', day: '월,수' },
-      { school: '경원초', subject: '피아노Ⅰ', name: '최정아', phone: '010-9814-1024', day: '월,수' },
-      { school: '경원초', subject: '피아노Ⅱ', name: '최정아', phone: '010-9814-1024', day: '화,목,금' },
-      { school: '경원초', subject: '방송댄스', name: '임지향', phone: '010-6568-1716', day: '월' },
-      { school: '경원초', subject: '영어회화', name: '강미은', phone: '010-6862-4843', day: '월,수' },
-      { school: '경원초', subject: '독서논술', name: '안덕희', phone: '010-6401-0262', day: '화' },
-      { school: '경원초', subject: '주산암산', name: '이지영', phone: '010-8743-5089', day: '목' },
-      { school: '경원초', subject: '창의미술', name: '허윤정', phone: '010-6770-3624', day: '화' },
-      { school: '경원초', subject: '컴퓨터', name: '정래희', phone: '010-6483-9476', day: '화,목' },
-      { school: '경원초', subject: '한자', name: '김애연', phone: '010-2258-7696', day: '수' },
-      { school: '경원초', subject: '요리', name: '김수연', phone: '010-2823-7744', day: '월' },
-      { school: '경원초', subject: '바둑체스', name: '이연희', phone: '010-8876-5833', day: '목' },
-      { school: '경원초', subject: '코딩Ⅰ', name: '서지연', phone: '010-7101-2039', day: '수' },
-      { school: '경원초', subject: '코딩Ⅱ', name: '박미경', phone: '010-9442-3439', day: '금' },
-      { school: '경원초', subject: '클레이아트', name: '김은주', phone: '010-6750-8754', day: '목' },
-      { school: '경원초', subject: '바이올린', name: '연정윤', phone: '010-5298-5076', day: '수' },
-      { school: '경원초', subject: '바이올린(대체)', name: '김지연', phone: '010-4886-0104', day: '수' },
-      { school: '경원초', subject: '축구', name: '성준모', phone: '010-5054-7880', day: '목' },
-      { school: '경원초', subject: '수학아카데미', name: '홍진선', phone: '010-9133-1061', day: '금' },
-      { school: '경원초', subject: '배드민턴Ⅰ', name: '임종원', phone: '010-2770-3348', day: '화' },
-      { school: '경원초', subject: '배드민턴Ⅱ', name: '한기범', phone: '010-3304-4531', day: '목' },
-      { school: '경원초', subject: '역사탐험대', name: '노현진', phone: '010-2854-1555', day: '수' },
-      { school: '경원초', subject: '항공드론', name: '한은주', phone: '010-6679-9099', day: '월' },
-      { school: '경원초', subject: '생명과학', name: '강희경', phone: '010-5310-7258', day: '금' },
-      { school: '경원초', subject: '토탈공예', name: '신지현', phone: '010-2705-1593', day: '금' },
-      { school: '경원초', subject: '웹툰', name: '고아라', phone: '010-5745-2989', day: '금' },
-      { school: '경원초', subject: '스마트레고', name: '김혜연', phone: '010-2330-9415', day: '화' },
-      { school: '남부초', subject: '멀티스포츠', name: '정용호', phone: '010-5473-5135', day: '월' },
-      { school: '남부초', subject: '수학교실', name: '송태윤', phone: '010-3348-5068', day: '월,목' },
-      { school: '남부초', subject: '영어교실', name: '김지연', phone: '010-4886-0104', day: '화,수' },
-      { school: '남부초', subject: '피아노', name: '김희영', phone: '010-4931-1494', day: '화,목' },
-      { school: '남부초', subject: '요리', name: '김수연', phone: '010-2823-7744', day: '화' },
-      { school: '남부초', subject: '방송댄스', name: '송가휘', phone: '010-4037-7031', day: '수' },
-      { school: '남부초', subject: '토탈공예', name: '최세진', phone: '010-7301-4540', day: '수' },
-      { school: '남부초', subject: '주산암산', name: '이은주', phone: '010-8582-9875', day: '목' },
-      { school: '남부초', subject: '바둑교실', name: '이연희', phone: '010-8876-5833', day: '금' },
-      { school: '남부초', subject: '독서논술', name: '안덕희', phone: '010-6401-0262', day: '수' },
-      { school: '남부초', subject: '보드게임(맞춤형)', name: '오연정', phone: '010-9201-4057', day: '화' },
-      { school: '남부초', subject: '창의과학', name: '최희자', phone: '010-9035-3426', day: '수' },
-      { school: '남부초', subject: '음악줄넘기', name: '윤여원', phone: '010-6731-7021', day: '금' },
-      { school: '남부초', subject: '생명과학', name: '김은아', phone: '010-2569-2508', day: '금' },
-      { school: '남부초', subject: '토탈공예(추가)', name: '김현영', phone: '010-7363-2336', day: '목' },
-      { school: '남부초', subject: '로봇과학', name: '이향미', phone: '010-8290-6219', day: '화' },
-      { school: '남부초', subject: '미술', name: '조성경', phone: '010-4288-3733', day: '화' },
-      { school: '남부초', subject: '배드민턴', name: '마봉희', phone: '010-8225-3744', day: '수' },
-      { school: '남부초', subject: '컴퓨터', name: '홍은미', phone: '010-6555-9785', day: '목' },
-      { school: '새말초', subject: '음악줄넘기', name: '변혜진', phone: '010-8816-6937', day: '수' },
-      { school: '새말초', subject: '영어', name: '서석희', phone: '010-3314-6287', day: '월,수' },
-      { school: '새말초', subject: '피아노', name: '양주희', phone: '010-3298-1484', day: '월,수,금' },
-      { school: '새말초', subject: '미니어쳐', name: '박건희', phone: '010-2941-1265', day: '화' },
-      { school: '새말초', subject: '수학', name: '유혜자', phone: '010-2718-5056', day: '화,목' },
-      { school: '새말초', subject: '요리', name: '박은영', phone: '010-8245-1805', day: '수' },
-      { school: '새말초', subject: '집중력한자', name: '고선옥', phone: '010-9042-8836', day: '목' },
-      { school: '새말초', subject: '로봇영재', name: '이혜령', phone: '010-5311-1025', day: '목' },
-      { school: '새말초', subject: '방송댄스', name: '이다영', phone: '010-5746-7971', day: '금' },
-      { school: '새말초', subject: '배드민턴', name: '마봉희', phone: '010-8225-3744', day: '화' },
-      { school: '문남초', subject: '맞춤형(놀이한글)', name: '윤충', phone: '010-3701-4867', day: '월,수' },
-      { school: '문남초', subject: '맞춤형(놀이수학)', name: '윤충', phone: '010-3701-4867', day: '목,금' },
-      { school: '문남초', subject: '맞춤형(놀이체육)', name: '최석호', phone: '010-4574-3568', day: '월,수' },
-      { school: '문남초', subject: '방과후(배드민턴)', name: '최석호', phone: '010-4574-3568', day: '금' },
-      { school: '문남초', subject: '맞춤형(그림책놀이)', name: '이현정', phone: '010-9938-4983', day: '화,목' },
-      { school: '문남초', subject: '맞춤형(보드게임_2학년)', name: '심명주', phone: '010-9062-7894', day: '화' },
-      { school: '문남초', subject: '맞춤형(보드게임_1학년)', name: '심선희', phone: '010-2760-8090', day: '금' },
-      { school: '문남초', subject: '방과후(영어회화)', name: '박미향', phone: '010-7609-2336', day: '월,수,금' },
-      { school: '문남초', subject: '방과후(축구)', name: '성준모', phone: '010-5054-7880', day: '화' },
-      { school: '문남초', subject: '방과후(컴퓨터)', name: '최유정', phone: '010-9768-0206', day: '수,금' },
-      { school: '문남초', subject: '방과후(주산암산)', name: '이은주', phone: '010-8582-9875', day: '수' },
-      { school: '문남초', subject: '맞춤형(토탈공예)', name: '최세진', phone: '010-7301-4540', day: '월' },
-      { school: '문남초', subject: '방과후(항공드론)', name: '한은주', phone: '010-6679-9099', day: '목' },
-      { school: '문남초', subject: '방과후(생명과학)', name: '김은아', phone: '010-2569-2508', day: '목' },
-      { school: '문남초', subject: '방과후(방송댄스)', name: '송가휘', phone: '010-4037-7031', day: '월' },
-      { school: '문남초', subject: '방과후(우클렐레)', name: '유현경', phone: '010-9109-0997', day: '목' },
-      { school: '문남초', subject: '방과후(중국어)', name: '박성미', phone: '010-4583-6787', day: '화' },
-      { school: '문남초', subject: '방과후(로봇)', name: '이향미', phone: '010-8290-6219', day: '금' },
-      { school: '문남초', subject: '방과후(미술)', name: '김진애', phone: '010-2258-4945', day: '금' },
-      { school: '문남초', subject: '방과후(음악줄넘기)', name: '윤여원', phone: '010-6731-7021', day: '화' },
-      { school: '문남초', subject: '방과후(바둑)', name: '이연희', phone: '010-8876-5833', day: '화' },
-      { school: '문남초', subject: '방과후(웹툰)', name: '고아라', phone: '010-5745-2989', day: '금' },
-      { school: '문남초', subject: '방과후(요리)', name: '박경선', phone: '010-2686-3150', day: '목' },
-      { school: '청량초', subject: '방송댄스', name: '박보교', phone: '010-6408-2530', day: '월' },
-      { school: '청량초', subject: '배드민턴', name: '마봉희', phone: '010-8225-3744', day: '월' },
-      { school: '청량초', subject: '보드게임', name: '전인자', phone: '010-8950-9418', day: '월' },
-      { school: '청량초', subject: '영어교실', name: '강미은', phone: '010-6862-4843', day: '화,목' },
-      { school: '청량초', subject: '쿠키&클레이', name: '이소영', phone: '010-6862-4843', day: '화' },
-      { school: '청량초', subject: '축구교실', name: '조은이', phone: '010-5514-5742', day: '화' },
-      { school: '청량초', subject: '음악줄넘기', name: '윤여원', phone: '010-6731-7021', day: '수' },
-      { school: '청량초', subject: '과학실험', name: '이유선', phone: '010-6228-9395', day: '목' },
-      { school: '청량초', subject: '요리교실', name: '김수연', phone: '010-2823-7744', day: '목' },
-      { school: '서화초', subject: '컴퓨터', name: '정소영', phone: '010-2669-5853', day: '월,목' },
-      { school: '서화초', subject: '창의생명과학', name: '강희경', phone: '010-5310-7258', day: '월' },
-      { school: '서화초', subject: '스마트레고', name: '김혜연', phone: '010-2330-9415', day: '월' },
-      { school: '서화초', subject: '방송댄스', name: '홍윤지', phone: '010-4522-3432', day: '월' },
-      { school: '서화초', subject: '한자자격증', name: '김순옥', phone: '010-8731-5342', day: '화' },
-      { school: '서화초', subject: '영어', name: '정혜숙', phone: '010-7303-0229', day: '화' },
-      { school: '서화초', subject: '역사탐험대', name: '노현진', phone: '010-2854-1555', day: '화' },
-      { school: '서화초', subject: '수학아카데미', name: '박향미', phone: '010-8191-2430', day: '화' },
-      { school: '서화초', subject: '큐브', name: '송정옥', phone: '010-3210-0590', day: '수' },
-      { school: '서화초', subject: '웹툰', name: '고아라', phone: '010-5745-2989', day: '수' },
-      { school: '서화초', subject: '미술', name: '김유경', phone: '010-6227-5943', day: '목' },
-      { school: '서화초', subject: '토탈공예', name: '신지현', phone: '010-2705-1593', day: '목' },
-      { school: '서화초', subject: '음악줄넘기', name: '김은선', phone: '010-2313-9633', day: '금' },
-      { school: '서화초', subject: '요리', name: '박경선', phone: '010-2686-3150', day: '금' },
-      { school: '서화초', subject: '바둑', name: '이연희', phone: '010-8876-5833', day: '수' },
-      { school: '서화초', subject: '주산암산', name: '이은주', phone: '010-8582-9875', day: '수' },
-      { school: '서화초', subject: '과학실험', name: '이유선', phone: '010-6228-9395', day: '금' },
-      { school: '서화초', subject: '로봇과학', name: '김유정', phone: '010-5063-5747', day: '목' },
-      { school: '서화초', subject: '축구', name: '조은이', phone: '010-5514-5742', day: '금' },
-      { school: '서화초', subject: '피아노', name: '양희', phone: '010-9814-1024', day: '화,목' },
-      { school: '서화초', subject: '클레이아트', name: '최세진', phone: '010-7301-4540', day: '수' },
-      { school: '서화초', subject: '한자', name: '고옥', phone: '010-9042-8836', day: '금' },
-      { school: '서흥초', subject: '영어교실', name: '김현미', phone: '010-9189-1022', day: '월,수' },
-      { school: '서흥초', subject: '음악줄넘기', name: '김은선', phone: '010-2313-9633', day: '월' },
-      { school: '서흥초', subject: '컴퓨터', name: '최유정', phone: '010-9768-0206', day: '화,목' },
-      { school: '서흥초', subject: '미니어쳐', name: '신민정', phone: '010-4925-2363', day: '화' },
-      { school: '서흥초', subject: '방송댄스', name: '오현화', phone: '010-3476-3713', day: '화' },
-      { school: '서흥초', subject: '웹툰', name: '손인옥', phone: '010-8868-2405', day: '목' },
-      { school: '서흥초', subject: '드론항공', name: '한은주', phone: '010-6679-9099', day: '금' },
-      { school: '서흥초', subject: '요리교실', name: '박은영', phone: '010-8245-1805', day: '금' },
-      { school: '서흥초', subject: '늘봄아트', name: '이현정', phone: '010-9938-4983', day: '월' },
-      { school: '서흥초', subject: '토탈공예', name: '최세진', phone: '010-7301-4540', day: '목' },
-      { school: '서흥초', subject: '주산암산', name: '이은주', phone: '010-8582-9875', day: '화' },
-      { school: '서흥초', subject: '바둑', name: '이연희', phone: '010-8876-5833', day: '목' },
-      { school: '서흥초', subject: '생명과학', name: '김은아', phone: '010-2569-2508', day: '수' },
-      { school: '서흥초', subject: '창의미술', name: '김진애', phone: '010-2258-4945', day: '수' },
-      { school: '서흥초', subject: '놀이체육', name: '강재건', phone: '010-9136-8467', day: '목' },
-      { school: '서흥초', subject: '우클렐레', name: '유현경', phone: '010-9109-0997', day: '금' },
-      { school: '숭의초', subject: '수학아카데미', name: '정진희', phone: '010-2326-2453', day: '화,목' },
-      { school: '숭의초', subject: '영어회화', name: '정혜숙', phone: '010-7303-0229', day: '수,금' },
-      { school: '숭의초', subject: '주산암산', name: '이은주', phone: '010-8582-9875', day: '화' },
-      { school: '숭의초', subject: '생명과학', name: '김은아', phone: '010-2569-2508', day: '월' },
-      { school: '숭의초', subject: '보드게임', name: '박향미', phone: '010-8191-2430', day: '월' },
-      { school: '숭의초', subject: '전자로봇', name: '이향미', phone: '010-8290-6219', day: '목' },
-      { school: '숭의초', subject: '미술과공예', name: '김현영', phone: '010-7363-2336', day: '수' },
-      { school: '숭의초', subject: '미니어쳐', name: '박건희', phone: '010-2941-1265', day: '목' },
-      { school: '숭의초', subject: '웹툰', name: '고아라', phone: '010-5745-2989', day: '금' },
-      { school: '숭의초', subject: '아동요리', name: '김수연', phone: '010-2823-7744', day: '수' },
-      { school: '숭의초', subject: '방송댄스', name: '박보교', phone: '010-6408-2530', day: '화' },
-      { school: '숭의초', subject: '한자&중국어', name: '박성미', phone: '010-4583-6787', day: '화' },
-      { school: '숭의초', subject: '피구', name: '정용호', phone: '010-5473-5135', day: '목' },
-      { school: '숭의초', subject: '컴퓨터', name: '정래희', phone: '010-6483-9476', day: '금' },
-      { school: '숭의초', subject: '토탈공예', name: '신지현', phone: '010-2705-1593', day: '수' },
-      { school: '숭의초', subject: '배드민턴', name: '마봉희', phone: '010-8225-3744', day: '금' },
-      { school: '숭의초', subject: '클레이아트', name: '최세진', phone: '010-7301-4540', day: '월' },
-      { school: '숭의초', subject: '바이올린', name: '주희정', phone: '010-7463-2110', day: '금' },
-      { school: '숭의초', subject: '드론', name: '한은주', phone: '010-6679-9099', day: '화' },
-      { school: '연학초', subject: '요리부', name: '황은주', phone: '010-8637-2048', day: '월' },
-      { school: '연학초', subject: '영어부', name: '김지연', phone: '010-4886-0104', day: '월,목' },
-      { school: '연학초', subject: '축구부', name: '이경민', phone: '010-8770-4537', day: '월' },
-      { school: '연학초', subject: '피아노부', name: '김희영', phone: '010-4931-1494', day: '월,수,금' },
-      { school: '연학초', subject: '클레이아트부', name: '최세진', phone: '010-7301-4540', day: '화' },
-      { school: '연학초', subject: '수학교실부', name: '박정숙', phone: '010-3066-8136', day: '화' },
-      { school: '연학초', subject: '미술부', name: '조성경', phone: '010-4288-3733', day: '수' },
-      { school: '연학초', subject: '컴퓨터부', name: '홍은미', phone: '010-6555-9785', day: '수,금' },
-      { school: '연학초', subject: '생명과학부', name: '최희자', phone: '010-9035-3426', day: '목' },
-      { school: '연학초', subject: '음악줄넘기부', name: '김은선', day: '010-2313-9633', day: '화' },
-      { school: '연학초', subject: '로봇과학부', name: '이향미', phone: '010-8290-6219', day: '금' },
-      { school: '연학초', subject: 'K팝댄스부', name: '이다영', phone: '010-5746-7971', day: '목' },
-      { school: '연학초', subject: '독서논술부', name: '안덕희', phone: '010-6401-0262', day: '금' },
-      { school: '창신초', subject: '컴퓨터', name: '강모래', phone: '010-9923-9379', day: '월,금' },
-      { school: '창신초', subject: '영어', name: '이매화', phone: '010-2335-7510', day: '월,수' },
-      { school: '창신초', subject: '수학', name: '박종은', phone: '010-7282-9197', day: '화,목' },
-      { school: '창신초', subject: '방송댄스', name: '심은희', phone: '010-3335-6920', day: '화' },
-      { school: '창신초', subject: '미술회화', name: '김유경', phone: '010-6227-5943', day: '수' },
-      { school: '창신초', subject: '통기타&우클렐레', name: '유현경', phone: '010-9109-0997', day: '수' },
-      { school: '창신초', subject: '일러스트', name: '허윤주', phone: '010-9512-5879', day: '목' },
-      { school: '창신초', subject: '생명과학', name: '강희경', phone: '010-5310-7258', day: '금' },
-      { school: '창신초', subject: '역사탐험대', name: '노현진', phone: '010-2854-1555', day: '금' },
-      { school: '창신초', subject: '토탈공예', name: '신지현', phone: '010-2705-1593', day: '금' },
-      { school: '창영초', subject: '창의생명과학', name: '신지현', phone: '010-2705-1593', day: '월' },
-      { school: '창영초', subject: '컴퓨터&코딩', name: '유진희', phone: '010-6562-0653', day: '월' },
-      { school: '창영초', subject: '음악줄넘기', name: '김은선', phone: '010-2313-9633', day: '수' },
-      { school: '창영초', subject: '한자&중국어', name: '박성미', phone: '010-4583-6787', day: '수' },
-      { school: '창영초', subject: '요리&제빵', name: '박경선', phone: '010-2686-3150', day: '금' },
-      { school: '창영초', subject: '놀이영어', name: '정혜숙', phone: '010-7303-0229', day: '월' },
-      { school: '창영초', subject: '창의미술', name: '김진애', phone: '010-2258-4945', day: '화' },
-      { school: '창영초', subject: '책놀이', name: '이선형', phone: '010-2461-9030', day: '수' },
-      { school: '창영초', subject: '놀이음악', name: '주희정', phone: '010-7463-2110', day: '목' },
-      { school: '창영초', subject: '놀이체육', name: '강재건', phone: '010-9136-8467', day: '금' },
-      { school: '창영초', subject: '주산암산', name: '이은주', phone: '010-8582-9875', day: '화' },
-      { school: '창영초', subject: '토탈공예', name: '최세진', phone: '010-7301-4540', day: '목' },
-      { school: '창영초', subject: '바이올린', name: '연정윤', phone: '010-5298-5076', day: '화' }
+      {"school": "경원초", "subject": "창의과학", "name": "강현정", "phone": "010-5386-7502", "day": "월,수"},
+      {"school": "경원초", "subject": "피아노Ⅰ", "name": "최정아", "phone": "010-9814-1024", "day": "월,수"},
+      {"school": "경원초", "subject": "피아노Ⅱ", "name": "최정아", "phone": "010-9814-1024", "day": "화,목,금"},
+      {"school": "경원초", "subject": "방송댄스", "name": "임지향", "phone": "010-6568-1716", "day": "월"},
+      {"school": "경원초", "subject": "영어회화", "name": "강미은", "phone": "010-6862-4843", "day": "월,수"},
+      {"school": "경원초", "subject": "독서논술", "name": "안덕희", "phone": "010-6401-0262", "day": "화"},
+      {"school": "경원초", "subject": "주산암산", "name": "이지영", "phone": "010-8743-5089", "day": "목"},
+      {"school": "경원초", "subject": "창의미술", "name": "허윤정", "phone": "010-6770-3624", "day": "화"},
+      {"school": "경원초", "subject": "컴퓨터", "name": "정래희", "phone": "010-6483-9476", "day": "화,목"},
+      {"school": "경원초", "subject": "한자", "name": "김애연", "phone": "010-2258-7696", "day": "수"},
+      {"school": "경원초", "subject": "요리", "name": "김수연", "phone": "010-2823-7744", "day": "월"},
+      {"school": "경원초", "subject": "바둑체스", "name": "이연희", "phone": "010-8876-5833", "day": "목"},
+      {"school": "경원초", "subject": "코딩Ⅰ", "name": "서지연", "phone": "010-7101-2039", "day": "수"},
+      {"school": "경원초", "subject": "코딩Ⅱ", "name": "박미경", "phone": "010-9442-3439", "day": "금"},
+      {"school": "경원초", "subject": "클레이아트", "name": "김은주", "phone": "010-6750-8754", "day": "목"},
+      {"school": "경원초", "subject": "바이올린", "name": "연정윤", "phone": "010-5298-5076", "day": "수"},
+      {"school": "경원초", "subject": "바이올린(대체)", "name": "김지연", "phone": "010-4886-0104", "day": "수"},
+      {"school": "경원초", "subject": "축구", "name": "성준모", "phone": "010-5054-7880", "day": "목"},
+      {"school": "경원초", "subject": "수학아카데미", "name": "홍진선", "phone": "010-9133-1061", "day": "금"},
+      {"school": "경원초", "subject": "배드민턴Ⅰ", "name": "임종원", "phone": "010-2770-3348", "day": "화"},
+      {"school": "경원초", "subject": "배드민턴Ⅱ", "name": "남성락", "phone": "010-7103-7198", "day": "금"},
+      {"school": "경원초", "subject": "전자로봇", "name": "박선희", "phone": "010-3713-6906", "day": "금"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "성준모", "phone": "010-5054-7880", "day": "월"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "장민혁", "phone": "010-7455-1390", "day": "월"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "정용호", "phone": "010-5473-5135", "day": "월"},
+      {"school": "남부초", "subject": "수학교실", "name": "최현영", "phone": "010-8793-6343", "day": "월,목"},
+      {"school": "남부초", "subject": "수학교실", "name": "송태윤", "phone": "010-3348-5068", "day": "월,목"},
+      {"school": "남부초", "subject": "영어교실", "name": "김지연", "phone": "010-4886-0104", "day": "화,수"},
+      {"school": "남부초", "subject": "피아노", "name": "김희영", "phone": "010-4931-1494", "day": "화,목"},
+      {"school": "남부초", "subject": "요리", "name": "김수연", "phone": "010-2823-7744", "day": "화"},
+      {"school": "남부초", "subject": "방송댄스", "name": "송가휘", "phone": "010-4037-7031", "day": "수"},
+      {"school": "남부초", "subject": "창의과학", "name": "최희자", "phone": "010-9035-3426", "day": "수"},
+      {"school": "남부초", "subject": "원예테라피", "name": "안송이", "phone": "010-5817-2629", "day": "금"},
+      {"school": "남부초", "subject": "미술교실(맞춤형)", "name": "박수정", "phone": "010-9376-5642", "day": "월"},
+      {"school": "남부초", "subject": "보드게임(맞춤형)", "name": "이지현", "phone": "010-8068-1137", "day": "화"},
+      {"school": "남부초", "subject": "음악놀이터(맞춤형)", "name": "이영미", "phone": "010-8565-3323", "day": "목"},
+      {"school": "남부초", "subject": "놀이체육(맞춤형)", "name": "노보민", "phone": "010-3329-3677", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(놀이한글)", "name": "윤충", "phone": "010-3701-4867", "day": "월수"},
+      {"school": "문남초", "subject": "맞춤형(놀이수학)", "name": "윤충", "phone": "010-3701-4867", "day": "목금"},
+      {"school": "문남초", "subject": "맞춤형(놀이체육)", "name": "최석호", "phone": "010-4574-3568", "day": "월수"},
+      {"school": "문남초", "subject": "방과후(배드민턴)", "name": "최석호", "phone": "010-4574-3568", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(그림책놀이)", "name": "이현정", "phone": "010-9938-4983", "day": "화목"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_2학년)", "name": "심명주", "phone": "010-9062-7894", "day": "화"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_1학년)", "name": "심선희", "phone": "010-2760-8090", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_3/6 하루 대체수업)", "name": "구정희", "phone": "010-8811-4087", "day": "금"},
+      {"school": "문남초", "subject": "방과후(영어회화)", "name": "박미향", "phone": "010-7609-2336", "day": "월수금"},
+      {"school": "문남초", "subject": "방과후(클레이&미니어처)", "name": "박선옥", "phone": "010-6806-3658", "day": "월"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "성준모", "phone": "010-5054-7880", "day": "화"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "서동하", "phone": "010-9006-3037", "day": "화"},
+      {"school": "문남초", "subject": "방과후(컴퓨터)", "name": "최유정", "phone": "010-9768-0206", "day": "수금"},
+      {"school": "문남초", "subject": "방과후(3D펜)", "name": "이미형", "phone": "010-7795-9018", "day": "목"},
+      {"school": "문남초", "subject": "방과후(방송댄스)", "name": "현혜미", "phone": "010-8996-1149", "day": "목"},
+      {"school": "문남초", "subject": "방과후(주산암산)", "name": "주정희", "phone": "010-9458-3726", "day": "금"},
+      {"school": "문남초", "subject": "방과후(생명과학)", "name": "이연숙", "phone": "010-6477-3850", "day": "화"},
+      {"school": "문남초", "subject": "코디", "name": "임승심", "phone": "010-3283-3789", "day": "월-금"},
+      {"school": "문남초", "subject": "맞춤형(놀이체육)", "name": "장정아", "phone": "010-5445-9791", "day": "수"},
+      {"school": "문남초", "subject": "맞춤형(보드게임)", "name": "오연정", "phone": "010-9201-4057", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(그림책놀이)", "name": "정수지", "phone": "010-6388-4203", "day": "화목"},
+      {"school": "문남초", "subject": "방과후(요리)", "name": "강유진", "phone": "연락처없음", "day": "요일미정"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "김화자", "phone": "010-9072-3866", "day": "화"},
+      {"school": "새말초", "subject": "음악줄넘기", "name": "변혜진", "phone": "010-8816-6937", "day": "수"},
+      {"school": "새말초", "subject": "영어", "name": "서석희", "phone": "010-3314-6287", "day": "월/수"},
+      {"school": "새말초", "subject": "피아노", "name": "양주희", "phone": "010-3298-1484", "day": "월/수/금"},
+      {"school": "새말초", "subject": "미니어쳐", "name": "박건희", "phone": "010-2941-1265", "day": "화"},
+      {"school": "새말초", "subject": "수학", "name": "유혜자", "phone": "010-2718-5056", "day": "화/목"},
+      {"school": "새말초", "subject": "요리", "name": "박은영", "phone": "010-8245-1805", "day": "수"},
+      {"school": "새말초", "subject": "집중력한자", "name": "고선옥", "phone": "010-9042-8836", "day": "목"},
+      {"school": "새말초", "subject": "로봇영재", "name": "이혜령", "phone": "010-5311-1025", "day": "목"},
+      {"school": "새말초", "subject": "방송댄스", "name": "이다영", "phone": "010-5746-7971", "day": "금"},
+      {"school": "새말초", "subject": "배드민턴", "name": "박경애", "phone": "010-6637-1035", "day": "화"},
+      {"school": "서화초", "subject": "컴퓨터", "name": "정소영", "phone": "010-2669-5853", "day": "월.목"},
+      {"school": "서화초", "subject": "창의생명과학", "name": "강희경", "phone": "010-5310-7258", "day": "월"},
+      {"school": "서화초", "subject": "스마트레고", "name": "김혜연", "phone": "010-2330-9415", "day": "월"},
+      {"school": "서화초", "subject": "방송댄스", "name": "홍윤지", "phone": "010-4522-3432", "day": "월"},
+      {"school": "서화초", "subject": "한자자격증", "name": "김순옥", "phone": "010-8731-5342", "day": "화"},
+      {"school": "서화초", "subject": "영어", "name": "정혜숙", "phone": "010-7303-0229", "day": "화"},
+      {"school": "서화초", "subject": "역사탐험대", "name": "노현진", "phone": "010-2854-1555", "day": "화"},
+      {"school": "서화초", "subject": "수학아카데미", "name": "박향미", "phone": "010-8191-2430", "day": "화"},
+      {"school": "서화초", "subject": "큐브", "name": "송정옥", "phone": "010-3210-0590", "day": "수"},
+      {"school": "서화초", "subject": "AI코딩", "name": "원지연", "phone": "010-8448-3945", "day": "수"},
+      {"school": "서화초", "subject": "웹툰", "name": "고아라", "phone": "010-5745-2989", "day": "수"},
+      {"school": "서화초", "subject": "원예테라피", "name": "이지윤", "phone": "010-5817-2629", "day": "수"},
+      {"school": "서화초", "subject": "클레이쿠키", "name": "박경희", "phone": "010-9966-7116", "day": "목"},
+      {"school": "서화초", "subject": "로봇과학", "name": "김유정", "phone": "010-5063-5747", "day": "목"},
+      {"school": "서화초", "subject": "바둑&체스", "name": "원용혜", "phone": "010-9488-6312", "day": "목"},
+      {"school": "서화초", "subject": "공예", "name": "이경남", "phone": "010-8892-6705", "day": "금"},
+      {"school": "서화초", "subject": "주산암산", "name": "김혜정", "phone": "010-8265-0060", "day": "금"},
+      {"school": "서화초", "subject": "바이올린", "name": "김예은", "phone": "010-5034-5847", "day": "금"},
+      {"school": "서화초", "subject": "음악줄넘기", "name": "김시영", "phone": "010-2556-3145", "day": "금"},
+      {"school": "서흥초", "subject": "영어교실", "name": "김현미", "phone": "010-9189-1022", "day": "월/수"},
+      {"school": "서흥초", "subject": "음악줄넘기", "name": "김은선", "phone": "010-2313-9633", "day": "월"},
+      {"school": "서흥초", "subject": "컴퓨터", "name": "최유정", "phone": "010-9768-0206", "day": "화/목"},
+      {"school": "서흥초", "subject": "미니어쳐", "name": "신민정", "phone": "010-4925-2363", "day": "화"},
+      {"school": "서흥초", "subject": "방송댄스", "name": "오현화", "phone": "010-3476-3713", "day": "화"},
+      {"school": "서흥초", "subject": "웹툰", "name": "손인옥", "phone": "010-8868-2405", "day": "목"},
+      {"school": "서흥초", "subject": "드론항공", "name": "한은주", "phone": "010-6679-9099", "day": "금"},
+      {"school": "서흥초", "subject": "요리교실", "name": "박은영", "phone": "010-8245-1805", "day": "금"},
+      {"school": "서흥초", "subject": "늘봄아트", "name": "이현정", "phone": "010-9938-4983", "day": "월"},
+      {"school": "서흥초", "subject": "놀이음악", "name": "주희정", "phone": "010-7463-2110", "day": "화"},
+      {"school": "서흥초", "subject": "책놀이", "name": "백정화", "phone": "010-2253-6637", "day": "수"},
+      {"school": "서흥초", "subject": "놀이체육", "name": "강재건", "phone": "010-9136-8467", "day": "목"},
+      {"school": "서흥초", "subject": "놀이체육", "name": "박시안", "phone": "010-2272-0436", "day": "목"},
+      {"school": "서흥초", "subject": "보드게임", "name": "이현미", "phone": "010-5251-5620", "day": "금"},
+      {"school": "숭의초", "subject": "수학아카데미", "name": "정진희", "phone": "010-2326-2453", "day": "화,목"},
+      {"school": "숭의초", "subject": "영어회화", "name": "정혜숙", "phone": "010-7303-0229", "day": "수,금"},
+      {"school": "숭의초", "subject": "주산암산", "name": "이은주", "phone": "010-8582-9875", "day": "화"},
+      {"school": "숭의초", "subject": "생명과학", "name": "김은아", "phone": "010-2569-2508", "day": "월"},
+      {"school": "숭의초", "subject": "보드게임", "name": "박향미", "phone": "010-8191-2430", "day": "월"},
+      {"school": "숭의초", "subject": "전자로봇", "name": "이향미", "phone": "010-8290-6219", "day": "목"},
+      {"school": "숭의초", "subject": "미술과공예", "name": "김현영", "phone": "010-7363-2336", "day": "수"},
+      {"school": "숭의초", "subject": "미니어쳐", "name": "박건희", "phone": "010-2941-1265", "day": "목"},
+      {"school": "숭의초", "subject": "웹툰", "name": "고아라", "phone": "010-5745-2989", "day": "금"},
+      {"school": "숭의초", "subject": "바둑", "name": "김형준", "phone": "010-3383-1761", "day": "월"},
+      {"school": "숭의초", "subject": "한자&중국어", "name": "박성미", "phone": "010-4583-6787", "day": "화"},
+      {"school": "숭의초", "subject": "아동요리", "name": "김수연", "phone": "010-2823-7744", "day": "수"},
+      {"school": "숭의초", "subject": "바이올린", "name": "주희정", "phone": "010-7463-2110", "day": "금"},
+      {"school": "숭의초", "subject": "배드민턴", "name": "임원균", "phone": "010-7412-8114", "day": "월"},
+      {"school": "숭의초", "subject": "방송댄스", "name": "박보교", "phone": "010-6408-2530", "day": "화"},
+      {"school": "숭의초", "subject": "피구", "name": "정용호", "phone": "010-5473-5135", "day": "목"},
+      {"school": "숭의초", "subject": "음악줄넘기", "name": "윤양희", "phone": "010-4597-2027", "day": "금"},
+      {"school": "연학초", "subject": "요리부", "name": "황은주", "phone": "010-8637-2048", "day": "월"},
+      {"school": "연학초", "subject": "영어부", "name": "김지연", "phone": "010-4886-0104", "day": "월,목"},
+      {"school": "연학초", "subject": "축구부", "name": "이경민", "phone": "010-8770-4537", "day": "월"},
+      {"school": "연학초", "subject": "피아노부", "name": "김희영", "phone": "010-4931-1494", "day": "월,수,금"},
+      {"school": "연학초", "subject": "클레이아트부", "name": "최세진", "phone": "010-7301-4540", "day": "화"},
+      {"school": "연학초", "subject": "수학교실부", "name": "박정숙", "phone": "010-3066-8136", "day": "화"},
+      {"school": "연학초", "subject": "미술부", "name": "조성경", "phone": "010-4288-3733", "day": "수"},
+      {"school": "연학초", "subject": "컴퓨터부", "name": "홍은미", "phone": "010-6555-9785", "day": "수,금"},
+      {"school": "연학초", "subject": "생명과학부", "name": "최희자", "phone": "010-9035-3426", "day": "목"},
+      {"school": "연학초", "subject": "K팝댄스부", "name": "이다영", "phone": "010-5746-7971", "day": "목"},
+      {"school": "연학초", "subject": "음악줄넘기부", "name": "김옥주", "phone": "010-8910-2223", "day": "금"},
+      {"school": "연학초", "subject": "음악줄넘기부", "name": "박현지", "phone": "연락처없음", "day": "금"},
+      {"school": "창신초", "subject": "컴퓨터", "name": "강모래", "phone": "010-9923-9379", "day": "월.금"},
+      {"school": "창신초", "subject": "영어", "name": "이매화", "phone": "010-2335-7510", "day": "월.수"},
+      {"school": "창신초", "subject": "수학", "name": "박종은", "phone": "010-7282-9197", "day": "화.목"},
+      {"school": "창신초", "subject": "음악줄넘기", "name": "노진희", "phone": "010-3008-9033", "day": "월"},
+      {"school": "창신초", "subject": "방송댄스", "name": "심은희", "phone": "010-3335-6920", "day": "화"},
+      {"school": "창신초", "subject": "창의과학", "name": "이수진", "phone": "010-5304-7708", "day": "화"},
+      {"school": "창신초", "subject": "미술회화", "name": "김유경", "phone": "010-6227-5943", "day": "수"},
+      {"school": "창신초", "subject": "통기타&우클렐레", "name": "유현경", "phone": "010-9109-0997", "day": "수"},
+      {"school": "창신초", "subject": "일러스트", "name": "허윤주", "phone": "010-9512-5879", "day": "목"},
+      {"school": "창신초", "subject": "배드민턴", "name": "임종원", "phone": "010-2770-3348", "day": "목"},
+      {"school": "창신초", "subject": "한자", "name": "이학주", "phone": "010-3301-6583", "day": "목"},
+      {"school": "창신초", "subject": "요리", "name": "김유정", "phone": "010-2894-9752", "day": "금"},
+      {"school": "창신초", "subject": "코딩로봇", "name": "장은화", "phone": "010-6530-6217", "day": "금"},
+      {"school": "창영초", "subject": "창의생명과학", "name": "신지현", "phone": "010-2705-1593", "day": "월"},
+      {"school": "창영초", "subject": "컴퓨터&코딩", "name": "유진희", "phone": "010-6562-0653", "day": "월"},
+      {"school": "창영초", "subject": "음악줄넘기", "name": "김은선", "phone": "010-2313-9633", "day": "수"},
+      {"school": "창영초", "subject": "한자&중국어", "name": "박성미", "phone": "010-4583-6787", "day": "수"},
+      {"school": "창영초", "subject": "요리&제빵", "name": "박경선", "phone": "010-2686-3150", "day": "금"},
+      {"school": "창영초", "subject": "놀이영어", "name": "정혜숙", "phone": "010-7303-0229", "day": "월"},
+      {"school": "창영초", "subject": "창의미술", "name": "김진애", "phone": "010-2258-4945", "day": "화"},
+      {"school": "창영초", "subject": "책놀이", "name": "이선형", "phone": "010-2461-9030", "day": "수"},
+      {"school": "창영초", "subject": "놀이음악", "name": "주희정", "phone": "010-7463-2110", "day": "목"},
+      {"school": "창영초", "subject": "놀이체육", "name": "강재건", "phone": "010-9136-8467", "day": "금"},
+      {"school": "창영초", "subject": "놀이체육", "name": "장정아", "phone": "010-5445-9791", "day": "금"},
+      {"school": "청량초", "subject": "방송댄스", "name": "박보교", "phone": "010-6408-2530", "day": "월"},
+      {"school": "청량초", "subject": "배드민턴", "name": "마봉희", "phone": "010-8225-3744", "day": "월"},
+      {"school": "청량초", "subject": "보드게임", "name": "전인자", "phone": "010-8950-9418", "day": "월"},
+      {"school": "청량초", "subject": "영어교실", "name": "강미은", "phone": "010-6862-4843", "day": "화/목"},
+      {"school": "청량초", "subject": "쿠키&클레이", "name": "이소영", "phone": "010-6862-4843", "day": "화"},
+      {"school": "청량초", "subject": "축구교실", "name": "조은이", "phone": "010-5514-5742", "day": "화"},
+      {"school": "청량초", "subject": "미술놀이", "name": "오윤정", "phone": "010-7343-7956", "day": "수"},
+      {"school": "청량초", "subject": "음악줄넘기", "name": "윤여원", "phone": "010-6731-7021", "day": "수"},
+      {"school": "청량초", "subject": "과학실험", "name": "이유선", "phone": "010-6228-9395", "day": "목"},
+      {"school": "청량초", "subject": "요리교실", "name": "김수연", "phone": "010-2823-7744", "day": "목"},
+      {"school": "청량초", "subject": "생명과학", "name": "윤정희", "phone": "010-9032-8439", "day": "금"},
+      {"school": "청량초", "subject": "큐브교실", "name": "문혜영", "phone": "010-3527-9884", "day": "금"}
     ];
 
     let appData = {
@@ -1187,11 +1174,11 @@
 
     let currentSchoolId = 'all';
     let currentQuarter = 1;
-    let currentMonth = 9;
+    let currentMonth = new Date().getMonth() + 1;
     let currentNoticeQuarter = 'all';
     let currentBillingCategory = 'instructor';
-    let calYear = 2026;
-    let calMonth = 9; // 오늘 날짜 기준 9월 캘린더 세팅
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth() + 1; // 실제 현재 시스템 날짜 기준 월 세팅 (현재 10월)
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1200,6 +1187,7 @@
       await initIndexedDB();
 
       appData.schools = fixedMasterSchools;
+      appData.masterTeachers = fullMasterTeachersData; // 새 명단 강제 주입
 
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
@@ -1207,6 +1195,7 @@
           appData = remoteData;
         }
         appData.schools = fixedMasterSchools;
+        appData.masterTeachers = fullMasterTeachersData; // 원격 데이터가 있더라도 새 명단 우선 적용
         
         renderSchoolList();
         renderAllViews();
@@ -1836,7 +1825,7 @@
       renderSchoolTimetableGrid();
     }
 
-    // ---------- CALENDAR EVENTS (컴팩트 캘린더 - 9월 기본) ----------
+    // ---------- CALENDAR EVENTS (컴팩트 캘린더 - 현재 실제 월 세팅) ----------
     function changeCalendarMonth(delta) {
       calMonth += delta;
       if (calMonth > 12) { calMonth = 1; calYear++; }

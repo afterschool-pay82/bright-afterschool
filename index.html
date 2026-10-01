@@ -73,7 +73,7 @@
 <body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
 
   <!-- ================= L E F T   S I D E B A R ================= -->
-  <aside class="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col shrink-0 z-20">
+  <aside class="w-full md:w-84 bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col shrink-0 z-20">
     <div class="px-5 py-4 md:px-6 md:py-5 border-b border-amber-100 bg-amber-50/80 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div>
@@ -84,62 +84,62 @@
       </div>
     </div>
 
-    <!-- School Dropdown Selector -->
-    <div class="p-4 flex flex-col space-y-3">
+    <!-- School Dropdown Selector & Widget -->
+    <div class="p-4 md:p-5 flex flex-col space-y-4">
       <div>
-        <label class="block text-xs font-bold text-stone-500 mb-1.5 flex items-center justify-between">
+        <label class="block text-xs md:text-sm font-bold text-stone-600 mb-2 flex items-center justify-between">
           <span>🏫 위탁 기관 선택</span>
-          <span id="badge-total-schools" class="text-[11px] text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded-full">12개소</span>
+          <span id="badge-total-schools" class="text-xs text-amber-900 font-mono font-bold bg-amber-100 px-2.5 py-0.5 rounded-full">12개소</span>
         </label>
-        <select id="school-dropdown-select" onchange="selectSchool(this.value)" class="w-full p-3 rounded-2xl border border-amber-300 bg-amber-50/50 font-extrabold text-stone-900 text-xs md:text-sm outline-none focus:border-amber-500 shadow-xs cursor-pointer">
+        <select id="school-dropdown-select" onchange="selectSchool(this.value)" class="w-full p-3.5 rounded-2xl border-2 border-amber-300 bg-amber-50/50 font-extrabold text-stone-900 text-sm md:text-base outline-none focus:border-amber-500 shadow-sm cursor-pointer">
           <option value="all">🎒 전체 기관 통합보기 (12개소)</option>
         </select>
       </div>
 
-      <button onclick="openAddSchoolModal()" class="w-full py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-stone-200">
+      <button onclick="openAddSchoolModal()" class="w-full py-3 px-4 rounded-2xl bg-stone-100 hover:bg-amber-100 text-stone-800 hover:text-amber-950 font-extrabold text-xs md:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer border border-stone-200 shadow-2xs">
         <i data-lucide="plus" class="w-4 h-4 text-amber-600"></i> 새 위탁 기관 추가하기
       </button>
 
-      <!-- 공백을 알차게 채워줄 관리자 퀵 메뉴 및 팁 위젯 -->
-      <div class="mt-2 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2.5 text-xs">
-        <p class="font-bold text-amber-900 flex items-center gap-1.5">
-          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-600"></i> 관리자 빠른 업무 팁
+      <!-- 시원하고 큼직하게 정돈된 관리자 퀵 업무 팁 카드 -->
+      <div class="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200/90 space-y-2.5 shadow-2xs">
+        <p class="font-brand text-amber-950 text-xs md:text-sm flex items-center gap-1.5 font-bold">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-600"></i> 관리자 빠른 업무 팁
         </p>
-        <ul class="space-y-1.5 text-stone-600 text-[11px] leading-relaxed">
-          <li class="flex items-start gap-1">
-            <span class="text-amber-600 font-bold">•</span> 상단 달력의 <span class="font-bold text-stone-800">[+]</span> 버튼을 누르면 기관별 휴강일을 즉시 등록할 수 있습니다.
+        <ul class="space-y-2 text-stone-700 text-xs leading-relaxed font-semibold">
+          <li class="flex items-start gap-1.5">
+            <span class="text-amber-600 font-black">•</span> 상단 달력의 <span class="px-1.5 py-0.5 bg-white rounded border border-amber-300 font-mono text-[11px] text-indigo-600 font-bold">[+]</span> 버튼으로<br>&nbsp;&nbsp;&nbsp;기관별 휴강일을 즉시 등록하세요.
           </li>
-          <li class="flex items-start gap-1">
-            <span class="text-amber-600 font-bold">•</span> 법정 공휴일은 캘린더에 자동으로 빨간색 표시됩니다.
+          <li class="flex items-start gap-1.5">
+            <span class="text-amber-600 font-black">•</span> 법정 공휴일은 캘린더에<br>&nbsp;&nbsp;&nbsp;빨간색으로 자동 표시됩니다.
           </li>
-          <li class="flex items-start gap-1">
-            <span class="text-amber-600 font-bold">•</span> 매월 25일까지 청구서와 코디 출근부 원본을 등록해 주세요.
+          <li class="flex items-start gap-1.5">
+            <span class="text-amber-600 font-black">•</span> 매월 25일까지 청구서 및<br>&nbsp;&nbsp;&nbsp;코디 출근부 원본을 등록해 주세요.
           </li>
         </ul>
       </div>
     </div>
 
     <!-- 서류 제출 현황 요약 위젯 -->
-    <div class="p-3 border-t border-stone-200 bg-amber-50/40 mt-auto">
-      <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
-        <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
-          <span class="flex items-center gap-1.5 font-bold">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 서류 제출 현황
+    <div class="p-4 border-t border-stone-200 bg-amber-50/40 mt-auto">
+      <div class="p-3.5 bg-white rounded-2xl border border-amber-200 text-xs shadow-2xs">
+        <div class="flex items-center justify-between font-bold text-stone-900 mb-2">
+          <span class="flex items-center gap-1.5 font-bold text-xs md:text-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> 서류 제출 현황
           </span>
           <span class="text-[11px] text-stone-400">실시간 연동됨</span>
         </div>
-        <div class="grid grid-cols-3 gap-1 text-center font-mono">
-          <div class="p-1.5 bg-emerald-50 rounded-xl border border-emerald-100">
+        <div class="grid grid-cols-3 gap-1.5 text-center font-mono">
+          <div class="p-2 bg-emerald-50 rounded-xl border border-emerald-100">
             <p class="text-[10px] text-emerald-700 font-sans font-bold">완료</p>
-            <p class="font-bold text-emerald-800 text-xs" id="stat-ready-count">0</p>
+            <p class="font-extrabold text-emerald-800 text-sm" id="stat-ready-count">0</p>
           </div>
-          <div class="p-1.5 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="p-2 bg-amber-50 rounded-xl border border-amber-100">
             <p class="text-[10px] text-amber-700 font-sans font-bold">검토</p>
-            <p class="font-bold text-amber-800 text-xs" id="stat-pending-count">0</p>
+            <p class="font-extrabold text-amber-800 text-sm" id="stat-pending-count">0</p>
           </div>
-          <div class="p-1.5 bg-rose-50 rounded-xl border border-rose-100">
+          <div class="p-2 bg-rose-50 rounded-xl border border-rose-100">
             <p class="text-[10px] text-rose-700 font-sans font-bold">미제출</p>
-            <p class="font-bold text-rose-800 text-xs" id="stat-missing-count">12</p>
+            <p class="font-extrabold text-rose-800 text-sm" id="stat-missing-count">12</p>
           </div>
         </div>
       </div>
@@ -189,32 +189,32 @@
     <!-- Navigation Tabs -->
     <div class="px-4 md:px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[65px] md:top-[73px] z-10">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
-        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer">
-          <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> 학사 일정 캘린더
+        <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer">
+          <i data-lucide="calendar-days" class="w-4 h-4"></i> 학사 일정 캘린더
         </button>
-        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="calculator" class="w-3.5 h-3.5"></i> 청구서 관리
+        <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="calculator" class="w-4 h-4"></i> 청구서 관리
         </button>
-        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 hidden cursor-pointer">
-          <i data-lucide="calendar" class="w-3.5 h-3.5"></i> 요일별 시간표
+        <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 hidden cursor-pointer">
+          <i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표
         </button>
-        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="users" class="w-3.5 h-3.5"></i> 강사 현황 & 과목 검색
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 과목 검색
         </button>
-        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="check-square" class="w-3.5 h-3.5"></i> 마감 신호등 현황판
+        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판
         </button>
-        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 지출결의서 & 코디출근부
+        <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 코디출근부
         </button>
-        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 분기별 안내장
+        <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장
         </button>
-        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="message-square" class="w-3.5 h-3.5"></i> 학교별 1:1 업무메모
+        <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="message-square" class="w-4 h-4"></i> 학교별 1:1 업무메모
         </button>
-        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
-          <i data-lucide="folder-archive" class="w-3.5 h-3.5"></i> 공용 서식 자료실
+        <button onclick="switchTab('vault')" id="tab-btn-vault" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer">
+          <i data-lucide="folder-archive" class="w-4 h-4"></i> 공용 서식 자료실
         </button>
       </nav>
     </div>
@@ -224,31 +224,31 @@
 
       <!-- ================= TAB: CALENDAR EVENTS ================= -->
       <section id="view-calendar-events" class="space-y-3">
-        <div class="bg-white p-3.5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3 flex-wrap">
             <div class="flex items-center gap-2">
-              <button onclick="changeCalendarMonth(-1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-              <h3 class="text-sm md:text-base font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
-              <button onclick="changeCalendarMonth(1)" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+              <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+              <h3 class="text-base md:text-lg font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
+              <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <span class="text-[11px] md:text-xs text-stone-400 hidden sm:inline" id="calendar-mode-hint">| 공휴일 및 학사일정 자동 표시</span>
+            <span class="text-xs md:text-sm text-stone-400 hidden sm:inline" id="calendar-mode-hint">| 공휴일 및 학사일정 자동 표시</span>
           </div>
-          <button onclick="openAddCalendarEventModal()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
-            <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> 휴강/재량휴일 등록
+          <button onclick="openAddCalendarEventModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs md:text-sm flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i> 휴강/재량휴일 등록
           </button>
         </div>
 
-        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-3 md:p-4">
-          <div class="grid grid-cols-7 gap-1.5 mb-1.5 text-center font-bold text-xs">
-            <div class="py-1.5 text-rose-600 bg-rose-50 rounded-lg">일</div>
-            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">월</div>
-            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">화</div>
-            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">수</div>
-            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">목</div>
-            <div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">금</div>
-            <div class="py-1.5 text-blue-600 bg-blue-50 rounded-lg">토</div>
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-4 md:p-5">
+          <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-xs md:text-sm">
+            <div class="py-2 text-rose-600 bg-rose-50 rounded-xl">일</div>
+            <div class="py-2 text-stone-700 bg-stone-50 rounded-xl">월</div>
+            <div class="py-2 text-stone-700 bg-stone-50 rounded-xl">화</div>
+            <div class="py-2 text-stone-700 bg-stone-50 rounded-xl">수</div>
+            <div class="py-2 text-stone-700 bg-stone-50 rounded-xl">목</div>
+            <div class="py-2 text-stone-700 bg-stone-50 rounded-xl">금</div>
+            <div class="py-2 text-blue-600 bg-blue-50 rounded-xl">토</div>
           </div>
-          <div id="calendar-grid-days" class="grid grid-cols-7 gap-1.5"></div>
+          <div id="calendar-grid-days" class="grid grid-cols-7 gap-2"></div>
         </div>
       </section>
 
@@ -257,10 +257,10 @@
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기 (3~5월)</button>
-            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">2분기 (6~8월)</button>
-            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">3분기 (9~11월)</button>
-            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">4분기 (12~2월)</button>
+            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기 (3~5월)</button>
+            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">2분기 (6~8월)</button>
+            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">3분기 (9~11월)</button>
+            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">4분기 (12~2월)</button>
           </div>
           <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">※ 상단 드롭다운에서 학교를 선택하여 세부 1~3차 청구서를 관리하세요.</div>
         </div>
@@ -931,7 +931,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v30', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v31', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1191,11 +1191,9 @@
     let calYear = new Date().getFullYear();
     let calMonth = new Date().getMonth() + 1;
 
-    // 대한민국 법정공휴일 계산 함수 (양력 기준 고정 공휴일 + 음력 주요 공휴일 자동 반영)
+    // 대한민국 법정공휴일 계산 함수
     function getKoreanHolidays(year, month) {
       const holidays = {};
-      
-      // 1. 고정 양력 공휴일
       const fixed = {
         '1-1': '신정',
         '3-1': '삼일절',
@@ -1207,8 +1205,6 @@
         '12-25': '성탄절'
       };
       
-      const key = `${month}-${new Date(year, month-1, 1).getDate()}`; // format check helper
-      // Check each day of the month
       const totalDays = new Date(year, month, 0).getDate();
       for (let d = 1; d <= totalDays; d++) {
         const k = `${month}-${d}`;
@@ -1217,11 +1213,8 @@
         }
       }
 
-      // 2. 2026년 기준 추석 및 설날 연휴 자동 보정
-      if (year === 2026) {
-        if (month === 9) { // 2026년 추석 연휴 (9월 24일 ~ 9월 26일 등 예시)
-          if (d >= 24 && d <= 26) holidays[d] = '추석 연휴';
-        }
+      if (year === 2026 && month === 9) {
+        for (let d = 24; d <= 26; d++) holidays[d] = '추석 연휴';
       }
 
       return holidays;
@@ -1250,6 +1243,9 @@
           appData.memos = remoteData.memos || [];
           appData.vaultFiles = remoteData.vaultFiles || appData.vaultFiles;
           appData.bannerNotice = remoteData.bannerNotice || appData.bannerNotice;
+          if (remoteData.schools && remoteData.schools.length > 0) {
+            appData.schools = remoteData.schools;
+          }
         } else {
           firebase.database().ref('brightmind_data').set(appData);
         }
@@ -1295,14 +1291,14 @@
         if (!v || !b) return;
         if (t === tId) {
           v.classList.remove('hidden');
-          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
+          b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
           if (t === 'timetable') renderSchoolTimetableGrid();
           if (t === 'calendar-events') renderCalendarGrid();
           if (t === 'master-teachers') renderMasterTeacherList();
           if (t === 'vault') renderVaultFiles();
         } else {
           v.classList.add('hidden');
-          b.className = "tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
+          b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 transition-all bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
         }
       });
       lucide.createIcons();
@@ -1741,7 +1737,7 @@
       openModal('modal-add-schedule');
     }
 
-    // ---------- CALENDAR EVENTS (공휴일 자동 체크 포함) ----------
+    // ---------- CALENDAR EVENTS ----------
     function changeCalendarMonth(delta) {
       calMonth += delta;
       if (calMonth > 12) { calMonth = 1; calYear++; }
@@ -1770,27 +1766,24 @@
         events = events.filter(ev => ev.schoolId === currentSchoolId);
       }
 
-      // 법정 공휴일 데이터 가져오기
       const holidays = getKoreanHolidays(calYear, calMonth);
-
       const firstDayIndex = new Date(calYear, calMonth - 1, 1).getDay();
       const totalDays = new Date(calYear, calMonth, 0).getDate();
 
       for (let i = 0; i < firstDayIndex; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = "bg-stone-50/40 rounded-xl min-h-[95px] p-1.5 opacity-30";
+        emptyCell.className = "bg-stone-50/40 rounded-2xl min-h-[110px] p-2 opacity-30";
         gridDaysEl.appendChild(emptyCell);
       }
 
       for (let day = 1; day <= totalDays; day++) {
         const cell = document.createElement('div');
-        cell.className = "bg-white rounded-xl border border-stone-200 min-h-[95px] p-2 flex flex-col justify-between hover:border-indigo-400 transition-all";
+        cell.className = "bg-white rounded-2xl border border-stone-200 min-h-[110px] p-2.5 flex flex-col justify-between hover:border-indigo-400 transition-all shadow-2xs";
         
         const dateObj = new Date(calYear, calMonth - 1, day);
         const isSunday = dateObj.getDay() === 0;
         const holidayName = holidays[day];
 
-        // 사용자가 등록한 일정
         const dayEvents = events.filter(ev => {
           if (!ev.ym) return parseInt(ev.dateStr, 10) === day;
           const [y, m] = ev.ym.split('-').map(Number);
@@ -1799,11 +1792,10 @@
 
         let contentHtml = '';
         
-        // 공휴일인 경우 빨간색 배지로 자동 출력
         if (holidayName) {
           contentHtml += `
-            <div class="px-1 py-0.5 rounded-md border text-[9.5px] font-bold truncate flex items-center justify-between bg-rose-100 text-rose-900 border-rose-300">
-              <span>🔴 [법정공휴일] ${holidayName}</span>
+            <div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex items-center justify-between bg-rose-100 text-rose-900 border-rose-300">
+              <span>🔴 ${holidayName}</span>
             </div>
           `;
         }
@@ -1818,9 +1810,9 @@
           const schName = schObj ? schObj.name : '';
 
           contentHtml += `
-            <div class="px-1 py-0.5 rounded-md border text-[9.5px] font-bold truncate flex items-center justify-between ${colorClass}" title="${schName}: ${ev.keyword}">
+            <div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex items-center justify-between ${colorClass}" title="${schName}: ${ev.keyword}">
               <span>📌 ${currentSchoolId === 'all' ? '['+schName+'] ' : ''}${ev.keyword}</span>
-              <button onclick="deleteCalendarEvent('${ev.id}')" class="text-stone-400 hover:text-red-600 ml-0.5 cursor-pointer">×</button>
+              <button onclick="deleteCalendarEvent('${ev.id}')" class="text-stone-400 hover:text-red-600 ml-1 cursor-pointer font-bold">×</button>
             </div>
           `;
         });
@@ -1829,11 +1821,11 @@
 
         cell.innerHTML = `
           <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-mono font-bold text-xs ${dayColorClass}">${day}</span>
-              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1 cursor-pointer" title="휴강/재량휴일 추가">+</button>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="font-mono font-bold text-xs md:text-sm ${dayColorClass}">${day}</span>
+              <button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1.5 py-0.5 rounded hover:bg-indigo-50 cursor-pointer" title="휴강/재량휴일 추가">+</button>
             </div>
-            <div class="space-y-1 overflow-y-auto max-h-[65px] custom-scroll pr-0.5">${contentHtml}</div>
+            <div class="space-y-1 overflow-y-auto max-h-[75px] custom-scroll pr-0.5">${contentHtml}</div>
           </div>
         `;
         gridDaysEl.appendChild(cell);

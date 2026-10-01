@@ -11,11 +11,11 @@
   <!-- SheetJS (Excel Engine) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   
-  <!-- Firebase SDK (실시간 클라우드 동기화용) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   
-  <!-- 가독성 웹폰트: 나눔스퀘어라운드 & GmarketSans -->
+  <!-- 가독성 웹폰트 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
 
@@ -72,7 +72,7 @@
 </head>
 <body class="text-stone-800 min-h-screen flex flex-col md:flex-row antialiased">
 
-  <!-- ================= L E F T   S I D E B A R (모바일 상단 배치 및 반응형) ================= -->
+  <!-- ================= L E F T   S I D E B A R (드롭다운 적용) ================= -->
   <aside class="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col shrink-0 z-20">
     <div class="px-5 py-4 md:px-6 md:py-5 border-b border-amber-100 bg-amber-50/80 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -85,35 +85,27 @@
           </h1>
         </div>
       </div>
-      <!-- 모바일용 간단 상태 표시 토글 버튼 (선택적) -->
-      <div class="md:hidden text-xs text-amber-900 font-bold bg-amber-200/60 px-2.5 py-1 rounded-xl">
-        모바일 모드
-      </div>
     </div>
 
-    <!-- School Switcher -->
-    <div class="p-4 flex flex-col">
-      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-xs cursor-pointer">
-        <div class="flex items-center gap-2">
-          <span class="text-base">🏫</span>
-          <span class="text-xs md:text-sm font-extrabold tracking-tight">전체 기관 통합보기</span>
-        </div>
-        <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/90 text-amber-950 font-extrabold">12개소</span>
-      </button>
-
-      <div class="flex items-center justify-between px-2 mb-2">
-        <span class="text-xs font-bold text-stone-400 tracking-wider">위탁 기관 목록 (클릭하여 전담관리)</span>
-        <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors cursor-pointer">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i> 기관 추가
-        </button>
+    <!-- School Dropdown Selector -->
+    <div class="p-4 flex flex-col space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-stone-500 mb-1.5 flex items-center justify-between">
+          <span>🏫 위탁 기관 선택</span>
+          <span id="badge-total-schools" class="text-[11px] text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded-full">12개소</span>
+        </label>
+        <select id="school-dropdown-select" onchange="selectSchool(this.value)" class="w-full p-3 rounded-2xl border border-amber-300 bg-amber-50/50 font-extrabold text-stone-900 text-xs md:text-sm outline-none focus:border-amber-500 shadow-xs cursor-pointer">
+          <option value="all">🎒 전체 기관 통합보기</option>
+        </select>
       </div>
 
-      <!-- 모바일에서는 높이를 적당히 제한하여 스크롤 제공 -->
-      <div id="school-list-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-1 gap-1.5 max-h-56 md:max-h-[380px] overflow-y-auto custom-scroll pr-1"></div>
+      <button onclick="openAddSchoolModal()" class="w-full py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-stone-200">
+        <i data-lucide="plus" class="w-4 h-4 text-amber-600"></i> 새 위탁 기관 추가하기
+      </button>
     </div>
 
     <!-- 서류 제출 현황 요약 위젯 -->
-    <div class="p-3 border-t border-stone-200 bg-amber-50/40">
+    <div class="p-3 border-t border-stone-200 bg-amber-50/40 mt-auto">
       <div class="p-3 bg-white rounded-2xl border border-amber-200 text-xs">
         <div class="flex items-center justify-between font-bold text-stone-800 mb-1.5">
           <span class="flex items-center gap-1.5 font-bold">
@@ -141,7 +133,7 @@
 
   <!-- ================= M A I N   C O N T E N T ================= -->
   <main class="flex-1 flex flex-col overflow-y-auto custom-scroll min-w-0">
-    <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex flex-wrap items-center justify-between gap-2 shadow-xs">
+    <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between gap-2 shadow-xs">
       <div class="flex items-center gap-2 truncate flex-1">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase shrink-0">Notice</span>
         <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 이번 달 코디 출근부 및 4주 청구서 원본 등록을 25일까지 완료해 주세요!</span>
@@ -179,7 +171,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs (모바일 좌우 터치 스크롤 최적화) -->
+    <!-- Navigation Tabs -->
     <div class="px-4 md:px-6 pt-4 pb-2 border-b border-stone-200 bg-white sticky top-[65px] md:top-[73px] z-10">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3 py-2 rounded-xl font-bold text-[11.5px] flex items-center gap-1.5 transition-all bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer">
@@ -255,12 +247,12 @@
             <button onclick="changeQuarter(3)" id="btn-q-3" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">3분기 (9~11월)</button>
             <button onclick="changeQuarter(4)" id="btn-q-4" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer">4분기 (12~2월)</button>
           </div>
-          <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">※ 좌측 목록에서 학교를 선택하여 세부 1~3차 청구서를 관리하세요.</div>
+          <div class="text-xs text-stone-400 font-bold" id="billing-view-hint">※ 상단 드롭다운에서 학교를 선택하여 세부 1~3차 청구서를 관리하세요.</div>
         </div>
 
         <div id="billing-all-schools-view" class="space-y-5">
           <div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-stone-600 text-xs shadow-xs">
-            🏫 왼쪽 위탁 기관 목록에서 개별 학교를 클릭하시면 해당 학교의 세부 청구서(1~3차)를 등록하고 조회하실 수 있습니다.
+            🏫 상단 위탁 기관 드롭다운에서 개별 학교를 선택하시면 해당 학교의 세부 청구서(1~3차)를 등록하고 조회하실 수 있습니다.
           </div>
         </div>
 
@@ -924,7 +916,7 @@
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('BrightMind_Permanent_DB_v28', 1);
+        const req = indexedDB.open('BrightMind_Permanent_DB_v29', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('files')) {
@@ -1190,26 +1182,39 @@
       setInterval(updateClock, 1000);
       await initIndexedDB();
 
+      // 최초 로컬 캐시 또는 기본값 설정
       appData.schools = fixedMasterSchools;
       appData.masterTeachers = fullMasterTeachersData;
 
       setupFormListeners();
 
+      // Firebase 데이터 로드 (서버에 데이터가 없거나 비어있을 때만 최초값 세팅하여 데이터 증발 방지)
       firebase.database().ref('brightmind_data').on('value', (snapshot) => {
         const remoteData = snapshot.val();
         if (remoteData) {
-          appData = remoteData;
+          appData.billings = remoteData.billings || [];
+          appData.schedules = remoteData.schedules || [];
+          appData.calendarEvents = remoteData.calendarEvents || [];
+          appData.expenses = remoteData.expenses || [];
+          appData.attendances = remoteData.attendances || [];
+          appData.notices = remoteData.notices || [];
+          appData.memos = remoteData.memos || [];
+          appData.vaultFiles = remoteData.vaultFiles || appData.vaultFiles;
+          appData.bannerNotice = remoteData.bannerNotice || appData.bannerNotice;
+          if (remoteData.schools && remoteData.schools.length > 0) {
+            appData.schools = remoteData.schools;
+          }
+        } else {
+          firebase.database().ref('brightmind_data').set(appData);
         }
-        appData.schools = fixedMasterSchools;
-        appData.masterTeachers = fullMasterTeachersData;
-        
-        renderSchoolList();
+
+        renderSchoolDropdown();
         renderAllViews();
         populatePresetTimesDropdown();
       });
 
       document.getElementById('banner-notice-text').textContent = appData.bannerNotice || '';
-      renderSchoolList();
+      renderSchoolDropdown();
       renderAllViews();
       populatePresetTimesDropdown();
 
@@ -1257,48 +1262,22 @@
       lucide.createIcons();
     }
 
-    // 왼쪽 사이드바 위탁 기관 목록 렌더러
-    function renderSchoolList() {
-      const container = document.getElementById('school-list-container');
-      if (!container) return;
-      container.innerHTML = '';
-      const list = fixedMasterSchools;
+    // 학교 드롭다운 렌더러
+    function renderSchoolDropdown() {
+      const selectEl = document.getElementById('school-dropdown-select');
+      if (!selectEl) return;
+      
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       document.getElementById('badge-total-schools').textContent = `${list.length}개소`;
 
+      let html = `<option value="all">🎒 전체 기관 통합보기 (${list.length}개소)</option>`;
       list.forEach(sch => {
-        const isActive = currentSchoolId === sch.id;
         const isCenter = sch.name.includes('센터') || sch.name.includes('돌봄');
-        
-        const div = document.createElement('div');
-        div.className = `group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
-          isActive 
-            ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-sm' 
-            : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'
-        }`;
-        
         const emoji = isCenter ? '🏡' : '🎒';
-
-        div.innerHTML = `
-          <div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')">
-            <span class="text-base shrink-0">${emoji}</span>
-            <span class="truncate text-sm font-extrabold block tracking-tight">${sch.name}</span>
-          </div>
-          <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
-            <button onclick="openEditSchoolModal('${sch.id}', event)" class="p-1 text-stone-400 hover:text-amber-800 cursor-pointer" title="기관명 수정"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-            <button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600 cursor-pointer" title="기관 삭제"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </div>
-        `;
-        container.appendChild(div);
+        const selected = currentSchoolId === sch.id ? 'selected' : '';
+        html += `<option value="${sch.id}" ${selected}>${emoji} ${sch.name}</option>`;
       });
-
-      const allBtn = document.getElementById('btn-school-all');
-      if (allBtn) {
-        if (currentSchoolId === 'all') {
-          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer";
-        } else {
-          allBtn.className = "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700 cursor-pointer";
-        }
-      }
+      selectEl.innerHTML = html;
 
       populateSelects();
       lucide.createIcons();
@@ -1306,7 +1285,8 @@
 
     function selectSchool(id) {
       currentSchoolId = id;
-      renderSchoolList();
+      const selectEl = document.getElementById('school-dropdown-select');
+      if (selectEl) selectEl.value = id;
 
       const titleEl = document.getElementById('current-school-title');
       const badgeEl = document.getElementById('current-school-badge');
@@ -1318,14 +1298,14 @@
       const editBtn = document.getElementById('hero-edit-school-btn');
       const timetableTabBtn = document.getElementById('tab-btn-timetable');
 
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       
       if (id === 'all') {
         titleEl.textContent = '(주)밝은생각 협업룸';
         badgeEl.textContent = '전체 위탁기관 통합';
         badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
         
-        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 transition-all duration-300';
+        heroBanner.className = 'mx-4 md:mx-6 mt-4 p-4 md:p-5 rounded-3xl bg-gradient-to-r from-amber-100 via-amber-50 to-orange-50 border border-amber-200 flex flex-wrap items-center justify-between gap-4 transition-all duration-300';
         heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950';
         heroBadgeTag.textContent = '위탁운영 협업';
         heroName.textContent = '전체 위탁기관 종합 현황';
@@ -1342,7 +1322,7 @@
         badgeEl.textContent = `🏫 ${name} 전담 모드`;
         badgeEl.className = 'px-3 py-1 rounded-xl text-xs font-extrabold bg-sky-100 text-sky-900 border border-sky-300 shadow-2xs';
         
-        heroBanner.className = 'mx-6 mt-4 p-5 rounded-3xl bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-500 text-white border border-sky-300 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
+        heroBanner.className = 'mx-4 md:mx-6 mt-4 p-4 md:p-5 rounded-3xl bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-500 text-white border border-sky-300 flex flex-wrap items-center justify-between gap-4 shadow-md transition-all duration-300';
         heroBadgeTag.className = 'text-xs font-bold px-2.5 py-0.5 rounded-lg bg-white/25 text-white backdrop-blur-xs';
         heroBadgeTag.textContent = '학교별 전담 관리';
         heroName.textContent = `${name} 위탁운영 현황`;
@@ -1356,36 +1336,9 @@
       renderAllViews();
     }
 
-    function openEditSchoolModal(id, e) {
-      if (e) e.stopPropagation();
-      const list = fixedMasterSchools;
-      const sch = list.find(s => s.id === id);
-      if (!sch) return;
-      document.getElementById('edit-school-id').value = sch.id;
-      document.getElementById('edit-school-name').value = sch.name;
-      openModal('modal-edit-school');
-    }
-
-    function openEditCurrentSchoolModal() {
-      if (currentSchoolId !== 'all') openEditSchoolModal(currentSchoolId);
-    }
-
-    function deleteSchool(id, e) {
-      e.stopPropagation();
-      let list = fixedMasterSchools;
-      const sch = list.find(s => s.id === id);
-      if (confirm(`'${sch ? sch.name : ''}' 기관을 삭제하시겠습니까?`)) {
-        list = list.filter(s => s.id !== id);
-        saveData('schools', list);
-        if (currentSchoolId === id) currentSchoolId = 'all';
-        renderSchoolList();
-        renderAllViews();
-      }
-    }
-
     function populateSelects() {
       const ids = ['exp-input-school', 'att-input-school', 'not-input-school', 'memo-input-school', 'cal-input-school'];
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1419,7 +1372,7 @@
       let readyCount = 0;
       let missingCount = 0;
       const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
       const attList = appData.attendances || [];
       const expList = appData.expenses || [];
@@ -1497,7 +1450,7 @@
       const allView = document.getElementById('billing-all-schools-view');
       const singleView = document.getElementById('billing-single-school-view');
       const viewHint = document.getElementById('billing-view-hint');
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const billList = appData.billings || [];
 
       if (currentSchoolId === 'all') {
@@ -1575,7 +1528,7 @@
     }
 
     function openAddBillingModalForSlot(schoolId, period) {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = currentBillingCategory === 'instructor' ? '강사료' : '교재비';
@@ -1599,7 +1552,7 @@
       const billList = appData.billings || [];
       const item = billList.find(b => b.id === billingId);
       if (!item) return;
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const sch = list.find(s => s.id === item.schoolId);
       const schName = sch ? sch.name : '기관';
       const catName = (item.category || 'instructor') === 'instructor' ? '강사료' : '교재비';
@@ -1618,7 +1571,7 @@
     function renderSchoolTimetableGrid() {
       const days = ['월요일', '화요일', '수요일', '목요일', '금요일'];
       const gridTitle = document.getElementById('school-timetable-grid-title');
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       const schedList = appData.schedules || [];
 
       if (currentSchoolId === 'all') {
@@ -1731,7 +1684,7 @@
 
     function openAddScheduleModal() {
       if (currentSchoolId === 'all') {
-        alert('좌측 위탁 기관 목록에서 특정 학교(기관)를 먼저 선택해 주세요!');
+        alert('상단 위탁 기관 드롭다운에서 특정 학교(기관)를 먼저 선택해 주세요!');
         return;
       }
       document.getElementById('sched-input-time').value = '';
@@ -1759,7 +1712,7 @@
       titleEl.textContent = `${calYear}년 ${calMonth}월`;
       gridDaysEl.innerHTML = '';
 
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       let events = appData.calendarEvents || [];
 
       if (currentSchoolId === 'all') {
@@ -1831,7 +1784,7 @@
     }
 
     function openAddCalendarEventModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('cal-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('cal-input-ym').value = `${calYear}-${calMonth}`;
@@ -1859,7 +1812,7 @@
       grid.innerHTML = '';
 
       let list = appData.masterTeachers || fullMasterTeachersData;
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (currentSchoolId !== 'all') {
         const sch = listSch.find(s => s.id === currentSchoolId);
         if (sch) list = list.filter(t => t.school === sch.name);
@@ -1928,7 +1881,7 @@
       let list = appData.notices || [];
       if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
       if (currentNoticeQuarter !== 'all') list = list.filter(n => String(n.quarter) === currentNoticeQuarter);
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">등록된 분기별 안내장이 없습니다.</td></tr>`;
@@ -2003,7 +1956,7 @@
       container.innerHTML = '';
       let list = appData.memos || [];
       if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       if (list.length === 0) {
         container.innerHTML = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">등록된 업무 메모가 없습니다.</div>`;
@@ -2053,7 +2006,7 @@
       if (!expBody) return;
       expBody.innerHTML = '';
       const expList = (appData.expenses || []).filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
-      const listSch = fixedMasterSchools;
+      const listSch = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
 
       let totalExp = 0;
       if (expList.length === 0) {
@@ -2156,7 +2109,7 @@
 
     function openAddSchoolModal() { document.getElementById('new-school-name').value = ''; openModal('modal-add-school'); }
     function openAddExpenseModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('exp-input-month').value = currentMonth;
@@ -2165,7 +2118,7 @@
       openModal('modal-add-expense');
     }
     function openAddAttendanceModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('att-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('att-input-month').value = currentMonth;
@@ -2174,7 +2127,7 @@
       openModal('modal-add-attendance');
     }
     function openAddNoticeModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('not-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('not-input-quarter').value = currentQuarter;
@@ -2186,7 +2139,7 @@
       openModal('modal-add-vault');
     }
     function openAddMemoModal() {
-      const list = fixedMasterSchools;
+      const list = (appData.schools && appData.schools.length > 0) ? appData.schools : fixedMasterSchools;
       if (list.length === 0) return alert('기관을 먼저 추가해 주세요!');
       document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? list[0].id : currentSchoolId;
       document.getElementById('memo-input-text').value = '';

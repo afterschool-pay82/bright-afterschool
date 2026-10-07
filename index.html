@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(주)밝은생각 - 원상복구 및 시간표 자동적용</title>
+  <title>(주)밝은생각 - 새말초 복구 및 레이아웃 완벽판</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -23,12 +23,11 @@
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
 
   <!-- ================= L E F T   S I D E B A R (기존 리스트 형태 복원) ================= -->
-  <aside class="w-full md:w-80 h-full bg-white border-b md:border-b-0 md:border-r border-stone-200 flex flex-col shrink-0 z-20">
+  <aside class="w-full md:w-[320px] h-full bg-white border-r border-stone-200 flex flex-col shrink-0 z-20 shadow-sm">
     <div class="px-6 py-5 border-b border-amber-100 bg-amber-50/80 flex items-center shrink-0">
       <h1 class="text-xl md:text-[23px] font-brand text-stone-900 tracking-tight leading-none drop-shadow-2xs">(주)밝은생각</h1>
     </div>
 
-    <!-- School List -->
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer shrink-0">
         <div class="flex items-center gap-2"><span class="text-lg">🏫</span><span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span></div>
@@ -52,7 +51,7 @@
     <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between gap-2 shadow-xs shrink-0">
       <div class="flex items-center gap-2 truncate flex-1">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase shrink-0">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 메뉴바 원상복구 및 경원초 시간표 45개반 세팅 완료!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 메뉴바 원상복구 및 새말초/경원초 시간표 세팅 완료!</span>
       </div>
     </div>
 
@@ -112,13 +111,14 @@
           </div>
         </div>
 
+        <!-- 카드 높이/행 맞춤 적용 (flex & h-full) -->
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5 items-start">
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">월요일</div><div id="day-col-월요일" class="space-y-2.5 flex-1 min-h-[140px]"></div></div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">화요일</div><div id="day-col-화요일" class="space-y-2.5 flex-1 min-h-[140px]"></div></div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">수요일</div><div id="day-col-수요일" class="space-y-2.5 flex-1 min-h-[140px]"></div></div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">목요일</div><div id="day-col-목요일" class="space-y-2.5 flex-1 min-h-[140px]"></div></div>
-            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3">금요일</div><div id="day-col-금요일" class="space-y-2.5 flex-1 min-h-[140px]"></div></div>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5 items-stretch">
+            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col h-full"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3 shrink-0">월요일</div><div id="day-col-월요일" class="flex flex-col gap-2.5 flex-1 min-h-[140px]"></div></div>
+            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col h-full"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3 shrink-0">화요일</div><div id="day-col-화요일" class="flex flex-col gap-2.5 flex-1 min-h-[140px]"></div></div>
+            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col h-full"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3 shrink-0">수요일</div><div id="day-col-수요일" class="flex flex-col gap-2.5 flex-1 min-h-[140px]"></div></div>
+            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col h-full"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3 shrink-0">목요일</div><div id="day-col-목요일" class="flex flex-col gap-2.5 flex-1 min-h-[140px]"></div></div>
+            <div class="bg-stone-50/80 p-3 rounded-2xl border border-stone-200 flex flex-col h-full"><div class="py-2 text-center font-bold text-xs bg-amber-400 text-stone-900 rounded-xl mb-3 shrink-0">금요일</div><div id="day-col-금요일" class="flex flex-col gap-2.5 flex-1 min-h-[140px]"></div></div>
           </div>
         </div>
       </section>
@@ -182,7 +182,7 @@
   </main>
 
   <!-- ================= M O D A L S ================= -->
-  <!-- 학교 추가 -->
+  <!-- 학교 추가 모달 -->
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4"><h3 class="text-base font-bold text-stone-900">새 위탁 기관 추가</h3><button onclick="closeModal('modal-add-school')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button></div>
@@ -193,7 +193,7 @@
     </div>
   </div>
 
-  <!-- 일정 등록 -->
+  <!-- 일정 등록 모달 -->
   <div id="modal-add-calendar-event" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-indigo-100">
       <div class="flex items-center justify-between mb-4"><h3 class="text-base font-bold text-stone-900">휴강일 및 재량휴일 등록</h3><button onclick="closeModal('modal-add-calendar-event')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button></div>
@@ -207,7 +207,7 @@
     </div>
   </div>
 
-  <!-- 시간표 등록 / 수정 -->
+  <!-- 시간표 등록 / 수정 모달 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4"><h3 class="text-base font-bold text-stone-900" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button></div>
@@ -230,15 +230,15 @@
     </div>
   </div>
 
-  <!-- 청구서 등록 -->
+  <!-- 청구서 등록 모달 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
       <div class="flex items-center justify-between mb-4"><h3 class="text-base font-bold text-stone-900" id="add-billing-modal-title">청구서 등록</h3><button onclick="closeModal('modal-add-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button></div>
       <form id="form-add-billing" class="space-y-3.5 text-xs">
         <input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" />
         <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center text-xs">
-          <div><span id="add-billing-school-name" class="font-extrabold text-stone-900 text-sm"></span><span id="add-billing-cat-name" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold"></span></div>
-          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm"></span>
+          <div><span id="add-billing-school-name" class="font-extrabold text-stone-900 text-sm">경원초</span><span id="add-billing-cat-name" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold">방과후 강사료</span></div>
+          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm">1분기 1차</span>
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">청구 금액(원)</label>
@@ -255,15 +255,15 @@
     </div>
   </div>
 
-  <!-- 청구서 수정 -->
+  <!-- 청구서 수정 모달 -->
   <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
       <div class="flex items-center justify-between mb-4"><h3 class="text-base font-bold text-stone-900">청구서 수정</h3><button onclick="closeModal('modal-edit-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button></div>
       <form id="form-edit-billing" class="space-y-3.5 text-xs">
         <input type="hidden" id="edit-billing-id" />
         <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex justify-between items-center text-xs">
-          <div><span id="edit-billing-school-badge" class="font-extrabold text-stone-900 text-sm"></span><span id="edit-billing-cat-badge" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold"></span></div>
-          <span id="edit-billing-period-text" class="font-bold text-stone-500 font-mono"></span>
+          <div><span id="edit-billing-school-badge" class="font-extrabold text-stone-900 text-sm">경원초</span><span id="edit-billing-cat-badge" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold">방과후 강사료</span></div>
+          <span id="edit-billing-period-text" class="font-bold text-stone-500 font-mono">1분기 1차</span>
         </div>
         <div>
           <label class="block font-bold text-stone-700 mb-1">청구 금액(원)</label>
@@ -370,6 +370,7 @@
       { id: 'sch_1', name: '경원초' }, { id: 'sch_2', name: '남부초' }, { id: 'sch_3', name: '문남초' }, { id: 'sch_4', name: '새말초' }, { id: 'sch_5', name: '서화초' }, { id: 'sch_6', name: '서흥초' }, { id: 'sch_7', name: '숭의초' }, { id: 'sch_8', name: '연학초' }, { id: 'sch_9', name: '창신초' }, { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
+    // 경원초 시간표
     const extractedSchedules = [
       { id: 's_gw_1', schoolId: 'sch_1', day: '월요일', time: '13:00~13:40', course: '영어교실 A반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_2', schoolId: 'sch_1', day: '월요일', time: '13:45~14:25', course: '영어교실 B반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_3', schoolId: 'sch_1', day: '월요일', time: '14:30~15:10', course: '영어교실 C반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_4', schoolId: 'sch_1', day: '월요일', time: '13:00~13:40', course: '피아노(주2회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_5', schoolId: 'sch_1', day: '월요일', time: '13:45~14:25', course: '피아노(주2회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_6', schoolId: 'sch_1', day: '월요일', time: '14:30~15:10', course: '피아노(주2회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_104', schoolId: 'sch_1', day: '월요일', time: '15:15~15:55', course: '피아노(주2회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_7', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '방송댄스 A반', teacher: '임지향', phone: '010-6568-1716' }, { id: 's_gw_8', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '방송댄스 B반', teacher: '임지향', phone: '010-6568-1716' }, { id: 's_gw_9', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '요리 A반', teacher: '김수연', phone: '010-2823-7744' }, { id: 's_gw_10', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '요리 B반', teacher: '김수연', phone: '010-2823-7744' }, { id: 's_gw_11', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '창의과학 A반', teacher: '강현정', phone: '010-5386-7502' }, { id: 's_gw_12', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '창의과학 B반', teacher: '강현정', phone: '010-5386-7502' },
       { id: 's_gw_13', schoolId: 'sch_1', day: '화요일', time: '13:40~14:20', course: '컴퓨터 A반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_14', schoolId: 'sch_1', day: '화요일', time: '14:25~15:05', course: '컴퓨터 B반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_15', schoolId: 'sch_1', day: '화요일', time: '15:10~15:50', course: '컴퓨터 C반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_16', schoolId: 'sch_1', day: '화요일', time: '15:55~16:35', course: '컴퓨터 D반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_17', schoolId: 'sch_1', day: '화요일', time: '13:40~14:20', course: '피아노(주3회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_18', schoolId: 'sch_1', day: '화요일', time: '14:25~15:05', course: '피아노(주3회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_19', schoolId: 'sch_1', day: '화요일', time: '15:10~15:50', course: '피아노(주3회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_20', schoolId: 'sch_1', day: '화요일', time: '15:55~16:35', course: '피아노(주3회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_21', schoolId: 'sch_1', day: '화요일', time: '13:40~15:00', course: '독서논술 A반', teacher: '안덕희', phone: '010-6401-0262' }, { id: 's_gw_22', schoolId: 'sch_1', day: '화요일', time: '15:10~16:30', course: '독서논술 B반', teacher: '안덕희', phone: '010-6401-0262' }, { id: 's_gw_23', schoolId: 'sch_1', day: '화요일', time: '13:40~15:00', course: '창의미술 A반', teacher: '허윤정', phone: '010-6770-3624' }, { id: 's_gw_24', schoolId: 'sch_1', day: '화요일', time: '15:10~16:30', course: '창의미술 B반', teacher: '허윤정', phone: '010-6770-3624' }, { id: 's_gw_25', schoolId: 'sch_1', day: '화요일', time: '14:40~15:40', course: '배드민턴 I A반', teacher: '임종원', phone: '010-2770-3348' }, { id: 's_gw_26', schoolId: 'sch_1', day: '화요일', time: '15:40~16:40', course: '배드민턴 I B반', teacher: '임종원', phone: '010-2770-3348' },
@@ -378,9 +379,18 @@
       { id: 's_gw_55', schoolId: 'sch_1', day: '금요일', time: '13:40~14:20', course: '피아노(주3회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_56', schoolId: 'sch_1', day: '금요일', time: '14:25~15:05', course: '피아노(주3회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_57', schoolId: 'sch_1', day: '금요일', time: '15:10~15:50', course: '피아노(주3회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_58', schoolId: 'sch_1', day: '금요일', time: '15:55~16:35', course: '피아노(주3회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_59', schoolId: 'sch_1', day: '금요일', time: '14:40~15:40', course: '배드민턴 II A반', teacher: '남성락', phone: '010-7103-7198' }, { id: 's_gw_60', schoolId: 'sch_1', day: '금요일', time: '15:40~16:40', course: '배드민턴 II B반', teacher: '남성락', phone: '010-7103-7198' }, { id: 's_gw_61', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '수학아카데미 A반', teacher: '홍진선', phone: '010-9133-1061' }, { id: 's_gw_62', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '수학아카데미 B반', teacher: '홍진선', phone: '010-9133-1061' }, { id: 's_gw_63', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '전자로봇 A반', teacher: '박선희', phone: '010-3713-6906' }, { id: 's_gw_64', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '전자로봇 B반', teacher: '박선희', phone: '010-3713-6906' }, { id: 's_gw_65', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '코딩 II A반', teacher: '박미경', phone: '010-9442-3439' }, { id: 's_gw_66', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '코딩 II B반', teacher: '박미경', phone: '010-9442-3439' }
     ];
 
+    // 새말초 시간표 복구 데이터
+    const saemalSchedules = [
+      { id: 's_sm_1', schoolId: 'sch_4', day: '월요일', time: '12:50~13:30', course: '영어 A반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_2', schoolId: 'sch_4', day: '월요일', time: '13:40~14:20', course: '영어 B반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_3', schoolId: 'sch_4', day: '월요일', time: '14:30~15:10', course: '영어 C반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_4', schoolId: 'sch_4', day: '월요일', time: '12:50~13:40', course: '피아노 A반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_5', schoolId: 'sch_4', day: '월요일', time: '13:50~14:40', course: '피아노 B반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_6', schoolId: 'sch_4', day: '월요일', time: '14:50~15:40', course: '피아노 C반', teacher: '양주희', phone: '010-3298-1484' },
+      { id: 's_sm_7', schoolId: 'sch_4', day: '화요일', time: '13:40~15:00', course: '미니어쳐 A반', teacher: '박건희', phone: '010-2941-1265' }, { id: 's_sm_8', schoolId: 'sch_4', day: '화요일', time: '15:10~16:30', course: '미니어쳐 B반', teacher: '박건희', phone: '010-2941-1265' }, { id: 's_sm_9', schoolId: 'sch_4', day: '화요일', time: '13:40~14:20', course: '수학 A반', teacher: '유혜자', phone: '010-2718-5056' }, { id: 's_sm_10', schoolId: 'sch_4', day: '화요일', time: '14:30~15:10', course: '수학 B반', teacher: '유혜자', phone: '010-2718-5056' }, { id: 's_sm_11', schoolId: 'sch_4', day: '화요일', time: '13:40~15:00', course: '배드민턴 A반', teacher: '박경애', phone: '010-6637-1035' }, { id: 's_sm_12', schoolId: 'sch_4', day: '화요일', time: '15:10~16:30', course: '배드민턴 B반', teacher: '박경애', phone: '010-6637-1035' },
+      { id: 's_sm_13', schoolId: 'sch_4', day: '수요일', time: '12:50~13:30', course: '영어 A반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_14', schoolId: 'sch_4', day: '수요일', time: '13:40~14:20', course: '영어 B반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_15', schoolId: 'sch_4', day: '수요일', time: '14:30~15:10', course: '영어 C반', teacher: '서석희', phone: '010-3314-6287' }, { id: 's_sm_16', schoolId: 'sch_4', day: '수요일', time: '12:50~14:10', course: '음악줄넘기 A반', teacher: '변혜진', phone: '010-8816-6937' }, { id: 's_sm_17', schoolId: 'sch_4', day: '수요일', time: '14:20~15:40', course: '음악줄넘기 B반', teacher: '변혜진', phone: '010-8816-6937' }, { id: 's_sm_18', schoolId: 'sch_4', day: '수요일', time: '12:50~14:10', course: '요리 A반', teacher: '박은영', phone: '010-8245-1805' }, { id: 's_sm_19', schoolId: 'sch_4', day: '수요일', time: '14:20~15:40', course: '요리 B반', teacher: '박은영', phone: '010-8245-1805' }, { id: 's_sm_20', schoolId: 'sch_4', day: '수요일', time: '12:50~13:40', course: '피아노 A반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_21', schoolId: 'sch_4', day: '수요일', time: '13:50~14:40', course: '피아노 B반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_22', schoolId: 'sch_4', day: '수요일', time: '14:50~15:40', course: '피아노 C반', teacher: '양주희', phone: '010-3298-1484' },
+      { id: 's_sm_23', schoolId: 'sch_4', day: '목요일', time: '13:40~15:00', course: '집중력한자 A반', teacher: '고선옥', phone: '010-9042-8836' }, { id: 's_sm_24', schoolId: 'sch_4', day: '목요일', time: '15:10~16:30', course: '집중력한자 B반', teacher: '고선옥', phone: '010-9042-8836' }, { id: 's_sm_25', schoolId: 'sch_4', day: '목요일', time: '13:40~15:00', course: '로봇영재 A반', teacher: '이혜령', phone: '010-5311-1025' }, { id: 's_sm_26', schoolId: 'sch_4', day: '목요일', time: '15:10~16:30', course: '로봇영재 B반', teacher: '이혜령', phone: '010-5311-1025' }, { id: 's_sm_27', schoolId: 'sch_4', day: '목요일', time: '13:40~14:20', course: '수학 A반', teacher: '유혜자', phone: '010-2718-5056' }, { id: 's_sm_28', schoolId: 'sch_4', day: '목요일', time: '14:30~15:10', course: '수학 B반', teacher: '유혜자', phone: '010-2718-5056' },
+      { id: 's_sm_29', schoolId: 'sch_4', day: '금요일', time: '13:40~15:00', course: '방송댄스 A반', teacher: '이다영', phone: '010-5746-7971' }, { id: 's_sm_30', schoolId: 'sch_4', day: '금요일', time: '15:10~16:30', course: '방송댄스 B반', teacher: '이다영', phone: '010-5746-7971' }, { id: 's_sm_31', schoolId: 'sch_4', day: '금요일', time: '13:40~14:30', course: '피아노 A반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_32', schoolId: 'sch_4', day: '금요일', time: '14:40~15:30', course: '피아노 B반', teacher: '양주희', phone: '010-3298-1484' }, { id: 's_sm_33', schoolId: 'sch_4', day: '금요일', time: '15:40~16:30', course: '피아노 C반', teacher: '양주희', phone: '010-3298-1484' }
+    ];
+
     let appData = {
       schools: fixedMasterSchools, schedules: [], billings: [], calendarEvents: [],
-      bannerNotice: '📢 [공지] 경원초 20개 과목 45개반 안내장 시간표 자동 반영 완료! 컨트롤+F5를 눌러주세요.'
+      bannerNotice: '📢 [공지] 메뉴바 원상복구 및 새말초/경원초 시간표 세팅 완료!'
     };
 
     let currentSchoolId = 'sch_1';
@@ -388,7 +398,7 @@
     let currentBillingCategory = 'after_instructor';
 
     function loadLocalData() {
-      const saved = localStorage.getItem('bm_v2026_Clean');
+      const saved = localStorage.getItem('bm_v2026_Sync_Final');
       if (saved) {
         try {
           const p = JSON.parse(saved);
@@ -400,39 +410,37 @@
         } catch(e) {}
       }
     }
-    function saveLocalData() { localStorage.setItem('bm_v2026_Clean', JSON.stringify(appData)); }
+    function saveLocalData() { localStorage.setItem('bm_v2026_Sync_Final', JSON.stringify(appData)); }
 
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons(); updateClock(); setInterval(updateClock, 1000);
       loadLocalData(); 
       
-      if (!appData.schedules.some(s => s.schoolId === 'sch_1' && s.course.includes('코딩'))) {
-          appData.schedules = appData.schedules.filter(s => s.schoolId !== 'sch_1');
-          appData.schedules.push(...extractedSchedules);
-          saveLocalData();
-      }
+      // 새말초와 경원초 데이터 강제 로드 보장
+      if (!appData.schedules.some(s => s.schoolId === 'sch_1')) appData.schedules.push(...extractedSchedules);
+      if (!appData.schedules.some(s => s.schoolId === 'sch_4')) appData.schedules.push(...saemalSchedules);
+      saveLocalData();
       
       setupFormListeners();
       
-      firebase.database().ref('brightmind_data_v2026_Clean').on('value', (snapshot) => {
+      firebase.database().ref('brightmind_data_v2026_Sync_Final').on('value', (snapshot) => {
         const d = snapshot.val();
         if (d) { 
-          if(d.schedules) {
-            const remoteOther = d.schedules.filter(s => s.schoolId !== 'sch_1');
-            const localGw = appData.schedules.filter(s => s.schoolId === 'sch_1');
-            appData.schedules = [...localGw, ...remoteOther];
-          }
+          appData.schedules = d.schedules || appData.schedules;
+          if (!appData.schedules.some(s => s.schoolId === 'sch_1')) appData.schedules.push(...extractedSchedules);
+          if (!appData.schedules.some(s => s.schoolId === 'sch_4')) appData.schedules.push(...saemalSchedules);
           appData.billings = d.billings || appData.billings;
           appData.calendarEvents = d.calendarEvents || appData.calendarEvents; 
-        } 
-        else firebase.database().ref('brightmind_data_v2026_Clean').set(appData);
+        } else {
+          firebase.database().ref('brightmind_data_v2026_Sync_Final').set(appData);
+        }
         saveLocalData(); renderSchoolList(); selectSchool(currentSchoolId);
       });
       document.getElementById('banner-notice-text').textContent = appData.bannerNotice;
       switchTab('timetable');
     });
 
-    function saveData(key, val) { appData[key] = val; saveLocalData(); firebase.database().ref('brightmind_data_v2026_Clean').set(appData); }
+    function saveData(key, val) { appData[key] = val; saveLocalData(); firebase.database().ref('brightmind_data_v2026_Sync_Final').set(appData); }
     function updateClock() { const now = new Date(); document.getElementById('realtime-clock').textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`; }
 
     function switchTab(tId) {
@@ -451,6 +459,7 @@
       lucide.createIcons();
     }
 
+    // ================= 좌측 리스트 고정 메뉴 복원 ================= //
     function renderSchoolList() {
       const container = document.getElementById('school-list-container'); if (!container) return;
       container.innerHTML = ''; document.getElementById('badge-total-schools').textContent = `${appData.schools.length}개소`;
@@ -459,7 +468,7 @@
         const emoji = sch.name.includes('센터') ? '🏡' : '🎒';
         const div = document.createElement('div');
         div.className = `group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-sm' : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'}`;
-        div.innerHTML = `<div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')"><span class="text-base shrink-0">${emoji}</span><span class="truncate font-extrabold block tracking-tight">${sch.name}</span></div><div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1"><button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600 cursor-pointer">×</button></div>`;
+        div.innerHTML = `<div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')"><span class="text-base shrink-0">${emoji}</span><span class="truncate font-extrabold block tracking-tight text-sm">${sch.name}</span></div><div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1"><button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600 cursor-pointer">×</button></div>`;
         container.appendChild(div);
       });
       const allBtn = document.getElementById('btn-school-all');
@@ -486,8 +495,9 @@
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function deleteSchool(id, e) { e.stopPropagation(); const sch = appData.schools.find(s => s.id === id); if (confirm(`'${sch ? sch.name : ''}' 기관을 삭제하시겠습니까?`)) { appData.schools = appData.schools.filter(s => s.id !== id); saveData('schools', appData.schools); if (currentSchoolId === id) selectSchool('all'); else renderSchoolList(); } }
 
-    // TIMETABLE
+    // TIMETABLE & ROW ALIGNMENT FIX
     function renderSchoolTimetableGrid() {
       ['월요일', '화요일', '수요일', '목요일', '금요일'].forEach(d => {
         const col = document.getElementById(`day-col-${d}`); if (!col) return; col.innerHTML = '';
@@ -503,7 +513,7 @@
           });
           groupMap.forEach(group => {
             group.slots.sort((a, b) => a.time.localeCompare(b.time));
-            const card = document.createElement('div'); card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs group flex flex-col justify-between mb-2";
+            const card = document.createElement('div'); card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs group flex flex-col h-full justify-between mb-2";
             let slotsHtml = '';
             group.slots.forEach(s => {
               const classMatch = s.originalCourse.match(/[A-Z]반$/);

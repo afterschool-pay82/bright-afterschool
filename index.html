@@ -645,4 +645,444 @@
           <input type="text" id="cal-input-keyword" required placeholder="예: 개천절 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
         </div>
         <div>
-          <label class
+          <label class="block font-bold text-stone-700 mb-1">상세 사유 및 내용</label>
+          <textarea id="cal-input-desc" required rows="3" placeholder="예: 공휴일로 인한 휴강" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-calendar-event')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-indigo-600 text-white font-bold cursor-pointer">캘린더에 등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 청구서 등록 모달 -->
+  <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-amber-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> <span id="add-billing-modal-title">청구서 등록</span></h3>
+        <button onclick="closeModal('modal-add-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-billing" class="space-y-3.5 text-xs">
+        <input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" />
+        <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center text-xs">
+          <div><span id="add-billing-school-name" class="font-extrabold text-stone-900 text-sm">경원초</span><span id="add-billing-cat-name" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold">방과후 강사료</span></div>
+          <span id="add-billing-quarter-period-text" class="font-bold text-amber-800 font-mono text-sm">1분기 1차</span>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">청구 금액(원)</label>
+          <input type="number" id="billing-input-amount" required placeholder="예: 19548900" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold text-amber-900 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">청구서 엑셀 파일 (.xlsx, .xls)</label>
+          <input type="file" id="billing-input-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold cursor-pointer">등록 완료</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 청구서 단독 수정 모달 -->
+  <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="pencil" class="w-5 h-5 text-amber-500"></i> 청구서 내역 및 파일 수정</h3>
+        <button onclick="closeModal('modal-edit-billing')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-edit-billing" class="space-y-3.5 text-xs">
+        <input type="hidden" id="edit-billing-id" />
+        <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex justify-between items-center text-xs">
+          <div><span id="edit-billing-school-badge" class="font-extrabold text-stone-900 text-sm">경원초</span><span id="edit-billing-cat-badge" class="ml-1.5 px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold">방과후 강사료</span></div>
+          <span id="edit-billing-period-text" class="font-bold text-stone-500 font-mono">1분기 1차</span>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">청구 금액(원)</label>
+          <input type="number" id="edit-billing-amount" required class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold text-amber-900 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">현재 첨부된 파일</label>
+          <div id="edit-billing-current-filename" class="p-2.5 rounded-xl bg-stone-100 font-mono text-stone-600 truncate text-[11px] mb-2">기존파일.xlsx</div>
+          <label class="block font-bold text-stone-700 mb-1">새 엑셀 파일로 교체 (선택)</label>
+          <input type="file" id="edit-billing-file" accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-edit-billing')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white font-bold cursor-pointer">수정 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 시간표 등록 / 수정 모달 -->
+  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900" id="schedule-modal-title">새 강좌 시간표 등록</h3>
+        <button onclick="closeModal('modal-add-schedule')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-schedule" class="space-y-3 text-xs">
+        <input type="hidden" id="sched-input-edit-id" />
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">요일 선택</label>
+            <select id="sched-input-day" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none">
+              <option value="월요일">월요일</option><option value="화요일">화요일</option><option value="수요일">수요일</option><option value="목요일">목요일</option><option value="금요일">금요일</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">수업 시간</label>
+            <input type="text" id="sched-input-time" required placeholder="예: 12:50~13:30" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+          </div>
+        </div>
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+          <label class="block font-bold text-stone-700">⏰ 자주 쓰는 시간 선택 (탭)</label>
+          <div class="flex gap-2">
+            <select id="preset-time-select" onchange="onPresetTimeChange(this.value)" class="flex-1 p-2 rounded-xl border border-stone-300 bg-white font-bold outline-none">
+              <option value="">-- 시간 선택하기 --</option>
+            </select>
+            <button type="button" onclick="addNewPresetTime()" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-[11px] shrink-0 cursor-pointer">+ 시간 추가</button>
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">과목명</label>
+          <input type="text" id="sched-input-course" required placeholder="예: 영어" class="w-full p-2.5 rounded-xl border border-stone-200" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">강사명</label>
+            <input type="text" id="sched-input-teacher" required placeholder="강사 성함" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">연락처</label>
+            <input type="text" id="sched-input-phone" placeholder="010-0000-0000" class="w-full p-2.5 rounded-xl border border-stone-200" />
+          </div>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white cursor-pointer">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 강사 명단 엑셀 업로드 모달 -->
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 강사 명단 엑셀 일괄 업로드</h3>
+        <button onclick="closeModal('modal-upload-teacher-excel')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-upload-teacher-excel" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">강사 명단 엑셀 파일 (.xlsx, .xls)</label>
+          <input type="file" id="teacher-upload-file" required accept=".xlsx,.xls" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-upload-teacher-excel')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">명단 업데이트</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 지출결의서 등록 모달 -->
+  <div id="modal-add-expense" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> 월별 지출결의서 등록</h3>
+        <button onclick="closeModal('modal-add-expense')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-expense" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
+          <select id="exp-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
+          <select id="exp-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-emerald-900 bg-emerald-50/50">
+            <option value="1">1월 지출결의서</option><option value="2">2월 지출결의서</option><option value="3">3월 지출결의서</option><option value="4">4월 지출결의서</option><option value="5">5월 지출결의서</option><option value="6">6월 지출결의서</option><option value="7">7월 지출결의서</option><option value="8">8월 지출결의서</option><option value="9">9월 지출결의서</option><option value="10" selected>10월 지출결의서</option><option value="11">11월 지출결의서</option><option value="12">12월 지출결의서</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">지출 금액(원)</label>
+          <input type="number" id="exp-input-amount" required placeholder="예: 350000" class="w-full p-2.5 rounded-xl border border-stone-200 outline-none font-bold text-emerald-900 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">지출결의서 파일 (PDF 또는 이미지)</label>
+          <input type="file" id="exp-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-expense')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">등록 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 코디 출근부 등록 모달 -->
+  <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-check" class="w-5 h-5 text-sky-600"></i> 월별 코디 출근부 등록</h3>
+        <button onclick="closeModal('modal-add-attendance')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-attendance" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">기관 선택</label>
+          <select id="att-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">해당월 선택</label>
+          <select id="att-input-month" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-sky-900 bg-sky-50/50">
+            <option value="1">1월 출근부</option><option value="2">2월 출근부</option><option value="3">3월 출근부</option><option value="4">4월 출근부</option><option value="5">5월 출근부</option><option value="6">6월 출근부</option><option value="7">7월 출근부</option><option value="8">8월 출근부</option><option value="9">9월 출근부</option><option value="10" selected>10월 출근부</option><option value="11">11월 출근부</option><option value="12">12월 출근부</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">담당 코디 성함</label>
+          <input type="text" id="att-input-teacher" required placeholder="예: 김코디" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold" />
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">코디 출근부 파일 (PDF 또는 이미지)</label>
+          <input type="file" id="att-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-sky-50 file:text-sky-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-attendance')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-sky-600 text-white font-bold cursor-pointer">등록 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 분기별 안내장 등록 모달 -->
+  <div id="modal-add-notice" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-amber-500"></i> 분기별 안내장 등록</h3>
+        <button onclick="closeModal('modal-add-notice')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-notice" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">대상 기관</label>
+          <select id="not-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">해당 분기</label>
+          <select id="not-input-quarter" class="w-full p-2.5 rounded-xl border border-stone-200 font-bold outline-none text-amber-900 bg-amber-50/50">
+            <option value="1">1분기 안내장</option><option value="2">2분기 안내장</option><option value="3" selected>3분기 안내장</option><option value="4">4분기 안내장</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">안내장 파일 (PDF 또는 이미지)</label>
+          <input type="file" id="not-input-file" accept=".pdf,image/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-stone-100 file:text-stone-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-notice')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-900 text-white font-bold cursor-pointer">등록 완료</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 공용 서식 파일 업로드 모달 -->
+  <div id="modal-add-vault" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> 공용 서식 파일 올리기</h3>
+        <button onclick="closeModal('modal-add-vault')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-vault" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">서식 파일 첨부 (.xlsx, .pdf, .hwp 등)</label>
+          <input type="file" id="vault-input-file" required class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:text-emerald-800" />
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-vault')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">업로드</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 업무 메모 작성 모달 -->
+  <div id="modal-add-memo" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-stone-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-stone-900">기관 업무 메모 작성</h3>
+        <button onclick="closeModal('modal-add-memo')" class="cursor-pointer"><i data-lucide="x" class="w-5 h-5 text-stone-400"></i></button>
+      </div>
+      <form id="form-add-memo" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">대상 기관</label>
+          <select id="memo-input-school" required class="w-full p-2.5 rounded-xl border border-stone-200 font-bold"></select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">작성자 구분</label>
+          <select id="memo-input-author" class="w-full p-2.5 rounded-xl border border-stone-200">
+            <option value="현장 코디네이터">현장 코디네이터</option><option value="본사 운영팀">본사 운영팀</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">메모 내용</label>
+          <textarea id="memo-input-text" required rows="4" placeholder="예: 다음 주 수요일 과학실 공사로 2층 도서실로 수업 이동 예정입니다." class="w-full p-2.5 rounded-xl border border-stone-200 outline-none"></textarea>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-memo')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600 cursor-pointer">취소</button>
+          <button type="submit" class="flex-1 py-2.5 font-bold rounded-xl bg-amber-500 text-white cursor-pointer">등록</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= J A V A S C R I P T ================= -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4",
+      authDomain: "bright-afterschool.firebaseapp.com",
+      databaseURL: "https://bright-afterschool-default-rtdb.firebaseio.com",
+      projectId: "bright-afterschool",
+      storageBucket: "bright-afterschool.firebasestorage.app",
+      messagingSenderId: "646660756482",
+      appId: "1:646660756482:web:7354b82be51299277ec31b",
+      measurementId: "G-NGFKL8M5NZ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    let dbInstance = null;
+    function initIndexedDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('BrightMind_Permanent_DB_v35', 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('files')) {
+            db.createObjectStore('files', { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+        req.onerror = () => reject('DB Error');
+      });
+    }
+
+    async function storeFile(fileId, fileObj) {
+      if (!dbInstance || !fileObj) return;
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const tx = dbInstance.transaction('files', 'readwrite');
+          const store = tx.objectStore('files');
+          store.put({ id: fileId, name: fileObj.name, type: fileObj.type, data: reader.result });
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => reject('Save Failed');
+        };
+        reader.readAsDataURL(fileObj);
+      });
+    }
+
+    async function getFileFromDB(fileId) {
+      if (!dbInstance) return null;
+      return new Promise((resolve) => {
+        const tx = dbInstance.transaction('files', 'readonly');
+        const store = tx.objectStore('files');
+        const req = store.get(fileId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    async function downloadFileFromDB(fileId, fallbackName) {
+      const fileData = await getFileFromDB(fileId);
+      if (fileData && fileData.data) {
+        const a = document.createElement('a');
+        a.href = fileData.data;
+        a.download = fileData.name || fallbackName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('저장된 파일 원본이 없습니다.');
+      }
+    }
+
+    const fixedMasterSchools = [
+      { id: 'sch_1', name: '경원초' }, { id: 'sch_2', name: '남부초' }, { id: 'sch_3', name: '문남초' },
+      { id: 'sch_4', name: '새말초' }, { id: 'sch_5', name: '서화초' }, { id: 'sch_6', name: '서흥초' },
+      { id: 'sch_7', name: '숭의초' }, { id: 'sch_8', name: '연학초' }, { id: 'sch_9', name: '창신초' },
+      { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
+    ];
+
+    const fullMasterTeachersData = [
+      {"school": "경원초", "subject": "창의과학", "name": "강현정", "phone": "010-5386-7502", "day": "월,수"},
+      {"school": "경원초", "subject": "피아노Ⅰ", "name": "최정아", "phone": "010-9814-1024", "day": "월,수"},
+      {"school": "경원초", "subject": "피아노Ⅱ", "name": "최정아", "phone": "010-9814-1024", "day": "화,목,금"},
+      {"school": "경원초", "subject": "방송댄스", "name": "임지향", "phone": "010-6568-1716", "day": "월"},
+      {"school": "경원초", "subject": "영어회화", "name": "강미은", "phone": "010-6862-4843", "day": "월,수"},
+      {"school": "경원초", "subject": "독서논술", "name": "안덕희", "phone": "010-6401-0262", "day": "화"},
+      {"school": "경원초", "subject": "주산암산", "name": "이지영", "phone": "010-8743-5089", "day": "목"},
+      {"school": "경원초", "subject": "창의미술", "name": "허윤정", "phone": "010-6770-3624", "day": "화"},
+      {"school": "경원초", "subject": "컴퓨터", "name": "정래희", "phone": "010-6483-9476", "day": "화,목"},
+      {"school": "경원초", "subject": "한자", "name": "김애연", "phone": "010-2258-7696", "day": "수"},
+      {"school": "경원초", "subject": "요리", "name": "김수연", "phone": "010-2823-7744", "day": "월"},
+      {"school": "경원초", "subject": "바둑체스", "name": "이연희", "phone": "010-8876-5833", "day": "목"},
+      {"school": "경원초", "subject": "코딩Ⅰ", "name": "서지연", "phone": "010-7101-2039", "day": "수"},
+      {"school": "경원초", "subject": "코딩Ⅱ", "name": "박미경", "phone": "010-9442-3439", "day": "금"},
+      {"school": "경원초", "subject": "클레이아트", "name": "김은주", "phone": "010-6750-8754", "day": "목"},
+      {"school": "경원초", "subject": "바이올린", "name": "연정윤", "phone": "010-5298-5076", "day": "수"},
+      {"school": "경원초", "subject": "바이올린(대체)", "name": "김지연", "phone": "010-4886-0104", "day": "수"},
+      {"school": "경원초", "subject": "축구", "name": "성준모", "phone": "010-5054-7880", "day": "목"},
+      {"school": "경원초", "subject": "수학아카데미", "name": "홍진선", "phone": "010-9133-1061", "day": "금"},
+      {"school": "경원초", "subject": "배드민턴Ⅰ", "name": "임종원", "phone": "010-2770-3348", "day": "화"},
+      {"school": "경원초", "subject": "배드민턴Ⅱ", "name": "남성락", "phone": "010-7103-7198", "day": "금"},
+      {"school": "경원초", "subject": "전자로봇", "name": "박선희", "phone": "010-3713-6906", "day": "금"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "성준모", "phone": "010-5054-7880", "day": "월"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "장민혁", "phone": "010-7455-1390", "day": "월"},
+      {"school": "남부초", "subject": "멀티스포츠", "name": "정용호", "phone": "010-5473-5135", "day": "월"},
+      {"school": "남부초", "subject": "수학교실", "name": "최현영", "phone": "010-8793-6343", "day": "월,목"},
+      {"school": "남부초", "subject": "수학교실", "name": "송태윤", "phone": "010-3348-5068", "day": "월,목"},
+      {"school": "남부초", "subject": "영어교실", "name": "김지연", "phone": "010-4886-0104", "day": "화,수"},
+      {"school": "남부초", "subject": "피아노", "name": "김희영", "phone": "010-4931-1494", "day": "화,목"},
+      {"school": "남부초", "subject": "요리", "name": "김수연", "phone": "010-2823-7744", "day": "화"},
+      {"school": "남부초", "subject": "방송댄스", "name": "송가휘", "phone": "010-4037-7031", "day": "수"},
+      {"school": "남부초", "subject": "창의과학", "name": "최희자", "phone": "010-9035-3426", "day": "수"},
+      {"school": "남부초", "subject": "원예테라피", "name": "안송이", "phone": "010-5817-2629", "day": "금"},
+      {"school": "남부초", "subject": "미술교실(맞춤형)", "name": "박수정", "phone": "010-9376-5642", "day": "월"},
+      {"school": "남부초", "subject": "보드게임(맞춤형)", "name": "이지현", "phone": "010-8068-1137", "day": "화"},
+      {"school": "남부초", "subject": "음악놀이터(맞춤형)", "name": "이영미", "phone": "010-8565-3323", "day": "목"},
+      {"school": "남부초", "subject": "놀이체육(맞춤형)", "name": "노보민", "phone": "010-3329-3677", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(놀이한글)", "name": "윤충", "phone": "010-3701-4867", "day": "월수"},
+      {"school": "문남초", "subject": "맞춤형(놀이수학)", "name": "윤충", "phone": "010-3701-4867", "day": "목금"},
+      {"school": "문남초", "subject": "맞춤형(놀이체육)", "name": "최석호", "phone": "010-4574-3568", "day": "월수"},
+      {"school": "문남초", "subject": "방과후(배드민턴)", "name": "최석호", "phone": "010-4574-3568", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(그림책놀이)", "name": "이현정", "phone": "010-9938-4983", "day": "화목"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_2학년)", "name": "심명주", "phone": "010-9062-7894", "day": "화"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_1학년)", "name": "심선희", "phone": "010-2760-8090", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(보드게임_3/6 하루 대체수업)", "name": "구정희", "phone": "010-8811-4087", "day": "금"},
+      {"school": "문남초", "subject": "방과후(영어회화)", "name": "박미향", "phone": "010-7609-2336", "day": "월수금"},
+      {"school": "문남초", "subject": "방과후(클레이&미니어처)", "name": "박선옥", "phone": "010-6806-3658", "day": "월"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "성준모", "phone": "010-5054-7880", "day": "화"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "서동하", "phone": "010-9006-3037", "day": "화"},
+      {"school": "문남초", "subject": "방과후(컴퓨터)", "name": "최유정", "phone": "010-9768-0206", "day": "수금"},
+      {"school": "문남초", "subject": "방과후(3D펜)", "name": "이미형", "phone": "010-7795-9018", "day": "목"},
+      {"school": "문남초", "subject": "방과후(방송댄스)", "name": "현혜미", "phone": "010-8996-1149", "day": "목"},
+      {"school": "문남초", "subject": "방과후(주산암산)", "name": "주정희", "phone": "010-9458-3726", "day": "금"},
+      {"school": "문남초", "subject": "방과후(생명과학)", "name": "이연숙", "phone": "010-6477-3850", "day": "화"},
+      {"school": "문남초", "subject": "코디", "name": "임승심", "phone": "010-3283-3789", "day": "월-금"},
+      {"school": "문남초", "subject": "맞춤형(놀이체육)", "name": "장정아", "phone": "010-5445-9791", "day": "수"},
+      {"school": "문남초", "subject": "맞춤형(보드게임)", "name": "오연정", "phone": "010-9201-4057", "day": "금"},
+      {"school": "문남초", "subject": "맞춤형(그림책놀이)", "name": "정수지", "phone": "010-6388-4203", "day": "화목"},
+      {"school": "문남초", "subject": "방과후(요리)", "name": "강유진", "phone": "연락처없음", "day": "요일미정"},
+      {"school": "문남초", "subject": "방과후(축구)", "name": "김화자", "phone": "010-9072-3866", "day": "화"},
+      {"school": "새말초", "subject": "음악줄넘기", "name": "변혜진", "phone": "010-8816-6937", "day": "수"},
+      {"school": "새말초", "subject": "영어", "name": "서석희", "phone": "010-3314-6287", "day": "월/수"},
+      {"school": "새말초", "subject": "피아노", "name": "양주희", "phone": "010-3298-1484", "day": "월/수/금"},
+      {"school": "새말초", "subject": "미니어쳐", "name": "박건희", "phone": "010-2941-1265", "day": "화"},
+      {"school": "새말초", "subject": "수학", "name": "유혜자", "phone": "010-2718-5056", "day": "화/목"},
+      {"school": "새말초", "subject": "요리", "name": "박은영", "phone": "010-8245-1805", "day": "수"},
+      {"school": "새말초", "subject": "집중력한자", "name": "고선옥", "phone": "010-9042-8836", "day": "목"},
+      {"school": "새말초", "subject": "로봇영재", "name": "이혜령", "phone": "010-5311-1025", "day": "목"},
+      {"school": "새말초", "subject": "방송

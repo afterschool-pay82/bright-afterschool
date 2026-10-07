@@ -719,4 +719,20 @@
         const fileId = existingIdx > -1 ? appData.billings[existingIdx].id : 'b_' + Date.now();
         const fileName = file ? file.name : (existingIdx > -1 ? appData.billings[existingIdx].fileName : `청구서.xlsx`);
         if (file) await storeFile(fileId, file);
-        if (existingIdx > -
+        if (existingIdx > -1) appData.billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName };
+        else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
+        saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling();
+      });
+
+      document.getElementById('form-edit-billing').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-billing-id').value, amount = parseInt(document.getElementById('edit-billing-amount').value, 10), file = document.getElementById('edit-billing-file').files[0];
+        const item = appData.billings.find(b => b.id === id); if (!item) return;
+        item.amount = amount;
+        if (file) { item.fileName = file.name; await storeFile(item.id, file); }
+        saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling();
+      });
+    }
+  </script>
+</body>
+</html>

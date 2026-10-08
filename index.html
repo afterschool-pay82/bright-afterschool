@@ -18,6 +18,8 @@
     .font-brand { font-family: 'GmarketSansBold', 'NanumSquareRound', sans-serif; }
     .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 9999px; }
+    .calendar-event-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: keep-all; line-height: 1.25; }
+    .calendar-event { min-height: 30px; }
   </style>
 </head>
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
@@ -54,7 +56,7 @@
         </div>
         <div class="grid grid-cols-3 gap-1 text-center font-mono">
           <div class="p-1.5 bg-emerald-50 rounded-xl border border-emerald-100"><p class="text-[10px] text-emerald-700 font-sans font-bold">완료</p><p class="font-bold text-emerald-800 text-sm" id="stat-ready-count">0</p></div>
-          <div class="p-1.5 bg-amber-50 rounded-xl border border-amber-100"><p class="text-[10px] text-amber-700 font-sans font-bold">진행중</p><p class="font-bold text-amber-800 text-sm" id="stat-pending-count">0</p></div>
+          <div class="p-1.5 bg-amber-50 rounded-xl border border-amber-100"><p class="text-[10px] text-amber-700 font-sans font-bold">검토</p><p class="font-bold text-amber-800 text-sm" id="stat-pending-count">0</p></div>
           <div class="p-1.5 bg-rose-50 rounded-xl border border-rose-100"><p class="text-[10px] text-rose-700 font-sans font-bold">미제출</p><p class="font-bold text-rose-800 text-sm" id="stat-missing-count">12</p></div>
         </div>
       </div>
@@ -100,50 +102,24 @@
 
       <!-- ================= 1. TAB: CALENDAR EVENTS ================= -->
       <section id="view-calendar-events" class="space-y-4 hidden">
-        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1.75fr)_minmax(320px,0.9fr)] gap-4 items-start">
-          <div class="space-y-4 min-w-0">
-            <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2">
-                  <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                  <h3 class="text-lg font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
-                  <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                </div>
-                <span class="text-xs text-stone-400 font-bold ml-2 hidden md:inline">| 공휴일 및 일정 자동 표시</span>
-              </div>
-              <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
-                <i data-lucide="calendar-plus" class="w-4 h-4"></i> 휴강/재량휴일 등록
-              </button>
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+              <h3 class="text-lg font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
+              <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-3 md:p-4">
-              <div class="grid grid-cols-7 gap-1.5 mb-1.5 text-center font-bold text-[11px]">
-                <div class="py-1.5 text-rose-600 bg-rose-50 rounded-lg">일</div><div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">월</div><div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">화</div><div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">수</div><div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">목</div><div class="py-1.5 text-stone-700 bg-stone-50 rounded-lg">금</div><div class="py-1.5 text-blue-600 bg-blue-50 rounded-lg">토</div>
-              </div>
-              <div id="calendar-grid-days" class="grid grid-cols-7 gap-1.5"></div>
-            </div>
+            <span class="text-xs text-stone-400 font-bold ml-2">| 공휴일 및 일정 자동 표시</span>
           </div>
-
-          <!-- 현재 분기 청구 현황 -->
-          <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-4 md:p-5 sticky top-[150px]">
-            <div class="flex items-center justify-between gap-3 mb-4">
-              <div>
-                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><h4 class="font-brand text-base text-stone-900">현재 청구 현황</h4></div>
-                <p class="text-[11px] text-stone-400 mt-1" id="billing-dashboard-school-label">전체 위탁기관</p>
-              </div>
-              <select id="dashboard-quarter" onchange="changeDashboardQuarter(this.value)" class="text-xs font-bold bg-amber-50 border border-amber-200 rounded-xl px-2.5 py-2 text-amber-900 outline-none">
-                <option value="1">1분기</option><option value="2">2분기</option><option value="3">3분기</option><option value="4">4분기</option>
-              </select>
-            </div>
-            <div class="bg-stone-50 rounded-2xl p-3 mb-3">
-              <p class="text-[10px] text-stone-400 font-bold">선택 분기 총 청구금액</p>
-              <p id="dashboard-billing-total" class="text-xl font-brand text-stone-900 mt-1">0원</p>
-              <p id="dashboard-billing-count" class="text-[10px] text-stone-400 mt-1">등록된 청구서 0건</p>
-            </div>
-            <div id="dashboard-billing-list" class="space-y-2"></div>
-            <div class="mt-4 pt-3 border-t border-stone-100">
-              <button onclick="switchTab('billing')" class="w-full py-2.5 rounded-xl bg-stone-900 text-white text-xs font-bold hover:bg-stone-800">청구서 관리에서 상세보기 →</button>
-            </div>
+          <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i> 휴강/재량휴일 등록
+          </button>
+        </div>
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+          <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-xs">
+            <div class="py-2 text-rose-600 bg-rose-50 rounded-xl">일</div><div class="py-2 text-stone-700 bg-stone-50 rounded-xl">월</div><div class="py-2 text-stone-700 bg-stone-50 rounded-xl">화</div><div class="py-2 text-stone-700 bg-stone-50 rounded-xl">수</div><div class="py-2 text-stone-700 bg-stone-50 rounded-xl">목</div><div class="py-2 text-stone-700 bg-stone-50 rounded-xl">금</div><div class="py-2 text-blue-600 bg-blue-50 rounded-xl">토</div>
           </div>
+          <div id="calendar-grid-days" class="grid grid-cols-7 gap-2"></div>
         </div>
       </section>
 
@@ -194,10 +170,10 @@
       <section id="view-billing" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center gap-2">
           <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-          <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기</button>
-          <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">2분기</button>
-          <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">3분기</button>
-          <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">4분기</button>
+          <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기 <span class="font-normal opacity-70">(3~5월)</span></button>
+          <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">2분기 <span class="font-normal opacity-70">(6~8월)</span></button>
+          <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">3분기 <span class="font-normal opacity-70">(9~11월)</span></button>
+          <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">4분기 <span class="font-normal opacity-70">(12~2월)</span></button>
         </div>
         <div id="billing-single-school-view" class="space-y-5">
           <div class="bg-amber-50/70 p-2 rounded-2xl border border-amber-200 flex flex-wrap gap-2">
@@ -372,8 +348,26 @@
     };
 
     let currentSchoolId = 'all';
-    let calYear = 2026, calMonth = 10, currentQuarter = Math.min(4, Math.ceil(calMonth / 3));
+    let calYear = 2026, calMonth = 10, currentQuarter = 3;
     let currentBillingCategory = 'after_instructor';
+
+    // 분기 기준: 1분기=3~5월, 2분기=6~8월, 3분기=9~11월, 4분기=12~2월
+    function getQuarterByMonth(month) {
+      if (month >= 3 && month <= 5) return 1;
+      if (month >= 6 && month <= 8) return 2;
+      if (month >= 9 && month <= 11) return 3;
+      return 4;
+    }
+    function getCurrentQuarter() { return getQuarterByMonth(new Date().getMonth() + 1); }
+    function syncQuarterButtons() {
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById(`btn-q-${i}`);
+        if (!b) continue;
+        b.className = (i === currentQuarter)
+          ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer"
+          : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer";
+      }
+    }
 
     function loadLocalData() {
       const saved = localStorage.getItem('brightMind_appData_v37');
@@ -422,6 +416,10 @@
       });
 
       document.getElementById('banner-notice-text').textContent = appData.bannerNotice;
+      currentQuarter = getCurrentQuarter();
+      const checklistPeriod = document.getElementById('checklist-period');
+      if (checklistPeriod) checklistPeriod.value = String(currentQuarter);
+      syncQuarterButtons();
       switchTab('calendar-events'); 
     });
 
@@ -557,49 +555,9 @@
       resultList.innerHTML = html;
     }
 
-    // ================= HOME BILLING DASHBOARD =================
-    function changeDashboardQuarter(q) {
-      currentQuarter = parseInt(q, 10);
-      renderBillingDashboard();
-    }
-    function renderBillingDashboard() {
-      const listEl = document.getElementById('dashboard-billing-list');
-      if (!listEl) return;
-      const qSelect = document.getElementById('dashboard-quarter');
-      if (qSelect) qSelect.value = String(currentQuarter);
-      const schoolLabel = document.getElementById('billing-dashboard-school-label');
-      const totalEl = document.getElementById('dashboard-billing-total');
-      const countEl = document.getElementById('dashboard-billing-count');
-      const scopeSchool = currentSchoolId === 'all' ? null : currentSchoolId;
-      if (schoolLabel) {
-        const sch = (appData.schools || []).find(s => s.id === currentSchoolId);
-        schoolLabel.textContent = sch ? `${sch.name} 청구 현황` : '전체 위탁기관 청구 현황';
-      }
-      const cats = [
-        ['after_instructor', '방과후 강사료', 'text-amber-800', 'bg-amber-50'],
-        ['after_materials', '방과후 교재비', 'text-sky-800', 'bg-sky-50'],
-        ['custom_instructor', '맞춤형 강사료', 'text-violet-800', 'bg-violet-50'],
-        ['custom_materials', '맞춤형 교재비', 'text-emerald-800', 'bg-emerald-50']
-      ];
-      let total = 0, totalCount = 0;
-      const html = cats.map(([key, label, textCls, bgCls]) => {
-        const items = (appData.billings || []).filter(b => (b.category || 'after_instructor') === key && b.quarter === currentQuarter && (!scopeSchool || b.schoolId === scopeSchool));
-        const amount = items.reduce((sum, b) => sum + (Number(b.amount) || 0), 0);
-        total += amount; totalCount += items.length;
-        return `<div class="${bgCls} rounded-2xl p-3 border border-stone-100">
-          <div class="flex items-center justify-between gap-2"><span class="text-[11px] font-bold ${textCls}">${label}</span><span class="text-[10px] text-stone-400">${items.length}건</span></div>
-          <p class="mt-1 text-base font-brand ${textCls}">${amount.toLocaleString()}원</p>
-        </div>`;
-      }).join('');
-      listEl.innerHTML = html;
-      if (totalEl) totalEl.textContent = total.toLocaleString() + '원';
-      if (countEl) countEl.textContent = `등록된 청구서 ${totalCount}건`;
-    }
-
     // ================= CALENDAR =================
     function changeCalendarMonth(delta) { calMonth += delta; if (calMonth > 12) { calMonth = 1; calYear++; } else if (calMonth < 1) { calMonth = 12; calYear--; } renderCalendarGrid(); }
     function renderCalendarGrid() {
-      renderBillingDashboard();
       document.getElementById('calendar-month-title').textContent = `${calYear}년 ${calMonth}월`; const gridDaysEl = document.getElementById('calendar-grid-days'); gridDaysEl.innerHTML = '';
       let events = (appData.calendarEvents || []).filter(ev => currentSchoolId === 'all' || ev.schoolId === currentSchoolId);
       const holidays = { '1-1':'신정','3-1':'삼일절','5-5':'어린이날','6-6':'현충일','8-15':'광복절','10-3':'개천절','10-9':'한글날','12-25':'성탄절' };
@@ -607,7 +565,7 @@
       const firstDayIndex = new Date(calYear, calMonth - 1, 1).getDay(), totalDays = new Date(calYear, calMonth, 0).getDate();
       
       let html = '';
-      for (let i = 0; i < firstDayIndex; i++) html += `<div class="bg-stone-50/40 rounded-2xl min-h-[92px] p-1 opacity-30"></div>`;
+      for (let i = 0; i < firstDayIndex; i++) html += `<div class="bg-stone-50/40 rounded-2xl min-h-[140px] p-2 opacity-30"></div>`;
       for (let day = 1; day <= totalDays; day++) {
         const isSunday = new Date(calYear, calMonth - 1, day).getDay() === 0, holidayName = holidays[`${calMonth}-${day}`];
         const dayEvents = events.filter(ev => (!ev.ym && parseInt(ev.dateStr, 10) === day) || (ev.ym === `${calYear}-${calMonth}` && parseInt(ev.dateStr, 10) === day));
@@ -615,10 +573,10 @@
         dayEvents.forEach(ev => {
           const schoolName = (appData.schools || []).find(s => s.id === ev.schoolId)?.name || '공통';
           const eventLabel = currentSchoolId === 'all' ? `${schoolName} (${ev.keyword})` : ev.keyword;
-          contentHtml += `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex justify-between ${ev.type === '휴강일' ? 'bg-rose-100 text-rose-900' : 'bg-indigo-100 text-indigo-900'} mb-1"><span title="${schoolName} - ${ev.keyword}">📌 ${eventLabel}</span><button onclick="deleteCalendarEvent('${ev.id}')" class="text-rose-500 font-bold">×</button></div>`;
+          contentHtml += `<div class="calendar-event px-1.5 py-1 rounded-lg border text-[10px] font-bold flex items-start gap-1 ${ev.type === '휴강일' ? 'bg-rose-100 text-rose-900' : 'bg-indigo-100 text-indigo-900'} mb-1"><span class="calendar-event-text min-w-0 flex-1" title="${schoolName} - ${ev.keyword}">📌 ${eventLabel}</span><button onclick="deleteCalendarEvent('${ev.id}')" class="shrink-0 text-rose-500 font-bold leading-none">×</button></div>`;
         });
         const dayColorClass = (isSunday || holidayName) ? 'text-rose-600' : new Date(calYear, calMonth - 1, day).getDay() === 6 ? 'text-blue-600' : 'text-stone-800';
-        html += `<div class="bg-white rounded-xl border border-stone-200 min-h-[92px] p-1.5 flex flex-col justify-between shadow-2xs"><div><div class="flex items-center justify-between mb-1"><span class="font-mono font-bold text-xs ${dayColorClass}">${day}</span><button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer">+</button></div><div class="space-y-1 overflow-y-auto max-h-[64px] custom-scroll pr-0.5">${contentHtml}</div></div></div>`;
+        html += `<div class="bg-white rounded-2xl border border-stone-200 min-h-[128px] p-2.5 flex flex-col justify-between shadow-2xs overflow-hidden"><div><div class="flex items-center justify-between mb-1.5"><span class="font-mono font-bold text-xs md:text-sm ${dayColorClass}">${day}</span><button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer">+</button></div><div class="space-y-1 overflow-y-auto max-h-[104px] custom-scroll pr-0.5">${contentHtml}</div></div></div>`;
       }
       gridDaysEl.innerHTML = html;
     }
@@ -652,7 +610,7 @@
 
     // ================= BILLING =================
     function switchBillingCategory(cat) { currentBillingCategory = cat; ['after_instructor', 'after_materials', 'custom_instructor', 'custom_materials'].forEach(c => { const btn = document.getElementById(`sub-billing-btn-${c}`); if(btn) btn.className = c === cat ? "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer" : "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer"; }); renderBilling(); }
-    function changeQuarter(q) { currentQuarter = q; for (let i = 1; i <= 4; i++) { const b = document.getElementById(`btn-q-${i}`); if (b) b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer"; } renderBilling(); }
+    function changeQuarter(q) { currentQuarter = q; syncQuarterButtons(); const checklistPeriod = document.getElementById('checklist-period'); if (checklistPeriod) checklistPeriod.value = String(q); renderBilling(); renderChecklist(); }
     function renderBilling() {
       const tbody = document.getElementById('billing-table-body'); if (!tbody) return; 
       if (currentSchoolId === 'all') { tbody.innerHTML = ''; return; }
@@ -746,9 +704,15 @@
               <p class="text-[10px] text-stone-400 font-bold mb-1">강좌명</p>
               <h5 class="font-black text-stone-900 text-[15px] leading-tight">${subject}</h5>
             </div>
-            <div class="bg-stone-50 rounded-xl p-2.5 text-[11px]">
-              <p class="text-stone-400 font-bold mb-1">강사명</p>
-              <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <p class="text-stone-400 font-bold mb-1">강사명</p>
+                <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
+              </div>
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <p class="text-stone-400 font-bold mb-1">수업시간</p>
+                <p class="font-bold text-stone-700">${time || '시간 미입력'}</p>
+              </div>
             </div>
             <div class="mt-2 pt-2.5 border-t border-stone-200 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
               <span class="font-mono font-semibold text-stone-600">☎ ${phone}</span>

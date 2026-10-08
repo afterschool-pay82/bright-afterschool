@@ -356,7 +356,7 @@
   <!-- 청구서 등록 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 등록</h3><button onclick="closeModal('modal-add-billing')">×</button></div><form id="form-add-billing" class="space-y-3"><input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" /><input type="number" id="billing-input-amount" required placeholder="청구 금액(원)" class="w-full p-2 border rounded-xl" /><input type="file" id="billing-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 청구서 수정 -->
-  <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 수정</h3><button onclick="closeModal('modal-edit-billing')">×</button></div><form id="form-edit-billing" class="space-y-3"><input type="hidden" id="edit-billing-id" /><input type="number" id="edit-billing-amount" required placeholder="금액" class="w-full p-2 border rounded-xl" /><input type="file" id="edit-billing-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">수정</button></form></div></div>
+  <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 수정</h3><button onclick="closeModal('modal-edit-billing')">×</button></div><form id="form-edit-billing" class="space-y-3"><input type="hidden" id="edit-billing-id" /><input type="number" id="edit-billing-amount" required placeholder="금액" class="w-full p-2 border rounded-xl" /><input type="file" id="edit-billing-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">수정 저장</button><button type="button" onclick="deleteBillingFromEditModal()" class="w-full py-2 bg-rose-50 border border-rose-200 text-rose-700 font-bold rounded-xl">이 청구서 삭제</button></form></div></div>
   <!-- 지출결의서 등록 -->
   <div id="modal-add-expense" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">지출결의서 등록</h3><button onclick="closeModal('modal-add-expense')">×</button></div><form id="form-add-expense" class="space-y-3"><select id="exp-input-school" class="w-full p-2 border rounded-xl"></select><select id="exp-input-month" class="w-full p-2 border rounded-xl"><option value="9">9월</option><option value="10">10월</option></select><input type="number" id="exp-input-amount" placeholder="금액" required class="w-full p-2 border rounded-xl" /><input type="file" id="exp-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 출근부 등록 -->
@@ -435,7 +435,7 @@
 
     async function previewFile(fileId, fileType, fileName) {
       const fileData = await getFileFromDB(fileId);
-      if (!fileData || !fileData.data) return alert('저장된 원본 파일이 없습니다.');
+      if (!fileData || !fileData.data) return alert('이 기기에는 첨부파일 원본이 없습니다. 현재 첨부파일은 업로드한 기기의 브라우저에만 저장됩니다. 다른 기기에서도 열려면 온라인 파일 저장소 연동이 필요합니다.');
       const modal = document.getElementById('modal-file-preview'); document.getElementById('preview-title').textContent = fileName;
       const bodyEl = document.getElementById('preview-body');
       const isImage = fileData.type && fileData.type.startsWith('image/'); const isPdf = fileData.type === 'application/pdf' || fileName.toLowerCase().endsWith('.pdf');
@@ -869,7 +869,7 @@
       [1,2,3].forEach(period => {
         const item = (appData.billings || []).find(b => b.schoolId === currentSchoolId && (b.category || 'after_instructor') === category && Number(b.quarter) === Number(currentQuarter) && Number(b.period) === period);
         if (item) {
-          html += `<tr class="hover:bg-amber-50/40"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-3 text-center"><span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900">${catTitle}</span></td><td class="py-3 px-3 text-center font-bold">${currentQuarter}분기 ${period}차</td><td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td><td class="py-3 px-3 text-center">${billingStatusHtml(item)}</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName}')" class="px-2.5 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button></td><td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td><td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`;
+          html += `<tr class="hover:bg-amber-50/40"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-3 text-center"><span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900">${catTitle}</span></td><td class="py-3 px-3 text-center font-bold">${currentQuarter}분기 ${period}차</td><td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td><td class="py-3 px-3 text-center">${billingStatusHtml(item)}</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName}')" class="px-2.5 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button></td><td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td><td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 font-bold">삭제</button></td></tr>`;
         } else {
           html += `<tr><td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td><td class="py-3 px-3 text-center text-stone-400">${catTitle}</td><td class="py-3 px-3 text-center font-bold text-stone-600">${currentQuarter}분기 ${period}차</td><td class="py-3 px-4 text-right text-stone-300">-</td><td class="py-3 px-3 text-center">${billingStatusHtml(null)}</td><td colspan="3" class="text-center"><button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 text-amber-900 text-xs font-bold">+ 등록</button></td></tr>`;
         }
@@ -980,7 +980,24 @@
     function deleteSchool(id, e) { e.stopPropagation(); if (confirm('기관을 삭제하시겠습니까?')) { appData.schools = appData.schools.filter(s => s.id !== id); saveData('schools', appData.schools); if (currentSchoolId === id) selectSchool('all'); else renderSchoolList(); } }
     function deleteScheduleItem(id) { if (confirm('수업을 삭제하시겠습니까?')) { appData.schedules = appData.schedules.filter(s => s.id !== id); saveData('schedules', appData.schedules); renderSchoolTimetableGrid(); } }
     function deleteCalendarEvent(id) { if (confirm('일정을 삭제하시겠습니까?')) { appData.calendarEvents = appData.calendarEvents.filter(ev => ev.id !== id); saveData('calendarEvents', appData.calendarEvents); renderCalendarGrid(); } }
-    function deleteBilling(id) { if (confirm('청구서를 삭제하시겠습니까?')) { appData.billings = appData.billings.filter(b => b.id !== id); saveData('billings', appData.billings); renderBilling(); renderChecklist(); } }
+    async function deleteBilling(id) {
+      const item = appData.billings.find(b => b.id === id);
+      if (!item) return;
+      const schoolName = appData.schools.find(s => s.id === item.schoolId)?.name || '해당 학교';
+      if (!confirm(`${schoolName} ${item.quarter}분기 ${item.period}차 청구서를 삭제하시겠습니까?\n삭제한 청구서 정보는 복구할 수 없습니다.`)) return;
+      appData.billings = appData.billings.filter(b => b.id !== id);
+      await saveData('billings', appData.billings);
+      if (dbInstance) {
+        try { const tx = dbInstance.transaction('files', 'readwrite'); tx.objectStore('files').delete(id); }
+        catch (err) { console.warn('로컬 첨부파일 정리 실패:', err); }
+      }
+      closeModal('modal-edit-billing');
+      renderBilling(); renderChecklist(); renderDashboardBillingSummary();
+    }
+    function deleteBillingFromEditModal() {
+      const id = document.getElementById('edit-billing-id').value;
+      if (id) deleteBilling(id);
+    }
     function deleteExpense(id) { if (confirm('지출결의서를 삭제하시겠습니까?')) { appData.expenses = appData.expenses.filter(e => e.id !== id); saveData('expenses', appData.expenses); renderExpenseAndAttendance(); renderChecklist(); } }
     function deleteAttendance(id) { if (confirm('출근부를 삭제하시겠습니까?')) { appData.attendances = appData.attendances.filter(a => a.id !== id); saveData('attendances', appData.attendances); renderExpenseAndAttendance(); renderChecklist(); } }
     function deleteNotice(id) { if (confirm('안내장을 삭제하시겠습니까?')) { appData.notices = appData.notices.filter(n => n.id !== id); saveData('notices', appData.notices); renderNotices(); } }

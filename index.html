@@ -589,50 +589,47 @@
         if (t.subject) item.subjects.add(String(t.subject).trim());
       });
 
-      // 대체강사 판단을 위해 '검색한 과목'뿐 아니라 해당 강사의 전체 출강요일도 확인합니다.
-      // 다른 과목/다른 학교 수업이 있는 요일은 가능요일에서 제외합니다.
+      // 강사의 전체 출강요일을 합쳐서 실제 수업요일을 계산합니다.
+      // "월", "월요일", "월/수" 등 다양한 표기를 동일하게 처리합니다.
       const allTeacherRows = appData.masterTeachers || [];
+      const dayOrder = ['월요일','화요일','수요일','목요일','금요일'];
+      const normalizeDay = (value) => {
+        const v = String(value || '').trim();
+        const map = {'월':'월요일','월요일':'월요일','화':'화요일','화요일':'화요일','수':'수요일','수요일':'수요일','목':'목요일','목요일':'목요일','금':'금요일','금요일':'금요일'};
+        return map[v] || '';
+      };
+      const extractDays = (value) => String(value || '').split(/[,/·\s]+/).map(normalizeDay).filter(Boolean);
+
       teacherMap.forEach((item, key) => {
         allTeacherRows.forEach(t => {
           const name = String(t.name || '').trim();
           const phone = String(t.phone || '').trim();
           if (`${name}|${phone}` !== key) return;
-          if (t.day && t.day !== '요일 미입력') {
-            String(t.day).split(/[,/·]+/).map(v => v.trim()).filter(Boolean).forEach(d => item.allDays.add(d));
-          }
+          extractDays(t.day).forEach(d => item.allDays.add(d));
         });
       });
 
       const teachers = Array.from(teacherMap.values()).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-
       if (teachers.length === 0) {
         resultList.innerHTML = `<div class="col-span-full p-3 bg-white rounded-xl text-xs text-stone-500 text-center">'<span class="text-indigo-600 font-bold">${subjectKeyword}</span>' 과목을 맡고 있는 강사를 찾지 못했습니다.</div>`;
         return;
       }
 
-      const dayOrder = ['월요일','화요일','수요일','목요일','금요일'];
       let html = '';
       teachers.forEach(t => {
         const schools = Array.from(t.schools).join(' · ') || '소속없음';
-        const sortedDays = Array.from(t.days).sort((a,b) => {
-          const ai = dayOrder.indexOf(a), bi = dayOrder.indexOf(b);
-          return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
-        });
+        const sortedDays = Array.from(t.days).map(normalizeDay).filter(Boolean).filter((d,i,a)=>a.indexOf(d)===i).sort((a,b) => dayOrder.indexOf(a)-dayOrder.indexOf(b));
         const availableDays = dayOrder.filter(d => !t.allDays.has(d));
-        const daysHtml = sortedDays.length
-          ? sortedDays.map(d => `<span class="inline-block px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-bold text-[10px] mr-1 mb-1">${d.replace('요일','')}</span>`).join('')
-          : '<span class="text-stone-400">요일 미입력</span>';
-        const availableHtml = availableDays.length
-          ? availableDays.map(d => `<span class="inline-block px-2 py-0.5 rounded bg-rose-100 text-rose-600 border border-rose-200 font-bold text-[10px] mr-1 mb-1">${d.replace('요일','')} · 가능</span>`).join('')
-          : '<span class="text-stone-400">가능한 요일 없음</span>';
+        const daysText = sortedDays.length ? sortedDays.map(d => d.replace('요일','')).join(' · ') : '요일 미입력';
         const subjects = Array.from(t.subjects).join(' · ') || subjectKeyword;
+        const availableHtml = availableDays.length
+          ? `<span class="inline-flex items-center gap-1 text-rose-600 font-black">🔴 ${availableDays.map(d => d.replace('요일','')).join(' · ')} · 가능</span>`
+          : '<span class="text-stone-400">가능한 요일 없음</span>';
         html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <p class="font-black text-stone-900 text-sm">${t.name} 강사</p>
-          </div>
-          <div class="mt-1"><span class="text-[10px] font-bold text-stone-500 mr-1">수업요일</span>${daysHtml}</div>
-          <div class="mt-1"><span class="text-[10px] font-bold text-rose-500 mr-1">수업 가능요일</span>${availableHtml}</div>
-          <p class="text-stone-600 font-semibold mt-1">${subjects}</p>
+          <p class="font-black text-stone-900 text-sm">${t.name} 강사</p>
+          <div class="mt-2"><span class="font-bold text-stone-500">수업요일:</span> <span class="font-bold text-indigo-900">${daysText}</span></div>
+          <div class="mt-1"><span class="font-bold text-rose-500">수업 가능요일:</span> ${availableHtml}</div>
+          <p class="text-stone-600 font-semibold mt-2">${subjects}</p>
           <p class="text-[10px] text-stone-500 mt-1">🏫 ${schools}</p>
           <div class="mt-2 pt-2 border-t border-stone-100 font-mono text-right text-stone-500">☎ ${t.phone || '연락처 없음'}</div>
         </div>`;

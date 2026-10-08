@@ -200,7 +200,7 @@
             <button onclick="switchBillingCategory('custom_materials')" id="sub-billing-btn-custom_materials" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-stone-700 cursor-pointer">맞춤형 교재비</button>
           </div>
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
-            <table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">기관명</th><th class="py-3 px-3 text-center">정산 차수</th><th class="py-3 px-4 text-right">청구 금액</th><th class="py-3 px-3 text-center">미리보기</th><th class="py-3 px-3 text-center">다운로드</th><th class="py-3 px-3 text-center">수정</th><th class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody></table>
+            <table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">기관명</th><th class="py-3 px-2 text-center">1차</th><th class="py-3 px-2 text-center">2차</th><th class="py-3 px-2 text-center">3차</th><th class="py-3 px-4 text-right">합계</th></tr></thead><tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody></table>
           </div>
         </div>
       </section>
@@ -471,7 +471,9 @@
     function renderSchoolList() {
       const container = document.getElementById('school-list-container'); if (!container) return;
       const checklistBtn = document.getElementById('tab-btn-checklist');
-      if (checklistBtn) checklistBtn.remove();
+      if (checklistBtn) {
+        checklistBtn.style.display = currentSchoolId === 'all' ? '' : 'none';
+      }
       let html = '';
       document.getElementById('badge-total-schools').textContent = `${appData.schools.length}개소`;
       appData.schools.forEach(sch => {
@@ -726,27 +728,55 @@
     }
 
     // ================= BILLING =================
+    function getBillingStatus(item) {
+      if (!item) return '미진행';
+      return item.status || '청구완료';
+    }
+    function billingStatusHtml(item, compact=false) {
+      const status = getBillingStatus(item);
+      const cls = status === '입금완료' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : status === '청구완료' ? 'bg-blue-100 text-blue-800 border-blue-200' : status === '청구중' ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-stone-100 text-stone-500 border-stone-200';
+      return `<select onchange="updateBillingStatus('${item ? item.id : ''}', this.value)" class="${cls} border rounded-lg ${compact ? 'px-2 py-1 text-[10px]' : 'px-2.5 py-1.5 text-[11px]'} font-extrabold outline-none cursor-pointer">${['미진행','청구중','청구완료','입금완료'].map(v=>`<option value="${v}" ${status===v?'selected':''}>${v}</option>`).join('')}</select>`;
+    }
+    function updateBillingStatus(id, status) {
+      const item = (appData.billings || []).find(b => b.id === id);
+      if (!item) return;
+      item.status = status;
+      saveData('billings', appData.billings);
+      renderBilling(); renderChecklist(); renderDashboardBillingSummary();
+    }
     function switchBillingCategory(cat) { currentBillingCategory = cat; ['after_instructor', 'after_materials', 'custom_instructor', 'custom_materials'].forEach(c => { const btn = document.getElementById(`sub-billing-btn-${c}`); if(btn) btn.className = c === cat ? "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer" : "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer"; }); renderBilling(); }
     function changeQuarter(q) { currentQuarter = q; syncQuarterButtons(); const checklistPeriod = document.getElementById('checklist-period'); if (checklistPeriod) checklistPeriod.value = String(q); renderBilling(); renderChecklist(); }
     function renderBilling() {
       const tbody = document.getElementById('billing-table-body'); if (!tbody) return; 
-      if (currentSchoolId === 'all') { tbody.innerHTML = ''; return; }
-      const sch = appData.schools.find(s => s.id === currentSchoolId);
-      let catTitle = '방과후학교 강사료'; if (currentBillingCategory === 'after_materials') catTitle = '방과후학교 교재비'; else if (currentBillingCategory === 'custom_instructor') catTitle = '맞춤형 강사료'; else if (currentBillingCategory === 'custom_materials') catTitle = '맞춤형 교재비';
-
+      const category = currentBillingCategory;
+      const catTitle = category === 'after_materials' ? '방과후학교 교재비' : category === 'custom_instructor' ? '맞춤형 강사료' : category === 'custom_materials' ? '맞춤형 교재비' : '방과후학교 강사료';
       let html = '';
-      [1, 2, 3].forEach(period => {
-        const item = (appData.billings || []).find(b => b.schoolId === currentSchoolId && (b.category || 'after_instructor') === currentBillingCategory && b.quarter === currentQuarter && b.period === period);
+      if (currentSchoolId === 'all') {
+        if (!(appData.schools || []).length) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-14 text-center text-stone-400">등록된 학교가 없습니다.</td></tr>`; return;
+        }
+                (appData.schools || []).forEach(sch => {
+          const periodCells = [1,2,3].map(period => {
+            const item = (appData.billings || []).find(b => b.schoolId === sch.id && (b.category || 'after_instructor') === category && Number(b.quarter) === Number(currentQuarter) && Number(b.period) === period);
+            if (!item) return `<td class="py-3 px-2 text-center bg-stone-50/40"><div class="text-[10px] text-stone-300 font-bold">미등록</div><button onclick="openAddBillingModalForSlot('${sch.id}', ${period})" class="mt-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-800 text-[10px] font-bold">+ 등록</button></td>`;
+            return `<td class="py-3 px-2 text-center"><div class="text-[11px] font-black text-stone-800">${(Number(item.amount)||0).toLocaleString()}원</div>${billingStatusHtml(item,true)}<div class="mt-1 flex justify-center gap-1"><button onclick="openEditBillingModal('${item.id}')" class="px-1.5 py-0.5 rounded-md bg-stone-100 text-[9px] font-bold">수정</button><button onclick="deleteBilling('${item.id}')" class="px-1.5 py-0.5 rounded-md text-stone-300 hover:text-rose-500 text-[9px] font-bold">삭제</button></div></td>`;
+          }).join('');
+          const total = [1,2,3].reduce((sum,period)=>{ const item=(appData.billings||[]).find(b=>b.schoolId===sch.id&&(b.category||'after_instructor')===category&&Number(b.quarter)===Number(currentQuarter)&&Number(b.period)===period); return sum+(Number(item?.amount)||0); },0);
+          html += `<tr class="hover:bg-amber-50/30"><td class="py-3 px-4 font-extrabold text-stone-900 whitespace-nowrap">${sch.name}</td>${periodCells}<td class="py-3 px-4 text-right font-black text-amber-800 whitespace-nowrap">${total.toLocaleString()}원</td></tr>`;
+        });
+        tbody.innerHTML = html; lucide.createIcons(); return;
+      }
+      const sch = appData.schools.find(s => s.id === currentSchoolId);
+      [1,2,3].forEach(period => {
+        const item = (appData.billings || []).find(b => b.schoolId === currentSchoolId && (b.category || 'after_instructor') === category && Number(b.quarter) === Number(currentQuarter) && Number(b.period) === period);
         if (item) {
-          html += `<tr class="hover:bg-amber-50/40"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-3 text-center"><span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900">${catTitle}</span></td><td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td><td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${period}차</td><td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">보기</button></td><td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200 cursor-pointer">다운</button></td><td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td><td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`;
+          html += `<tr class="hover:bg-amber-50/40"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-3 text-center"><span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900">${catTitle}</span></td><td class="py-3 px-3 text-center font-bold">${currentQuarter}분기 ${period}차</td><td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td><td class="py-3 px-3 text-center">${billingStatusHtml(item)}</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName}')" class="px-2.5 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button></td><td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td><td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`;
         } else {
-          html += `<tr><td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td><td class="py-3 px-3 text-center text-stone-400">${catTitle}</td><td class="py-3 px-3 text-center text-stone-400">${currentQuarter}분기</td><td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${period}차</td><td class="py-3 px-4 text-right text-stone-300">-</td><td class="py-3 px-4 text-center"><button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto">+ 등록</button></td><td colspan="3" class="text-center text-stone-300">-</td></tr>`;
+          html += `<tr><td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td><td class="py-3 px-3 text-center text-stone-400">${catTitle}</td><td class="py-3 px-3 text-center font-bold text-stone-600">${currentQuarter}분기 ${period}차</td><td class="py-3 px-4 text-right text-stone-300">-</td><td class="py-3 px-3 text-center">${billingStatusHtml(null)}</td><td colspan="3" class="text-center"><button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 text-amber-900 text-xs font-bold">+ 등록</button></td></tr>`;
         }
       });
-      tbody.innerHTML = html;
-      lucide.createIcons();
+      tbody.innerHTML = html; lucide.createIcons();
     }
-    
     // ================= EXPENSE & ATTENDANCE =================
     function changeMonth(m) { currentMonth = parseInt(m, 10); renderExpenseAndAttendance(); renderChecklist(); }
     function renderExpenseAndAttendance() {
@@ -868,7 +898,7 @@
         const existingIdx = appData.billings.findIndex(b => b.schoolId === schoolId && (b.category || 'after_instructor') === category && b.quarter === quarter && b.period === period);
         const fileId = existingIdx > -1 ? appData.billings[existingIdx].id : 'b_' + Date.now(); const fileName = file ? file.name : (existingIdx > -1 ? appData.billings[existingIdx].fileName : `청구서.xlsx`);
         if (file) await storeFile(fileId, file);
-        if (existingIdx > -1) appData.billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName }; else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
+        if (existingIdx > -1) appData.billings[existingIdx] = { ...appData.billings[existingIdx], id: fileId, schoolId, category, quarter, period, amount, fileName, status: appData.billings[existingIdx].status || '청구중' }; else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName, status: '청구중' });
         saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
       });
       document.getElementById('form-edit-billing')?.addEventListener('submit', async (e) => {

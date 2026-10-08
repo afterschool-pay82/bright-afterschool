@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(주)밝은생각 - 안내장 분기 완벽 복구판</title>
+  <title>주)밝은생각 업무협업룸</title>
+  <meta name="description" content="(주)밝은생각 학교별 방과후 업무협업룸 · 일정, 강사, 청구 관리">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="(주)밝은생각">
+  <meta property="og:title" content="주)밝은생각 업무협업룸">
+  <meta property="og:description" content="학교별 방과후 일정 · 강사 · 청구 업무협업룸">
+  <meta property="og:url" content="https://afterschool-pay82.github.io/bright-afterschool/">
+  <meta property="og:image" content="https://afterschool-pay82.github.io/bright-afterschool/share-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -82,6 +92,33 @@
   .modal-box, [id^="modal-"] > div { max-width:calc(100vw - 20px) !important; }
 }
 </style>
+
+<style>
+@media (max-width: 767px) {
+  html,body { width:100%; max-width:100%; overflow-x:hidden !important; overflow-y:auto !important; }
+  body { height:auto !important; min-height:100dvh; display:block !important; }
+  body > aside { height:auto !important; max-height:none !important; width:100% !important; }
+  body > aside > div:nth-child(2) { padding:8px 12px !important; }
+  body > aside > div:nth-child(2) > div:nth-child(2),
+  #school-list-container { display:none !important; }
+  body > aside.mobile-schools-open > div:nth-child(2) > div:nth-child(2) { display:flex !important; }
+  body > aside.mobile-schools-open #school-list-container { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; white-space:normal !important; overflow:visible !important; gap:6px !important; }
+  #school-list-container > * { min-width:0 !important; }
+  #mobile-school-toggle { display:flex !important; }
+  body > main { width:100% !important; height:auto !important; min-height:calc(100dvh - 155px); overflow:visible !important; }
+  #printArea { min-width:0 !important; }
+  #view-calendar-events .grid.grid-cols-7 { min-width:0 !important; width:100% !important; grid-template-columns:repeat(7,minmax(0,1fr)) !important; gap:3px !important; }
+  #calendar-grid-days > * { min-width:0 !important; min-height:74px !important; padding:3px !important; border-radius:9px !important; font-size:10px !important; }
+  #calendar-grid-days .calendar-event { min-height:0 !important; padding:2px !important; font-size:9px !important; }
+  #calendar-grid-days .calendar-event-text { -webkit-line-clamp:2; overflow-wrap:anywhere; }
+  #view-calendar-events .bg-white.rounded-3xl { overflow-x:hidden !important; padding:8px !important; }
+  #view-calendar-events .grid.grid-cols-7.mb-2 > div { padding:6px 0 !important; }
+  #view-calendar-events > div:first-child { padding:10px !important; }
+  #view-calendar-events #calendar-month-title { font-size:16px !important; }
+  #view-calendar-events .grid.grid-cols-1 { display:block !important; }
+}
+@media (min-width:768px) { #mobile-school-toggle { display:none !important; } }
+</style>
 </head>
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
 
@@ -92,6 +129,7 @@
     </div>
 
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
+      <button id="mobile-school-toggle" type="button" onclick="document.querySelector('body > aside').classList.toggle('mobile-schools-open');this.setAttribute('aria-expanded',document.querySelector('body > aside').classList.contains('mobile-schools-open'))" aria-expanded="false" class="hidden w-full items-center justify-between mb-2 px-3 py-2 rounded-xl border border-stone-200 text-sm font-bold">학교 목록 선택 <span>▾</span></button>
       <!-- 통합보기 버튼 -->
       <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer shrink-0">
         <div class="flex items-center gap-2"><span class="text-lg">🏫</span><span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span></div>
@@ -558,6 +596,8 @@
     }
 
     function selectSchool(id) {
+      document.querySelector('body > aside')?.classList.remove('mobile-schools-open');
+      const mobileToggle = document.getElementById('mobile-school-toggle'); if (mobileToggle) mobileToggle.setAttribute('aria-expanded','false');
       currentSchoolId = id;
       if (id !== 'all' && document.getElementById('view-checklist') && !document.getElementById('view-checklist').classList.contains('hidden')) {
         switchTab('calendar-events');

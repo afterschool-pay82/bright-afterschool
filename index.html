@@ -466,7 +466,11 @@
         } else {
           v.classList.add('hidden'); b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
         }
+        // 마감 신호등 현황판은 '전체 위탁기관 통합'에서만 메뉴 버튼 자체를 노출합니다.
+        if (t === 'checklist' && currentSchoolId !== 'all') b.classList.add('hidden');
       });
+      // 학교 선택 상태가 바뀌거나 다른 탭을 눌러도 숨김 상태가 다시 풀리지 않도록 최종 동기화합니다.
+      syncChecklistTabVisibility();
       lucide.createIcons();
     }
 

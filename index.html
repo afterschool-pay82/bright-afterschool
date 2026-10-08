@@ -215,7 +215,7 @@
             <div id="billing-round-cards" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
           </div>
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
-            <table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">기관명</th><th class="py-3 px-3 text-center">차수</th><th class="py-3 px-4 text-right">청구 금액</th><th class="py-3 px-3 text-center">미리보기</th><th class="py-3 px-3 text-center">다운로드</th><th class="py-3 px-3 text-center">수정</th><th class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody></table>
+            <table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">기관명</th><th class="py-3 px-3 text-center">차수</th><th class="py-3 px-4 text-right">청구 금액</th><th class="py-3 px-3 text-center">미리보기</th><th class="py-3 px-3 text-center">다운로드</th><th class="py-3 px-3 text-center">수정</th><th id="billing-last-head" class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody></table>
           </div>
         </div>
       </section>
@@ -723,7 +723,10 @@
     };
     function getBillingStatus(schoolId, quarter, period) {
       const x=(appData.billingStatuses||[]).find(v=>v.schoolId===schoolId && Number(v.quarter)===Number(quarter) && Number(v.period)===Number(period));
-      return x?.status || '미진행';
+      if (x?.status) return x.status;
+      // 기존에 등록해 둔 청구서도 통합 현황에 자동 반영
+      const hasBilling=(appData.billings||[]).some(b=>b.schoolId===schoolId && Number(b.quarter)===Number(quarter) && Number(b.period)===Number(period));
+      return hasBilling ? '청구완료' : '미진행';
     }
     function setBillingStatus(schoolId, quarter, period, status) {
       appData.billingStatuses = appData.billingStatuses || [];
@@ -734,7 +737,14 @@
     }
     function getBillingRounds(schoolId, quarter) {
       const found=(appData.billingRounds||[]).find(v=>v.schoolId===schoolId && Number(v.quarter)===Number(quarter));
-      return found?.rounds || ['','',''];
+      if (found?.rounds) return found.rounds;
+      // 차수 설정을 따로 저장하지 않은 기존 데이터는 실제 청구서 등록 차수를 자동 인식
+      const used=['','',''];
+      (appData.billings||[]).filter(b=>b.schoolId===schoolId && Number(b.quarter)===Number(quarter)).forEach(b=>{
+        const p=Number(b.period);
+        if(p>=1 && p<=3 && !used[p-1]) used[p-1]='청구서 등록됨';
+      });
+      return used;
     }
     function openBillingRoundSettings() {
       if(currentSchoolId==='all') return alert('학교를 먼저 선택해 주세요. 학교마다 차수를 다르게 설정할 수 있습니다.');
@@ -754,11 +764,11 @@
         return `<div class="rounded-2xl border ${meta.cls} p-4 shadow-sm"><div class="flex items-center justify-between mb-2"><span class="text-sm font-black">${period}차</span><span class="text-xs font-extrabold">${meta.icon} ${status}</span></div><div class="text-[11px] font-bold mb-3">${label}</div><select onchange="setBillingStatus('${currentSchoolId}',${currentQuarter},${period},this.value)" class="w-full p-2 rounded-xl bg-white border text-xs font-bold mb-2"><option ${status==='미진행'?'selected':''}>미진행</option><option ${status==='청구중'?'selected':''}>청구중</option><option ${status==='청구완료'?'selected':''}>청구완료</option><option ${status==='입금완료'?'selected':''}>입금완료</option></select><div class="text-right text-[11px] font-black">${item ? (Number(item.amount)||0).toLocaleString()+'원' : '청구서 미등록'}</div></div>`;
       }).join('');
     }
-    function setDashboardQuarter(q) { dashboardQuarter=q; renderDashboardBillingSummary(); }
+    function setDashboardQuarter(q) { dashboardQuarter=q; currentQuarter=q; syncQuarterButtons(); renderDashboardBillingSummary(); renderBilling(); }
     function renderDashboardBillingSummary() {
       const list=document.getElementById('dash-billing-items'); if(!list) return;
       [1,2,3,4].forEach(q=>{const b=document.getElementById(`dash-q-${q}`); if(b)b.className=q===dashboardQuarter?'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-white':'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200';});
-      document.getElementById('dash-quarter-label').textContent=`${dashboardQuarter}분기 · 학교별 1~3차`;
+      document.getElementById('dash-quarter-label').textContent=`${dashboardQuarter}분기 · 학교별 청구 현황`;
       const schools=currentSchoolId==='all'?appData.schools:appData.schools.filter(s=>s.id===currentSchoolId);
       let html='', total=0, counts={'미진행':0,'청구중':0,'청구완료':0,'입금완료':0};
       schools.forEach(sch=>{
@@ -770,12 +780,13 @@
           counts[st]=(counts[st]||0)+1;
           return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border ${m.cls} text-[10px] font-black whitespace-nowrap">${p}차 ${st}</span>`;
         }).join('');
-        const amount=(appData.billings||[]).filter(b=>b.schoolId===sch.id&&Number(b.quarter)===Number(dashboardQuarter)).reduce((a,b)=>a+(Number(b.amount)||0),0); total+=amount;
-        html+=`<div class="p-3 rounded-2xl border border-stone-200 bg-white shadow-2xs hover:border-amber-300 transition-all"><div class="flex items-center justify-between gap-2 mb-2"><span class="font-black text-sm truncate">${escapeHtml(sch.name)}</span><span class="text-sm font-black text-stone-800 whitespace-nowrap">${amount.toLocaleString()}원</span></div><div class="flex flex-wrap gap-1.5 min-h-[26px]">${roundHtml || '<span class="text-[10px] text-stone-300 font-bold">청구 차수 미설정</span>'}</div></div>`;
+        const amount=(appData.billings||[]).filter(b=>b.schoolId===sch.id&&Number(b.quarter)===Number(dashboardQuarter)&&(b.category||'after_instructor')===currentBillingCategory).reduce((a,b)=>a+(Number(b.amount)||0),0);
+        total+=amount;
+        html+=`<div onclick="selectSchool('${sch.id}')" class="p-2.5 rounded-xl border border-stone-200 bg-white shadow-2xs hover:border-amber-300 hover:shadow-sm transition-all cursor-pointer"><div class="flex items-center justify-between gap-2"><span class="font-black text-sm truncate">${escapeHtml(sch.name)}</span><span class="text-sm font-black text-stone-800 whitespace-nowrap">${amount.toLocaleString()}원</span></div><div class="flex flex-wrap gap-1 mt-1.5">${roundHtml || '<span class="text-[10px] text-stone-300 font-bold">차수 미등록</span>'}</div></div>`;
       });
       document.getElementById('dash-billing-total').textContent=total.toLocaleString()+'원';
       document.getElementById('dash-billing-count').textContent=`청구중 ${counts['청구중']||0} · 청구완료 ${counts['청구완료']||0} · 입금완료 ${counts['입금완료']||0}`;
-      list.className='col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 max-h-[360px] overflow-y-auto custom-scroll pr-1';
+      list.className='col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 max-h-[300px] overflow-y-auto custom-scroll pr-1';
       list.innerHTML=html || '<div class="text-xs text-stone-400">학교가 없습니다.</div>';
     }
 
@@ -807,11 +818,25 @@
 
     // ================= BILLING =================
     function switchBillingCategory(cat) { currentBillingCategory=cat; ['after_instructor','after_materials','custom_instructor','custom_materials'].forEach(c=>{const btn=document.getElementById(`sub-billing-btn-${c}`); if(btn)btn.className=c===cat?'px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer':'px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-stone-700 cursor-pointer';}); renderBilling(); }
-    function changeQuarter(q) { currentQuarter=q; syncQuarterButtons(); const cp=document.getElementById('checklist-period'); if(cp)cp.value=String(q); renderBilling(); renderChecklist(); }
+    function changeQuarter(q) { currentQuarter=q; dashboardQuarter=q; syncQuarterButtons(); const cp=document.getElementById('checklist-period'); if(cp)cp.value=String(q); renderBilling(); renderChecklist(); }
     function renderBilling() {
       renderBillingRoundCards();
       const tbody=document.getElementById('billing-table-body'); if(!tbody)return;
-      if(currentSchoolId==='all'){tbody.innerHTML='<tr><td colspan="7" class="p-8 text-center text-stone-400 text-xs">학교를 선택하면 해당 학교의 청구서를 확인할 수 있습니다.</td></tr>'; return;}
+      const lastHead=document.getElementById('billing-last-head'); if(lastHead) lastHead.textContent=currentSchoolId==='all'?'상태':'삭제';
+      if(currentSchoolId==='all'){
+        let html='';
+        appData.schools.forEach(sch=>{
+          const rounds=getBillingRounds(sch.id,currentQuarter);
+          [1,2,3].forEach(period=>{
+            if(!rounds[period-1]) return;
+            const item=(appData.billings||[]).find(b=>b.schoolId===sch.id&&(b.category||'after_instructor')===currentBillingCategory&&Number(b.quarter)===Number(currentQuarter)&&Number(b.period)===period);
+            const status=getBillingStatus(sch.id,currentQuarter,period), meta=billingStatusMeta[status]||billingStatusMeta['미진행'];
+            html+=`<tr class="hover:bg-amber-50/30"><td class="py-3 px-4 font-black text-stone-900">${escapeHtml(sch.name)}</td><td class="py-3 px-3 text-center"><div class="font-black">${period}차</div><div class="text-[10px] text-stone-400 mt-0.5">${escapeHtml(rounds[period-1])}</div><span class="inline-flex mt-1 px-2 py-0.5 rounded-lg border ${meta.cls} text-[10px] font-black">${meta.icon} ${status}</span></td><td class="py-3 px-4 text-right font-black text-amber-800">${item?(Number(item.amount)||0).toLocaleString()+'원':'-'}</td><td class="py-3 px-3 text-center">${item?`<button onclick="previewFile('${item.id}','excel','${item.fileName}')" class="px-2.5 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button>`:`<button onclick="openAddBillingModalForSlot('${sch.id}',${period})" class="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold">+ 등록</button>`}</td><td class="py-3 px-3 text-center">${item?`<button onclick="downloadFileFromDB('${item.id}','${item.fileName}')" class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold">다운</button>`:'-'}</td><td class="py-3 px-3 text-center">${item?`<button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold">수정</button>`:'-'}</td><td class="py-3 px-3 text-center"><select onchange="setBillingStatus('${sch.id}',${currentQuarter},${period},this.value)" class="px-2 py-1 rounded-lg border border-stone-200 bg-white text-[10px] font-bold ${meta.cls}"><option ${status==='미진행'?'selected':''}>미진행</option><option ${status==='청구중'?'selected':''}>청구중</option><option ${status==='청구완료'?'selected':''}>청구완료</option><option ${status==='입금완료'?'selected':''}>입금완료</option></select></td></tr>`;
+          });
+        });
+        tbody.innerHTML=html||'<tr><td colspan="7" class="p-8 text-center text-stone-400 text-xs">등록된 청구 차수가 없습니다. 학교별 차수 설정에서 먼저 입력해 주세요.</td></tr>';
+        return;
+      }
       const sch=appData.schools.find(s=>s.id===currentSchoolId); let catTitle='방과후학교 강사료'; if(currentBillingCategory==='after_materials')catTitle='방과후학교 교재비'; else if(currentBillingCategory==='custom_instructor')catTitle='맞춤형 강사료'; else if(currentBillingCategory==='custom_materials')catTitle='맞춤형 교재비';
       const rounds=getBillingRounds(currentSchoolId,currentQuarter); let html='';
       [1,2,3].forEach(period=>{
@@ -975,13 +1000,13 @@
         const fileId = existingIdx > -1 ? appData.billings[existingIdx].id : 'b_' + Date.now(); const fileName = file ? file.name : (existingIdx > -1 ? appData.billings[existingIdx].fileName : `청구서.xlsx`);
         if (file) await storeFile(fileId, file);
         if (existingIdx > -1) appData.billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName }; else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
-        saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
+        saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist(); renderDashboardBillingSummary();
       });
       document.getElementById('form-edit-billing')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const id = document.getElementById('edit-billing-id').value, amount = parseInt(document.getElementById('edit-billing-amount').value, 10), file = document.getElementById('edit-billing-file').files[0];
         const item = appData.billings.find(b => b.id === id); if (!item) return; item.amount = amount;
         if (file) { item.fileName = file.name; await storeFile(item.id, file); }
-        saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling(); renderChecklist();
+        saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling(); renderChecklist(); renderDashboardBillingSummary();
       });
       document.getElementById('form-add-expense')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const schoolId = document.getElementById('exp-input-school').value, month = parseInt(document.getElementById('exp-input-month').value, 10), amount = parseInt(document.getElementById('exp-input-amount').value, 10), file = document.getElementById('exp-input-file').files[0];

@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(주)밝은생각 - 강사 연동 및 메뉴 복구판</title>
-  <!-- Tailwind & Icons -->
+  <title>(주)밝은생각 - 무한루프 버그 해결 및 최종 완성판</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Excel Parser -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Fonts -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
   <style>
@@ -70,7 +66,7 @@
     <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between gap-2 shadow-xs shrink-0">
       <div class="flex items-center gap-2 truncate flex-1">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase shrink-0">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 메뉴 연동 및 대체 강사 스마트 검색 기능 적용 완료!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 무한 로딩 버그 완벽 수정 및 스마트 강사 조회 기능 적용 완료!</span>
       </div>
     </div>
 
@@ -84,7 +80,7 @@
       </div>
     </header>
 
-    <!-- Navigation Tabs (에러방지 완벽 탭 구성) -->
+    <!-- Navigation Tabs (9개 탭) -->
     <div class="px-4 md:px-6 pt-4 pb-2 border-b border-stone-200 bg-[#F8F9FA] sticky top-[73px] z-10 shrink-0">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar-days" class="w-4 h-4"></i> 학사 일정 캘린더</button>
@@ -103,7 +99,7 @@
     <div id="printArea" class="p-4 md:p-6 space-y-6">
 
       <!-- ================= 1. TAB: CALENDAR EVENTS ================= -->
-      <section id="view-calendar-events" class="space-y-4">
+      <section id="view-calendar-events" class="space-y-4 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
@@ -111,10 +107,9 @@
               <h3 class="text-lg font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <span class="text-xs text-stone-400 font-bold ml-2">| 공휴일 및 일정 자동 표시</span>
           </div>
           <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
-            <i data-lucide="calendar-plus" class="w-4 h-4"></i> 휴강/재량휴일 등록
+            <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> 휴강/재량휴일 등록
           </button>
         </div>
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
@@ -125,17 +120,16 @@
         </div>
       </section>
 
-      <!-- ================= 2. TAB: TIMETABLE & SUBSTITUTE SEARCH ================= -->
+      <!-- ================= 2. TAB: TIMETABLE & SMART SEARCH ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div><h4 class="font-bold text-stone-900 text-base flex items-center gap-2" id="school-timetable-grid-title"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표</span> 전체 기관 시간표</h4></div>
           <button onclick="openModal('modal-add-schedule')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs cursor-pointer">새 시간표 등록</button>
         </div>
 
-        <!-- 🌟 새 기능: 엑셀 파일과 시간표 교차 검증 대체 강사 찾기 -->
         <div id="substitute-search-box" class="p-5 rounded-3xl bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200 shadow-xs space-y-3 hidden">
           <div class="flex items-center justify-between"><h4 class="font-brand text-indigo-950 text-sm flex items-center gap-2"><i data-lucide="search" class="w-4 h-4 text-indigo-600"></i> 스마트 긴급 결강 대체 강사 조회</h4></div>
-          <p class="text-[11px] text-indigo-700 font-bold">💡 '강사 현황'에 업로드된 명단 중 해당 요일에 출강 가능하며, 시간표상 타 학교 수업과 겹치지 않는 강사만 찾아냅니다.</p>
+          <p class="text-[11px] text-indigo-700 font-bold">💡 '강사 현황(엑셀)'에 등록된 강사 중 해당 요일에 출강 가능하며, 현재 타 학교 수업과 시간이 겹치지 않는 강사만 찾아냅니다.</p>
           <div class="flex flex-wrap items-center gap-3">
             <select id="sub-search-day" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none"><option value="월요일">월요일</option><option value="화요일">화요일</option><option value="수요일">수요일</option><option value="목요일">목요일</option><option value="금요일">금요일</option></select>
             <input type="text" id="sub-search-time" placeholder="결강 시간 (예: 13:40)" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none w-48 font-mono" />
@@ -158,7 +152,7 @@
       <!-- ================= 3. TAB: MASTER TEACHERS ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between gap-4">
-          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 강사 엑셀 데이터 관리</h4><p class="text-xs text-stone-400 mt-1">업로드된 이 명단과 실제 시간표를 대조하여 결강 강사를 찾습니다.</p></div>
+          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 강사 엑셀 데이터 관리</h4><p class="text-xs text-stone-400 mt-1">이 명단과 실제 시간표를 대조하여 '스마트 대체 강사 검색'을 수행합니다.</p></div>
           <div class="flex items-center gap-2">
             <button onclick="openModal('modal-upload-teacher-excel')" class="px-3.5 py-2 bg-stone-900 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"><i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 명단 엑셀 업로드</button>
           </div>
@@ -234,41 +228,26 @@
     </div>
   </main>
 
-  <!-- ================= 안전한 모달창(팝업) 처리 구역 ================= -->
-  <!-- 학교 추가 -->
+  <!-- ================= M O D A L S (에러방지를 위해 항상 DOM에 존재하도록 유지) ================= -->
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">기관 추가</h3><button onclick="closeModal('modal-add-school')">×</button></div><form id="form-add-school"><input type="text" id="new-school-name" required placeholder="기관명" class="w-full p-3 rounded-xl border border-stone-200 mb-4" /><button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 text-white font-bold">등록</button></form></div></div>
-  <!-- 일정 등록 -->
   <div id="modal-add-calendar-event" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">휴강/재량휴일 등록</h3><button onclick="closeModal('modal-add-calendar-event')">×</button></div><form id="form-add-calendar-event" class="space-y-3"><select id="cal-input-school" class="w-full p-2 border rounded-xl"></select><select id="cal-input-type" class="w-full p-2 border rounded-xl"><option value="휴강일">휴강일</option><option value="재량휴일">재량휴일</option></select><div class="flex gap-2"><input type="text" id="cal-input-ym" readonly class="w-full p-2 border rounded-xl bg-stone-100" /><input type="number" id="cal-input-daynum" required placeholder="일자" class="w-full p-2 border rounded-xl" /></div><input type="text" id="cal-input-keyword" required placeholder="제목" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-indigo-600 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 시간표 등록/수정 -->
-  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')">×</button></div><form id="form-add-schedule" class="space-y-3"><input type="hidden" id="sched-input-edit-id" /><div class="flex gap-2"><select id="sched-input-day" class="w-1/2 p-2 border rounded-xl"><option>월요일</option><option>화요일</option><option>수요일</option><option>목요일</option><option>금요일</option></select><input type="text" id="sched-input-time" required placeholder="13:00~13:40" class="w-1/2 p-2 border rounded-xl" /></div><input type="text" id="sched-input-course" required placeholder="과목명 (예: 영어 A반)" class="w-full p-2 border rounded-xl" /><div class="flex gap-2"><input type="text" id="sched-input-teacher" required placeholder="강사명" class="w-1/2 p-2 border rounded-xl" /><input type="text" id="sched-input-phone" placeholder="연락처" class="w-1/2 p-2 border rounded-xl" /></div><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">저장</button></form></div></div>
-  <!-- 청구서 등록 -->
+  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')">×</button></div><form id="form-add-schedule" class="space-y-3"><input type="hidden" id="sched-input-edit-id" /><div class="flex gap-2"><select id="sched-input-day" class="w-1/2 p-2 border rounded-xl"><option>월요일</option><option>화요일</option><option>수요일</option><option>목요일</option><option>금요일</option></select><input type="text" id="sched-input-time" required placeholder="13:00~13:40" class="w-1/2 p-2 border rounded-xl" /></div><input type="text" id="sched-input-course" required placeholder="과목명 (예: 영어 A반)" class="w-full p-2 border rounded-xl" /><div class="flex gap-2"><input type="text" id="sched-input-teacher" required placeholder="강사명" class="w-1/2 p-2 border rounded-xl" /><input type="text" id="sched-input-phone" placeholder="연락처" class="w-1/2 p-2 border rounded-xl" /></div><div class="flex gap-2 pt-2"><button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button><button type="submit" class="flex-1 py-2.5 bg-amber-500 text-white font-bold rounded-xl">저장</button></div></form></div></div>
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 등록</h3><button onclick="closeModal('modal-add-billing')">×</button></div><form id="form-add-billing" class="space-y-3"><input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" /><input type="number" id="billing-input-amount" required placeholder="청구 금액(원)" class="w-full p-2 border rounded-xl" /><input type="file" id="billing-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 청구서 수정 -->
   <div id="modal-edit-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 수정</h3><button onclick="closeModal('modal-edit-billing')">×</button></div><form id="form-edit-billing" class="space-y-3"><input type="hidden" id="edit-billing-id" /><input type="number" id="edit-billing-amount" required placeholder="금액" class="w-full p-2 border rounded-xl" /><input type="file" id="edit-billing-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">수정</button></form></div></div>
-  <!-- 지출결의서 등록 -->
+  <!-- 강사 명단 엑셀 업로드 팝업 복구 -->
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2">열: 학교명, 과목명, 강사명, 출강요일, 연락처</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 block w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
   <div id="modal-add-expense" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">지출결의서 등록</h3><button onclick="closeModal('modal-add-expense')">×</button></div><form id="form-add-expense" class="space-y-3"><select id="exp-input-school" class="w-full p-2 border rounded-xl"></select><select id="exp-input-month" class="w-full p-2 border rounded-xl"><option value="9">9월</option><option value="10">10월</option></select><input type="number" id="exp-input-amount" placeholder="금액" required class="w-full p-2 border rounded-xl" /><input type="file" id="exp-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 출근부 등록 -->
   <div id="modal-add-attendance" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">출근부 등록</h3><button onclick="closeModal('modal-add-attendance')">×</button></div><form id="form-add-attendance" class="space-y-3"><select id="att-input-school" class="w-full p-2 border rounded-xl"></select><select id="att-input-month" class="w-full p-2 border rounded-xl"><option value="9">9월</option><option value="10">10월</option></select><input type="text" id="att-input-teacher" placeholder="코디명" required class="w-full p-2 border rounded-xl" /><input type="file" id="att-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-sky-600 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 안내장 등록 -->
   <div id="modal-add-notice" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">안내장 등록</h3><button onclick="closeModal('modal-add-notice')">×</button></div><form id="form-add-notice" class="space-y-3"><select id="not-input-school" class="w-full p-2 border rounded-xl"></select><select id="not-input-quarter" class="w-full p-2 border rounded-xl"><option value="1">1분기</option><option value="2">2분기</option></select><input type="file" id="not-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-stone-900 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 서식 등록 -->
   <div id="modal-add-vault" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">서식 업로드</h3><button onclick="closeModal('modal-add-vault')">×</button></div><form id="form-add-vault"><input type="file" id="vault-input-file" required class="w-full p-2 border rounded-xl mb-4" /><button type="submit" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 메모 등록 -->
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">메모 작성</h3><button onclick="closeModal('modal-add-memo')">×</button></div><form id="form-add-memo" class="space-y-3"><select id="memo-input-school" class="w-full p-2 border rounded-xl"></select><select id="memo-input-author" class="w-full p-2 border rounded-xl"><option>현장 코디네이터</option><option>본사 운영팀</option></select><textarea id="memo-input-text" required placeholder="메모 내용" class="w-full p-2 border rounded-xl"></textarea><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
-  <!-- 강사 엑셀 업로드 -->
-  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2">엑셀 열 이름: 학교명, 과목명, 강사명, 출강요일, 연락처</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
   
-  <!-- 파일 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col"><div class="p-4 border-b flex justify-between"><h3 id="preview-title" class="font-bold">미리보기</h3><button onclick="closeModal('modal-file-preview')">×</button></div><div id="preview-body" class="flex-1 overflow-auto p-4 flex justify-center items-start bg-stone-100"></div></div></div>
 
-  <!-- ================= S C R I P T S ================= -->
   <script>
     const firebaseConfig = { apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4", authDomain: "bright-afterschool.firebaseapp.com", databaseURL: "https://bright-afterschool-default-rtdb.firebaseio.com", projectId: "bright-afterschool", storageBucket: "bright-afterschool.firebasestorage.app", messagingSenderId: "646660756482", appId: "1:646660756482:web:7354b82be51299277ec31b" };
     firebase.initializeApp(firebaseConfig);
 
-    // ==========================================
-    // 오리지널 데이터베이스 복구(파일 유실 방지)
-    // ==========================================
     let dbInstance = null;
     function initIndexedDB() {
       return new Promise((resolve, reject) => {
@@ -303,7 +282,7 @@
           const a = document.createElement('a'); a.href = fileData.data; a.download = fileData.name || fallbackName;
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
-      } else alert('저장된 원본 파일이 없습니다.');
+      } else alert('저장된 원본 파일이 없습니다. 다시 업로드해주세요.');
     }
 
     async function previewFile(fileId, fileType, fileName) {
@@ -323,5 +302,433 @@
       { id: 'sch_1', name: '경원초' }, { id: 'sch_2', name: '남부초' }, { id: 'sch_3', name: '문남초' }, { id: 'sch_4', name: '새말초' }, { id: 'sch_5', name: '서화초' }, { id: 'sch_6', name: '서흥초' }, { id: 'sch_7', name: '숭의초' }, { id: 'sch_8', name: '연학초' }, { id: 'sch_9', name: '창신초' }, { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    // 데이터 압축 복구 배열
-    const rawKw = [[1,"월요일","13:00~13:40","영어교실 A반","강미은","010-6862-4843"],[1,"월요일","13:45~14:25","영어교실 B반","강미은","010-6862-4843"],[1,"월요일","14:30~15:10","영어교실 C반","강미은","010-6862-4843"],[1,"월요일","13:00~13:40","피아노(주2회) A반","최정아","010-9814-1024"],[1,"월요일","13:45~14:25","피아노(주2회) B반","최정아","010-9814-1024"],[1,"월요일","14:30~15:10","피아노(주2회) C반","최정아","010-98
+    const rawKw = [[1,"월요일","13:00~13:40","영어교실 A반","강미은","010-6862-4843"],[1,"월요일","13:45~14:25","영어교실 B반","강미은","010-6862-4843"],[1,"월요일","14:30~15:10","영어교실 C반","강미은","010-6862-4843"],[1,"월요일","13:00~13:40","피아노(주2회) A반","최정아","010-9814-1024"],[1,"월요일","13:45~14:25","피아노(주2회) B반","최정아","010-9814-1024"],[1,"월요일","14:30~15:10","피아노(주2회) C반","최정아","010-9814-1024"],[1,"월요일","15:15~15:55","피아노(주2회) D반","최정아","010-9814-1024"],[1,"월요일","13:00~14:20","방송댄스 A반","임지향","010-6568-1716"],[1,"월요일","14:30~15:50","방송댄스 B반","임지향","010-6568-1716"],[1,"월요일","13:00~14:20","요리 A반","김수연","010-2823-7744"],[1,"월요일","14:30~15:50","요리 B반","김수연","010-2823-7744"],[1,"월요일","13:00~14:20","창의과학 A반","강현정","010-5386-7502"],[1,"월요일","14:30~15:50","창의과학 B반","강현정","010-5386-7502"],[1,"화요일","13:40~14:20","컴퓨터 A반","정래희","010-6483-9476"],[1,"화요일","14:25~15:05","컴퓨터 B반","정래희","010-6483-9476"],[1,"화요일","15:10~15:50","컴퓨터 C반","정래희","010-6483-9476"],[1,"화요일","15:55~16:35","컴퓨터 D반","정래희","010-6483-9476"],[1,"화요일","13:40~14:20","피아노(주3회) A반","최정아","010-9814-1024"],[1,"화요일","14:25~15:05","피아노(주3회) B반","최정아","010-9814-1024"],[1,"화요일","15:10~15:50","피아노(주3회) C반","최정아","010-9814-1024"],[1,"화요일","15:55~16:35","피아노(주3회) D반","최정아","010-9814-1024"],[1,"화요일","13:40~15:00","독서논술 A반","안덕희","010-6401-0262"],[1,"화요일","15:10~16:30","독서논술 B반","안덕희","010-6401-0262"],[1,"화요일","13:40~15:00","창의미술 A반","허윤정","010-6770-3624"],[1,"화요일","15:10~16:30","창의미술 B반","허윤정","010-6770-3624"],[1,"화요일","14:40~15:40","배드민턴 I A반","임종원","010-2770-3348"],[1,"화요일","15:40~16:40","배드민턴 I B반","임종원","010-2770-3348"],[1,"수요일","13:00~13:40","영어교실 A반","강미은","010-6862-4843"],[1,"수요일","13:45~14:25","영어교실 B반","강미은","010-6862-4843"],[1,"수요일","14:30~15:10","영어교실 C반","강미은","010-6862-4843"],[1,"수요일","13:00~13:40","피아노(주2회) A반","최정아","010-9814-1024"],[1,"수요일","13:45~14:25","피아노(주2회) B반","최정아","010-9814-1024"],[1,"수요일","14:30~15:10","피아노(주2회) C반","최정아","010-9814-1024"],[1,"수요일","15:15~15:55","피아노(주2회) D반","최정아","010-9814-1024"],[1,"수요일","13:00~14:20","바이올린 A반","연정윤","010-5298-5076"],[1,"수요일","14:30~15:50","바이올린 B반","연정윤","010-5298-5076"],[1,"수요일","13:00~14:20","코딩 I A반","서지연","010-7101-2039"],[1,"수요일","14:30~15:50","코딩 I B반","서지연","010-7101-2039"],[1,"수요일","13:00~14:20","한자 A반","김애연","010-2258-7696"],[1,"수요일","14:30~15:50","한자 B반","김애연","010-2258-7696"],[1,"목요일","13:40~14:20","컴퓨터 A반","정래희","010-6483-9476"],[1,"목요일","14:25~15:05","컴퓨터 B반","정래희","010-6483-9476"],[1,"목요일","15:10~15:50","컴퓨터 C반","정래희","010-6483-9476"],[1,"목요일","15:55~16:35","컴퓨터 D반","정래희","010-6483-9476"],[1,"목요일","13:40~14:20","피아노(주3회) A반","최정아","010-9814-1024"],[1,"목요일","14:25~15:05","피아노(주3회) B반","최정아","010-9814-1024"],[1,"목요일","15:10~15:50","피아노(주3회) C반","최정아","010-9814-1024"],[1,"목요일","15:55~16:35","피아노(주3회) D반","최정아","010-9814-1024"],[1,"목요일","13:40~15:00","바둑체스 A반","이연희","010-8876-5833"],[1,"목요일","15:10~16:30","바둑체스 B반","이연희","010-8876-5833"],[1,"목요일","13:40~15:00","주산암산 A반","이지영","010-8743-5089"],[1,"목요일","15:10~16:30","주산암산 B반","이지영","010-8743-5089"],[1,"목요일","13:40~15:00","클레이아트 A반","김은주","010-6750-8754"],[1,"목요일","15:10~16:30","클레이아트 B반","김은주","010-6750-8754"],[1,"목요일","14:40~15:40","축구 A반","성준모","010-5054-7880"],[1,"목요일","15:40~16:40","축구 B반","성준모","010-5054-7880"],[1,"금요일","13:40~14:20","피아노(주3회) A반","최정아","010-9814-1024"],[1,"금요일","14:25~15:05","피아노(주3회) B반","최정아","010-9814-1024"],[1,"금요일","15:10~15:50","피아노(주3회) C반","최정아","010-9814-1024"],[1,"금요일","15:55~16:35","피아노(주3회) D반","최정아","010-9814-1024"],[1,"금요일","14:40~15:40","배드민턴 II A반","남성락","010-7103-7198"],[1,"금요일","15:40~16:40","배드민턴 II B반","남성락","010-7103-7198"],[1,"금요일","13:40~15:00","수학아카데미 A반","홍진선","010-9133-1061"],[1,"금요일","15:10~16:30","수학아카데미 B반","홍진선","010-9133-1061"],[1,"금요일","13:40~15:00","전자로봇 A반","박선희","010-3713-6906"],[1,"금요일","15:10~16:30","전자로봇 B반","박선희","010-3713-6906"],[1,"금요일","13:40~15:00","코딩 II A반","박미경","010-9442-3439"],[1,"금요일","15:10~16:30","코딩 II B반","박미경","010-9442-3439"]];
+    const rawSm = [[4,"월요일","12:50~13:30","영어 A반","서석희","010-3314-6287"],[4,"월요일","13:40~14:20","영어 B반","서석희","010-3314-6287"],[4,"월요일","14:30~15:10","영어 C반","서석희","010-3314-6287"],[4,"월요일","12:50~13:40","피아노 A반","양주희","010-3298-1484"],[4,"월요일","13:50~14:40","피아노 B반","양주희","010-3298-1484"],[4,"월요일","14:50~15:40","피아노 C반","양주희","010-3298-1484"],[4,"화요일","13:40~15:00","미니어쳐 A반","박건희","010-2941-1265"],[4,"화요일","15:10~16:30","미니어쳐 B반","박건희","010-2941-1265"],[4,"화요일","13:40~14:20","수학 A반","유혜자","010-2718-5056"],[4,"화요일","14:30~15:10","수학 B반","유혜자","010-2718-5056"],[4,"화요일","13:40~15:00","배드민턴 A반","박경애","010-6637-1035"],[4,"화요일","15:10~16:30","배드민턴 B반","박경애","010-6637-1035"],[4,"수요일","12:50~13:30","영어 A반","서석희","010-3314-6287"],[4,"수요일","13:40~14:20","영어 B반","서석희","010-3314-6287"],[4,"수요일","14:30~15:10","영어 C반","서석희","010-3314-6287"],[4,"수요일","12:50~14:10","음악줄넘기 A반","변혜진","010-8816-6937"],[4,"수요일","14:20~15:40","음악줄넘기 B반","변혜진","010-8816-6937"],[4,"수요일","12:50~14:10","요리 A반","박은영","010-8245-1805"],[4,"수요일","14:20~15:40","요리 B반","박은영","010-8245-1805"],[4,"수요일","12:50~13:40","피아노 A반","양주희","010-3298-1484"],[4,"수요일","13:50~14:40","피아노 B반","양주희","010-3298-1484"],[4,"수요일","14:50~15:40","피아노 C반","양주희","010-3298-1484"],[4,"목요일","13:40~15:00","집중력한자 A반","고선옥","010-9042-8836"],[4,"목요일","15:10~16:30","집중력한자 B반","고선옥","010-9042-8836"],[4,"목요일","13:40~15:00","로봇영재 A반","이혜령","010-5311-1025"],[4,"목요일","15:10~16:30","로봇영재 B반","이혜령","010-5311-1025"],[4,"목요일","13:40~14:20","수학 A반","유혜자","010-2718-5056"],[4,"목요일","14:30~15:10","수학 B반","유혜자","010-2718-5056"],[4,"금요일","13:40~15:00","방송댄스 A반","이다영","010-5746-7971"],[4,"금요일","15:10~16:30","방송댄스 B반","이다영","010-5746-7971"],[4,"금요일","13:40~14:30","피아노 A반","양주희","010-3298-1484"],[4,"금요일","14:40~15:30","피아노 B반","양주희","010-3298-1484"],[4,"금요일","15:40~16:30","피아노 C반","양주희","010-3298-1484"]];
+    const extractedSchedules = rawKw.map((r,i) => ({ id:'s_kw_'+i, schoolId:'sch_'+r[0], day:r[1], time:r[2], course:r[3], teacher:r[4], phone:r[5] }));
+    const saemalSchedules = rawSm.map((r,i) => ({ id:'s_sm_'+i, schoolId:'sch_'+r[0], day:r[1], time:r[2], course:r[3], teacher:r[4], phone:r[5] }));
+
+    let appData = {
+      schools: fixedMasterSchools, schedules: [], masterTeachers: [], billings: [], calendarEvents: [],
+      expenses: [], attendances: [], notices: [], memos: [], vaultFiles: [],
+      bannerNotice: '📢 [공지] 에러 완벽 해결! 강사 명단 탭이 정상 복구되었으며 캘린더 첫 화면이 세팅되었습니다.'
+    };
+
+    let currentSchoolId = 'all';
+    let calYear = 2026, calMonth = 10, currentQuarter = 1;
+    let currentBillingCategory = 'after_instructor';
+
+    function loadLocalData() {
+      const saved = localStorage.getItem('brightMind_appData_v37');
+      if (saved) {
+        try {
+          const p = JSON.parse(saved);
+          appData.schedules = p.schedules || []; appData.masterTeachers = p.masterTeachers || []; appData.billings = p.billings || []; 
+          appData.calendarEvents = p.calendarEvents || []; appData.expenses = p.expenses || []; appData.attendances = p.attendances || [];
+          appData.notices = p.notices || []; appData.memos = p.memos || []; appData.vaultFiles = p.vaultFiles || [];
+          appData.schools = p.schools || fixedMasterSchools; appData.bannerNotice = p.bannerNotice || appData.bannerNotice;
+        } catch(e) {}
+      }
+    }
+    
+    function saveLocalData() { localStorage.setItem('brightMind_appData_v37', JSON.stringify(appData)); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons(); updateClock(); setInterval(updateClock, 1000);
+      
+      initIndexedDB().catch(console.error);
+      loadLocalData(); 
+      setupFormListeners();
+      
+      // ✅ 1회성 데이터 불러오기 (무한루프 에러 원천 차단)
+      firebase.database().ref('brightmind_data').once('value').then((snapshot) => {
+        const d = snapshot.val();
+        if (d) { 
+          appData.schedules = d.schedules || appData.schedules;
+          appData.masterTeachers = d.masterTeachers || appData.masterTeachers;
+          appData.billings = d.billings || appData.billings;
+          appData.calendarEvents = d.calendarEvents || appData.calendarEvents; 
+          appData.expenses = d.expenses || appData.expenses;
+          appData.attendances = d.attendances || appData.attendances;
+          appData.notices = d.notices || appData.notices;
+          appData.memos = d.memos || appData.memos;
+          appData.vaultFiles = d.vaultFiles || appData.vaultFiles;
+        }
+        
+        // 새말/경원초 시간표 유실 방지 이중잠금
+        if (!appData.schedules.some(s => s.schoolId === 'sch_1' && s.course.includes('코딩'))) appData.schedules.push(...extractedSchedules);
+        if (!appData.schedules.some(s => s.schoolId === 'sch_4' && s.course.includes('로봇영재'))) appData.schedules.push(...saemalSchedules);
+
+        firebase.database().ref('brightmind_data').set(appData);
+        saveLocalData(); renderSchoolList(); selectSchool(currentSchoolId);
+      }).catch(err => {
+        console.error('Firebase DB Error:', err);
+        renderSchoolList(); selectSchool(currentSchoolId);
+      });
+
+      document.getElementById('banner-notice-text').textContent = appData.bannerNotice;
+      switchTab('calendar-events'); // 첫 화면 캘린더
+    });
+
+    function saveData(key, val) { appData[key] = val; saveLocalData(); firebase.database().ref('brightmind_data').set(appData); }
+    function updateClock() { const now = new Date(); document.getElementById('realtime-clock').textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`; }
+
+    // 메뉴 탭 동작 활성화 (강사 메뉴 포함 9개)
+    function switchTab(tId) {
+      ['timetable', 'calendar-events', 'billing', 'checklist', 'expense', 'master-teachers', 'notices', 'memos', 'vault'].forEach(t => {
+        const v = document.getElementById(`view-${t}`); const b = document.getElementById(`tab-btn-${t}`);
+        if (!v || !b) return;
+        if (t === tId) {
+          v.classList.remove('hidden'); b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-amber-500 text-white shadow-sm shrink-0 cursor-pointer";
+          if (t === 'timetable') { renderSchoolTimetableGrid(); document.getElementById('substitute-search-box').classList.toggle('hidden', currentSchoolId !== 'all'); }
+          if (t === 'calendar-events') renderCalendarGrid();
+          if (t === 'billing') renderBilling();
+          if (t === 'checklist') renderChecklist();
+          if (t === 'expense') renderExpenseAndAttendance();
+          if (t === 'master-teachers') renderMasterTeacherList();
+          if (t === 'notices') renderNotices();
+          if (t === 'memos') renderMemos();
+          if (t === 'vault') renderVaultFiles();
+        } else {
+          v.classList.add('hidden'); b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function renderSchoolList() {
+      const container = document.getElementById('school-list-container'); if (!container) return;
+      let html = '';
+      document.getElementById('badge-total-schools').textContent = `${appData.schools.length}개소`;
+      appData.schools.forEach(sch => {
+        const isActive = currentSchoolId === sch.id;
+        const emoji = sch.name.includes('센터') ? '🏡' : '🎒';
+        html += `<div class="group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${isActive ? 'bg-amber-400 text-stone-900 border-amber-400 shadow-sm' : 'bg-white hover:bg-amber-50/70 text-stone-700 border-stone-200'}"><div class="flex items-center gap-2.5 truncate flex-1 min-w-0" onclick="selectSchool('${sch.id}')"><span class="text-base shrink-0">${emoji}</span><span class="truncate font-extrabold block tracking-tight text-sm">${sch.name}</span></div><div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1"><button onclick="deleteSchool('${sch.id}', event)" class="p-1 text-stone-400 hover:text-rose-600 cursor-pointer">×</button></div></div>`;
+      });
+      container.innerHTML = html;
+      
+      const allBtn = document.getElementById('btn-school-all');
+      if (allBtn) {
+        allBtn.className = currentSchoolId === 'all' ? "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer shrink-0" : "w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-stone-200 bg-white hover:bg-amber-50 text-stone-700 cursor-pointer shrink-0";
+      }
+      
+      let optHtml = '';
+      appData.schools.forEach(sch => optHtml += `<option value="${sch.id}">${sch.name}</option>`);
+      document.querySelectorAll('select[id*="school"]').forEach(select => {
+        if(select.id !== 'school-dropdown-select') select.innerHTML = optHtml;
+      });
+    }
+
+    function selectSchool(id) {
+      currentSchoolId = id; renderSchoolList();
+      const titleEl = document.getElementById('current-school-title');
+      const badgeEl = document.getElementById('current-school-badge');
+      if (id === 'all') {
+        titleEl.textContent = '(주)밝은생각 협업룸'; badgeEl.textContent = '전체 위탁기관 통합';
+      } else {
+        const sch = appData.schools.find(s => s.id === id);
+        titleEl.textContent = `${sch.name} 협업룸`; badgeEl.textContent = `${sch.name} 전담 모드`;
+      }
+      
+      const isTimetableVisible = !document.getElementById('view-timetable').classList.contains('hidden');
+      if (isTimetableVisible) {
+        const sb = document.getElementById('substitute-search-box');
+        if(sb) sb.classList.toggle('hidden', id !== 'all'); 
+      }
+      
+      renderSchoolTimetableGrid(); renderCalendarGrid(); renderBilling();
+      renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles();
+    }
+
+    // ================= TIMETABLE (행 맞춤 & 강사 스마트 필터링 연동) =================
+    function renderSchoolTimetableGrid() {
+      ['월요일', '화요일', '수요일', '목요일', '금요일'].forEach(d => {
+        const col = document.getElementById(`day-col-${d}`); if (!col) return; col.innerHTML = '';
+        let items = (appData.schedules || []).filter(s => s.day === d && (currentSchoolId === 'all' || s.schoolId === currentSchoolId));
+        if (items.length === 0) col.innerHTML = `<div class="p-4 text-center text-stone-300 text-xs bg-white rounded-xl border border-dashed border-stone-200">수업 없음</div>`;
+        else {
+          const groupMap = new Map();
+          items.forEach(item => {
+            let cleanCourse = item.course.replace(/[A-Z]반$/g, '').trim(); if (!cleanCourse) cleanCourse = item.course;
+            const key = `${cleanCourse}_${item.teacher.trim()}`;
+            if (!groupMap.has(key)) groupMap.set(key, { displayCourse: cleanCourse, teacher: item.teacher, phone: item.phone, slots: [] });
+            groupMap.get(key).slots.push({ id: item.id, time: item.time, originalCourse: item.course });
+          });
+          groupMap.forEach(group => {
+            group.slots.sort((a, b) => a.time.localeCompare(b.time));
+            const card = document.createElement('div'); card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs group flex flex-col h-full justify-between mb-2";
+            let slotsHtml = '';
+            group.slots.forEach(s => {
+              const classMatch = s.originalCourse.match(/[A-Z]반$/);
+              const classLabel = classMatch ? classMatch[0] : '단일';
+              slotsHtml += `<div class="flex items-center justify-between font-mono text-stone-700 mt-1 pb-1 border-b border-stone-50 border-dashed"><span class="font-semibold text-[11px] text-stone-600">[${classLabel}] ${s.time}</span><div class="opacity-0 group-hover:opacity-100 flex gap-1"><button onclick="openEditScheduleModal('${s.id}')" class="text-amber-600 hover:text-amber-800 font-bold px-1">수정</button><button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 font-bold px-1">×</button></div></div>`;
+            });
+            card.innerHTML = `<div><h5 class="font-black text-stone-900 text-[13px] mb-1">${group.displayCourse} <span class="text-amber-800 font-bold text-[11px]">(${group.teacher})</span></h5><div class="mt-1">${slotsHtml}</div></div><div class="mt-2 pt-1 font-mono text-stone-400 text-[10px] text-right">${group.phone || ''}</div>`;
+            col.appendChild(card);
+          });
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function openAddScheduleModal() { if (currentSchoolId === 'all') return alert('특정 학교를 먼저 선택해 주세요!'); document.getElementById('sched-input-edit-id').value = ''; document.getElementById('schedule-modal-title').textContent = '새 강좌 등록'; if(document.getElementById('form-add-schedule')) document.getElementById('form-add-schedule').reset(); openModal('modal-add-schedule'); }
+    function openEditScheduleModal(id) { const item = appData.schedules.find(s => s.id === id); if (!item) return; document.getElementById('sched-input-edit-id').value = item.id; document.getElementById('schedule-modal-title').textContent = '시간표 수정'; document.getElementById('sched-input-day').value = item.day; document.getElementById('sched-input-time').value = item.time; document.getElementById('sched-input-course').value = item.course; document.getElementById('sched-input-teacher').value = item.teacher; document.getElementById('sched-input-phone').value = item.phone || ''; openModal('modal-add-schedule'); }
+    function deleteScheduleItem(id) { if (confirm('해당 수업을 삭제하시겠습니까?')) { appData.schedules = appData.schedules.filter(s => s.id !== id); saveData('schedules', appData.schedules); renderSchoolTimetableGrid(); } }
+    
+    // ✅ 업로드된 엑셀과 연동되는 스마트 검색 로직
+    function findSmartSubstituteTeachers() {
+      const searchDay = document.getElementById('sub-search-day').value; 
+      const searchTimeKeyword = document.getElementById('sub-search-time').value.trim(); 
+      const resultList = document.getElementById('substitute-result-list'); 
+      resultList.innerHTML = ''; 
+      document.getElementById('substitute-result-area').classList.remove('hidden');
+
+      // 1. 해당 요일/시간에 이미 수업이 있는 바쁜 강사 목록 추출
+      const busySchedules = (appData.schedules || []).filter(s => s.day === searchDay && (!searchTimeKeyword || s.time.includes(searchTimeKeyword)));
+      const busyTeachers = busySchedules.map(s => s.teacher);
+      
+      const dayShort = searchDay.replace('요일','');
+
+      // 2. 엑셀로 업로드한 마스터 명단에서 요일이 맞으면서 시간표상 바쁘지 않은 강사 추출
+      const availableTeachers = (appData.masterTeachers || []).filter(t => t.day.includes(dayShort) && !busyTeachers.includes(t.name));
+
+      if (availableTeachers.length === 0) { 
+        resultList.innerHTML = `<div class="col-span-full p-3 bg-white rounded-xl text-xs text-stone-500 text-center">조건에 일치하는 출강 가능 강사가 없습니다.<br>강사 명단을 먼저 업로드해주세요.</div>`; return; 
+      }
+      
+      let html = '';
+      availableTeachers.forEach(t => {
+        html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs flex flex-col justify-between"><div><div class="flex justify-between mb-1"><span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-bold text-[10px]">${t.school} 출강강사</span><span class="font-mono text-emerald-600 font-bold">투입 가능</span></div><p class="font-black text-stone-900 text-sm mt-1">${t.name} 강사</p><p class="text-stone-600 font-semibold mt-0.5">${t.subject}</p></div><div class="mt-2 pt-2 border-t border-stone-100 font-mono text-right text-stone-500">${t.phone || '연락처 없음'}</div></div>`;
+      });
+      resultList.innerHTML = html;
+    }
+
+    // ================= CALENDAR =================
+    function changeCalendarMonth(delta) { calMonth += delta; if (calMonth > 12) { calMonth = 1; calYear++; } else if (calMonth < 1) { calMonth = 12; calYear--; } renderCalendarGrid(); }
+    function renderCalendarGrid() {
+      document.getElementById('calendar-month-title').textContent = `${calYear}년 ${calMonth}월`; const gridDaysEl = document.getElementById('calendar-grid-days'); gridDaysEl.innerHTML = '';
+      let events = (appData.calendarEvents || []).filter(ev => currentSchoolId === 'all' || ev.schoolId === currentSchoolId);
+      const holidays = { '1-1':'신정','3-1':'삼일절','5-5':'어린이날','6-6':'현충일','8-15':'광복절','10-3':'개천절','10-9':'한글날','12-25':'성탄절' };
+      if (calYear === 2026 && calMonth === 9) [24,25,26].forEach(d => holidays[`9-${d}`] = '추석 연휴');
+      const firstDayIndex = new Date(calYear, calMonth - 1, 1).getDay(), totalDays = new Date(calYear, calMonth, 0).getDate();
+      
+      let html = '';
+      for (let i = 0; i < firstDayIndex; i++) html += `<div class="bg-stone-50/40 rounded-2xl min-h-[140px] p-2 opacity-30"></div>`;
+      for (let day = 1; day <= totalDays; day++) {
+        const isSunday = new Date(calYear, calMonth - 1, day).getDay() === 0, holidayName = holidays[`${calMonth}-${day}`];
+        const dayEvents = events.filter(ev => (!ev.ym && parseInt(ev.dateStr, 10) === day) || (ev.ym === `${calYear}-${calMonth}` && parseInt(ev.dateStr, 10) === day));
+        let contentHtml = holidayName ? `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold bg-rose-100 text-rose-900 border-rose-300 mb-1">🔴 ${holidayName}</div>` : '';
+        dayEvents.forEach(ev => { contentHtml += `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex justify-between ${ev.type === '휴강일' ? 'bg-rose-100 text-rose-900' : 'bg-indigo-100 text-indigo-900'} mb-1"><span>📌 ${ev.keyword}</span><button onclick="deleteCalendarEvent('${ev.id}')" class="text-rose-500 font-bold">×</button></div>`; });
+        const dayColorClass = (isSunday || holidayName) ? 'text-rose-600' : new Date(calYear, calMonth - 1, day).getDay() === 6 ? 'text-blue-600' : 'text-stone-800';
+        html += `<div class="bg-white rounded-2xl border border-stone-200 min-h-[140px] p-2.5 flex flex-col justify-between shadow-2xs"><div><div class="flex items-center justify-between mb-1.5"><span class="font-mono font-bold text-xs md:text-sm ${dayColorClass}">${day}</span><button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer">+</button></div><div class="space-y-1 overflow-y-auto max-h-[100px] custom-scroll pr-0.5">${contentHtml}</div></div></div>`;
+      }
+      gridDaysEl.innerHTML = html;
+    }
+    function quickAddCalDay(dayNum) { document.getElementById('cal-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; document.getElementById('cal-input-ym').value = `${calYear}-${calMonth}`; document.getElementById('cal-input-daynum').value = dayNum; openModal('modal-add-calendar-event'); }
+    function deleteCalendarEvent(id) { if (confirm('일정을 삭제하시겠습니까?')) { appData.calendarEvents = appData.calendarEvents.filter(ev => ev.id !== id); saveData('calendarEvents', appData.calendarEvents); renderCalendarGrid(); } }
+
+    // ================= CHECKLIST =================
+    function renderChecklist() {
+      const tbody = document.getElementById('checklist-table-body'); if (!tbody) return; 
+      let readyCount = 0, missingCount = 0; const checkQ = parseInt(document.getElementById('checklist-period').value, 10);
+      let html = '';
+      appData.schools.forEach(sch => {
+        const after1 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && (b.category || 'after_instructor') === 'after_instructor');
+        const after2 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && (b.category || 'after_instructor') === 'after_instructor');
+        const after3 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && (b.category || 'after_instructor') === 'after_instructor');
+        const custom1 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 1 && b.category === 'custom_instructor');
+        const custom2 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 2 && b.category === 'custom_instructor');
+        const custom3 = appData.billings.some(b => b.schoolId === sch.id && b.quarter === checkQ && b.period === 3 && b.category === 'custom_instructor');
+        const hasAtt = appData.attendances.some(a => a.schoolId === sch.id);
+        const hasExp = appData.expenses.some(e => e.schoolId === sch.id);
+        const afterDoneCount = [after1, after2, after3].filter(Boolean).length;
+        let badgeHtml = '';
+        if (afterDoneCount === 3) { badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs">🟢 3차완료</span>'; readyCount++; }
+        else if (afterDoneCount > 0) { badgeHtml = `<span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-800 font-bold text-xs">🟡 ${afterDoneCount}/3차</span>`; }
+        else { badgeHtml = '<span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-800 font-bold text-xs">🔴 미제출</span>'; missingCount++; }
+        html += `<tr class="hover:bg-amber-50/30 transition-colors"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-4 text-center font-mono text-xs"><span class="${after1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · <span class="${after2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · <span class="${after3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span></td><td class="py-3 px-4 text-center font-mono text-xs"><span class="${custom1 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">1차</span> · <span class="${custom2 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">2차</span> · <span class="${custom3 ? 'text-emerald-600 font-bold' : 'text-stone-300'}">3차</span></td><td class="py-3 px-4 text-center">${hasAtt ? '<span class="text-emerald-600 font-bold text-xs">✓ 등록</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td><td class="py-3 px-4 text-center">${hasExp ? '<span class="text-stone-700 text-xs">등록됨</span>' : '<span class="text-stone-300 text-xs">-</span>'}</td><td class="py-3 px-4 text-center">${badgeHtml}</td><td class="py-3 px-4 text-center"><button onclick="selectSchool('${sch.id}')" class="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-amber-100 text-stone-700 font-bold text-[11px] cursor-pointer">이동 →</button></td></tr>`;
+      });
+      tbody.innerHTML = html;
+      document.getElementById('stat-ready-count').textContent = readyCount; document.getElementById('stat-pending-count').textContent = appData.schools.length - readyCount - missingCount; document.getElementById('stat-missing-count').textContent = missingCount;
+    }
+
+    // ================= BILLING =================
+    function switchBillingCategory(cat) { currentBillingCategory = cat; ['after_instructor', 'after_materials', 'custom_instructor', 'custom_materials'].forEach(c => { const btn = document.getElementById(`sub-billing-btn-${c}`); if(btn) btn.className = c === cat ? "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer" : "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer"; }); renderBilling(); }
+    function changeQuarter(q) { currentQuarter = q; for (let i = 1; i <= 4; i++) { const b = document.getElementById(`btn-q-${i}`); if (b) b.className = (i === q) ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer" : "px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer"; } renderBilling(); }
+    function renderBilling() {
+      const tbody = document.getElementById('billing-table-body'); if (!tbody) return; 
+      if (currentSchoolId === 'all') { tbody.innerHTML = ''; return; }
+      const sch = appData.schools.find(s => s.id === currentSchoolId);
+      let catTitle = '방과후학교 강사료'; if (currentBillingCategory === 'after_materials') catTitle = '방과후학교 교재비'; else if (currentBillingCategory === 'custom_instructor') catTitle = '맞춤형 강사료'; else if (currentBillingCategory === 'custom_materials') catTitle = '맞춤형 교재비';
+
+      let html = '';
+      [1, 2, 3].forEach(period => {
+        const item = (appData.billings || []).find(b => b.schoolId === currentSchoolId && (b.category || 'after_instructor') === currentBillingCategory && b.quarter === currentQuarter && b.period === period);
+        if (item) {
+          html += `<tr class="hover:bg-amber-50/40"><td class="py-3 px-4 font-bold text-stone-900">${sch.name}</td><td class="py-3 px-3 text-center"><span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900">${catTitle}</span></td><td class="py-3 px-3 text-center font-semibold text-stone-700">${currentQuarter}분기</td><td class="py-3 px-4 text-center font-bold text-stone-800 font-mono">${period}차</td><td class="py-3 px-4 text-right font-bold text-amber-800 text-sm">${(item.amount || 0).toLocaleString()}원</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${item.id}', 'excel', '${item.fileName}')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-bold">보기</button></td><td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${item.id}', '${item.fileName}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200 cursor-pointer">다운</button></td><td class="py-3 px-3 text-center"><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-200">수정</button></td><td class="py-3 px-3 text-center"><button onclick="deleteBilling('${item.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`;
+        } else {
+          html += `<tr><td class="py-3 px-4 font-bold text-stone-500">${sch.name}</td><td class="py-3 px-3 text-center text-stone-400">${catTitle}</td><td class="py-3 px-3 text-center text-stone-400">${currentQuarter}분기</td><td class="py-3 px-4 text-center font-bold text-stone-600 font-mono">${period}차</td><td class="py-3 px-4 text-right text-stone-300">-</td><td class="py-3 px-4 text-center"><button onclick="openAddBillingModalForSlot('${currentSchoolId}', ${period})" class="px-3 py-1 rounded-xl bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center gap-1 mx-auto">+ 등록</button></td><td colspan="3" class="text-center text-stone-300">-</td></tr>`;
+        }
+      });
+      tbody.innerHTML = html;
+      lucide.createIcons();
+    }
+    
+    // ================= EXPENSE & ATTENDANCE =================
+    function changeMonth(m) { currentMonth = parseInt(m, 10); renderExpenseAndAttendance(); renderChecklist(); }
+    function renderExpenseAndAttendance() {
+      const expBody = document.getElementById('expense-table-body'); if (!expBody) return; 
+      const expList = appData.expenses.filter(e => e.month === currentMonth && (currentSchoolId === 'all' || e.schoolId === currentSchoolId));
+      let totalExp = 0; let eHtml = '';
+      if (expList.length === 0) eHtml = `<tr><td colspan="5" class="p-4 text-center text-stone-400">내역이 없습니다.</td></tr>`;
+      else expList.forEach(e => { const sch = appData.schools.find(s => s.id === e.schoolId); totalExp += e.amount || 0; eHtml += `<tr class="hover:bg-emerald-50/30"><td class="p-2.5 font-bold">${sch ? sch.name : '-'}</td><td class="p-2.5 font-bold font-mono">${e.month}월</td><td class="p-2.5 text-right font-bold text-emerald-800">${(e.amount||0).toLocaleString()}원</td><td class="p-2.5 text-center"><button onclick="previewFile('${e.id}', 'pdf', '${e.fileName}')" class="px-2 py-0.5 bg-stone-100 font-bold rounded-md text-[11px]">보기</button></td><td class="p-2.5 text-center"><button onclick="deleteExpense('${e.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`; });
+      expBody.innerHTML = eHtml;
+      document.getElementById('total-monthly-expense').textContent = totalExp.toLocaleString() + '원';
+
+      const attBody = document.getElementById('attendance-table-body');
+      const attList = appData.attendances.filter(a => a.month === currentMonth && (currentSchoolId === 'all' || a.schoolId === currentSchoolId));
+      let aHtml = '';
+      if (attList.length === 0) aHtml = `<tr><td colspan="5" class="p-4 text-center text-stone-400">내역이 없습니다.</td></tr>`;
+      else attList.forEach(a => { const sch = appData.schools.find(s => s.id === a.schoolId); aHtml += `<tr class="hover:bg-sky-50/30"><td class="p-2.5 font-bold">${sch ? sch.name : '-'}</td><td class="p-2.5 font-bold">${a.teacher}</td><td class="p-2.5 text-center font-bold font-mono">${a.month}월</td><td class="p-2.5 text-center"><button onclick="previewFile('${a.id}', 'pdf', '${a.fileName}')" class="px-2 py-0.5 bg-stone-100 font-bold rounded-md text-[11px]">보기</button></td><td class="p-2.5 text-center"><button onclick="deleteAttendance('${a.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`; });
+      attBody.innerHTML = aHtml;
+    }
+
+    // ================= OTHER TABS =================
+    function renderNotices() {
+      const tbody = document.getElementById('notices-table-body'); if (!tbody) return; 
+      let list = appData.notices; if (currentSchoolId !== 'all') list = list.filter(n => n.schoolId === currentSchoolId);
+      let html = '';
+      if (list.length === 0) html = `<tr><td colspan="5" class="p-6 text-center text-stone-400">등록된 안내장이 없습니다.</td></tr>`;
+      else list.forEach(n => { const sch = appData.schools.find(s => s.id === n.schoolId); html += `<tr class="hover:bg-amber-50/20"><td class="py-3 px-4 font-mono text-stone-500">${n.date}</td><td class="py-3 px-4 font-bold">${sch.name}</td><td class="py-3 px-4 font-semibold">${n.fileName}</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${n.id}', 'pdf', '${n.fileName}')" class="px-2.5 py-1 bg-stone-100 font-bold rounded-lg text-xs">보기</button></td><td class="py-3 px-3 text-center"><button onclick="deleteNotice('${n.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`; });
+      tbody.innerHTML = html;
+    }
+
+    function renderMemos() {
+      const container = document.getElementById('memo-list-container'); if (!container) return; 
+      let list = appData.memos; if (currentSchoolId !== 'all') list = list.filter(m => m.schoolId === currentSchoolId);
+      let html = '';
+      if (list.length === 0) html = `<div class="p-6 bg-white rounded-3xl border border-stone-200 text-center text-xs text-stone-400">메모가 없습니다.</div>`;
+      else list.slice().reverse().forEach(m => { const sch = appData.schools.find(s => s.id === m.schoolId); html += `<div class="p-4 bg-white rounded-2xl border border-stone-200 shadow-2xs flex flex-col justify-between"><div><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><span class="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-bold text-xs">${sch?sch.name:'공통'}</span><span class="font-bold text-xs">${m.author}</span></div><div class="flex items-center gap-2"><span class="text-stone-400 text-xs font-mono">${m.date}</span><button onclick="deleteMemo('${m.id}')" class="text-stone-300 hover:text-rose-500 font-bold">×</button></div></div><p class="text-xs leading-relaxed whitespace-pre-line">${m.text}</p></div></div>`; });
+      container.innerHTML = html;
+    }
+
+    function renderVaultFiles() {
+      const tbody = document.getElementById('vault-table-body'); if (!tbody) return; 
+      let html = '';
+      if (appData.vaultFiles.length === 0) html = `<tr><td colspan="5" class="p-6 text-center text-stone-400">서식이 없습니다.</td></tr>`;
+      else appData.vaultFiles.forEach(f => { html += `<tr class="hover:bg-amber-50/20"><td class="py-3 px-4 font-mono text-stone-500">${f.date}</td><td class="py-3 px-4 font-bold">${f.name}</td><td class="py-3 px-3 text-center"><button onclick="previewFile('${f.id}', 'pdf', '${f.name}')" class="px-2.5 py-1 bg-stone-100 font-bold rounded-lg text-xs">보기</button></td><td class="py-3 px-3 text-center"><button onclick="downloadFileFromDB('${f.id}', '${f.name}')" class="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-bold rounded-lg text-xs">다운</button></td><td class="py-3 px-3 text-center"><button onclick="deleteVaultFile('${f.id}')" class="text-stone-300 hover:text-red-500 font-bold">×</button></td></tr>`; });
+      tbody.innerHTML = html;
+    }
+
+    function renderMasterTeacherList() {
+      const query = document.getElementById('teacher-search-input')?.value.trim().toLowerCase();
+      const grid = document.getElementById('master-teacher-grid'); if (!grid) return; 
+      let list = appData.masterTeachers || [];
+      if (currentSchoolId !== 'all') { const sch = appData.schools.find(s => s.id === currentSchoolId); if (sch) list = list.filter(t => t.school === sch.name); }
+      if (query) list = list.filter(t => t.subject.toLowerCase().includes(query) || t.name.toLowerCase().includes(query) || t.school.toLowerCase().includes(query) || t.day.toLowerCase().includes(query));
+      
+      let html = '';
+      if (list.length === 0) html = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">업로드된 강사 명단이 없습니다.</div>`;
+      else list.forEach(t => { html += `<div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all flex flex-col justify-between text-xs"><div><div class="flex items-center justify-between mb-1.5"><span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[11px]">${t.school}</span><span class="font-mono text-stone-500 font-bold">${t.day}</span></div><h5 class="font-black text-stone-900 text-sm mt-1">${t.subject}</h5><p class="font-bold text-amber-800 mt-0.5">${t.name} 강사님</p></div><div class="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between"><span class="font-mono text-stone-600 font-semibold">${t.phone || '연락처 없음'}</span></div></div>`; });
+      grid.innerHTML = html;
+    }
+
+    // Modal opens & deletes
+    function openModal(id) { if(document.getElementById(id)) document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { if(document.getElementById(id)) document.getElementById(id).classList.add('hidden'); }
+    function openAddSchoolModal() { document.getElementById('form-add-school')?.reset(); openModal('modal-add-school'); }
+    function openAddCalendarEventModal() { document.getElementById('form-add-calendar-event')?.reset(); document.getElementById('cal-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; document.getElementById('cal-input-ym').value = `${calYear}-${calMonth}`; openModal('modal-add-calendar-event'); }
+    function openAddScheduleModal() { if (currentSchoolId === 'all') return alert('학교를 선택하세요!'); document.getElementById('form-add-schedule')?.reset(); document.getElementById('sched-input-edit-id').value = ''; openModal('modal-add-schedule'); }
+    function openAddBillingModalForSlot(schoolId, period) { document.getElementById('billing-input-category').value = currentBillingCategory; document.getElementById('billing-input-school').value = schoolId; document.getElementById('billing-input-quarter').value = currentQuarter; document.getElementById('billing-input-period').value = period; document.getElementById('billing-input-amount').value = ''; document.getElementById('billing-input-file').value = ''; openModal('modal-add-billing'); }
+    function openEditBillingModal(billingId) { const item = appData.billings.find(b => b.id === billingId); if (!item) return; document.getElementById('edit-billing-id').value = item.id; document.getElementById('edit-billing-amount').value = item.amount; document.getElementById('edit-billing-file').value = ''; openModal('modal-edit-billing'); }
+    function openAddExpenseModal() { document.getElementById('form-add-expense')?.reset(); document.getElementById('exp-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; document.getElementById('exp-input-month').value = currentMonth; openModal('modal-add-expense'); }
+    function openAddAttendanceModal() { document.getElementById('form-add-attendance')?.reset(); document.getElementById('att-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; document.getElementById('att-input-month').value = currentMonth; openModal('modal-add-attendance'); }
+    function openAddNoticeModal() { document.getElementById('form-add-notice')?.reset(); document.getElementById('not-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; openModal('modal-add-notice'); }
+    function openAddVaultModal() { document.getElementById('form-add-vault')?.reset(); openModal('modal-add-vault'); }
+    function openAddMemoModal() { document.getElementById('form-add-memo')?.reset(); document.getElementById('memo-input-school').value = currentSchoolId === 'all' ? fixedMasterSchools[0].id : currentSchoolId; openModal('modal-add-memo'); }
+
+    function deleteSchool(id, e) { e.stopPropagation(); if (confirm('기관을 삭제하시겠습니까?')) { appData.schools = appData.schools.filter(s => s.id !== id); saveData('schools', appData.schools); if (currentSchoolId === id) selectSchool('all'); else renderSchoolList(); } }
+    function deleteScheduleItem(id) { if (confirm('수업을 삭제하시겠습니까?')) { appData.schedules = appData.schedules.filter(s => s.id !== id); saveData('schedules', appData.schedules); renderSchoolTimetableGrid(); } }
+    function deleteCalendarEvent(id) { if (confirm('일정을 삭제하시겠습니까?')) { appData.calendarEvents = appData.calendarEvents.filter(ev => ev.id !== id); saveData('calendarEvents', appData.calendarEvents); renderCalendarGrid(); } }
+    function deleteBilling(id) { if (confirm('청구서를 삭제하시겠습니까?')) { appData.billings = appData.billings.filter(b => b.id !== id); saveData('billings', appData.billings); renderBilling(); renderChecklist(); } }
+    function deleteExpense(id) { if (confirm('지출결의서를 삭제하시겠습니까?')) { appData.expenses = appData.expenses.filter(e => e.id !== id); saveData('expenses', appData.expenses); renderExpenseAndAttendance(); renderChecklist(); } }
+    function deleteAttendance(id) { if (confirm('출근부를 삭제하시겠습니까?')) { appData.attendances = appData.attendances.filter(a => a.id !== id); saveData('attendances', appData.attendances); renderExpenseAndAttendance(); renderChecklist(); } }
+    function deleteNotice(id) { if (confirm('안내장을 삭제하시겠습니까?')) { appData.notices = appData.notices.filter(n => n.id !== id); saveData('notices', appData.notices); renderNotices(); } }
+    function deleteVaultFile(id) { if (confirm('서식을 삭제하시겠습니까?')) { appData.vaultFiles = appData.vaultFiles.filter(f => f.id !== id); saveData('vaultFiles', appData.vaultFiles); renderVaultFiles(); } }
+    function deleteMemo(id) { if (confirm('메모를 삭제하시겠습니까?')) { appData.memos = appData.memos.filter(m => m.id !== id); saveData('memos', appData.memos); renderMemos(); } }
+
+    function setupFormListeners() {
+      if(document.getElementById('form-add-school')) document.getElementById('form-add-school').addEventListener('submit', (e) => { e.preventDefault(); const name = document.getElementById('new-school-name').value.trim(); if (!name) return; const newId = 'sch_' + Date.now(); appData.schools.push({ id: newId, name }); saveData('schools', appData.schools); closeModal('modal-add-school'); renderSchoolList(); selectSchool(newId); });
+      if(document.getElementById('form-add-schedule')) document.getElementById('form-add-schedule').addEventListener('submit', (e) => { e.preventDefault(); const editId = document.getElementById('sched-input-edit-id').value; const day = document.getElementById('sched-input-day').value; const time = document.getElementById('sched-input-time').value.trim(); const course = document.getElementById('sched-input-course').value.trim(); const teacher = document.getElementById('sched-input-teacher').value.trim(); const phone = document.getElementById('sched-input-phone').value.trim(); if (editId) { const item = appData.schedules.find(s => s.id === editId); if (item) { item.day = day; item.time = time; item.course = course; item.teacher = teacher; item.phone = phone; } } else { appData.schedules.push({ id: 's_' + Date.now(), schoolId: currentSchoolId, day, time, course, teacher, phone }); } saveData('schedules', appData.schedules); closeModal('modal-add-schedule'); renderSchoolTimetableGrid(); });
+      if(document.getElementById('form-add-calendar-event')) document.getElementById('form-add-calendar-event').addEventListener('submit', (e) => { e.preventDefault(); appData.calendarEvents.push({ id: 'cal_' + Date.now(), schoolId: document.getElementById('cal-input-school').value, type: document.getElementById('cal-input-type').value, ym: document.getElementById('cal-input-ym').value, dateStr: document.getElementById('cal-input-daynum').value.trim(), keyword: document.getElementById('cal-input-keyword').value.trim() }); saveData('calendarEvents', appData.calendarEvents); closeModal('modal-add-calendar-event'); renderCalendarGrid(); });
+      if(document.getElementById('form-add-billing')) document.getElementById('form-add-billing').addEventListener('submit', async (e) => {
+        e.preventDefault(); const schoolId = document.getElementById('billing-input-school').value, category = document.getElementById('billing-input-category').value, quarter = parseInt(document.getElementById('billing-input-quarter').value, 10), period = parseInt(document.getElementById('billing-input-period').value, 10), amount = parseInt(document.getElementById('billing-input-amount').value, 10), file = document.getElementById('billing-input-file').files[0];
+        const existingIdx = appData.billings.findIndex(b => b.schoolId === schoolId && (b.category || 'after_instructor') === category && b.quarter === quarter && b.period === period);
+        const fileId = existingIdx > -1 ? appData.billings[existingIdx].id : 'b_' + Date.now(); const fileName = file ? file.name : (existingIdx > -1 ? appData.billings[existingIdx].fileName : `청구서.xlsx`);
+        if (file) await storeFile(fileId, file);
+        if (existingIdx > -1) appData.billings[existingIdx] = { id: fileId, schoolId, category, quarter, period, amount, fileName }; else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName });
+        saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
+      });
+      if(document.getElementById('form-edit-billing')) document.getElementById('form-edit-billing').addEventListener('submit', async (e) => {
+        e.preventDefault(); const id = document.getElementById('edit-billing-id').value, amount = parseInt(document.getElementById('edit-billing-amount').value, 10), file = document.getElementById('edit-billing-file').files[0];
+        const item = appData.billings.find(b => b.id === id); if (!item) return; item.amount = amount;
+        if (file) { item.fileName = file.name; await storeFile(item.id, file); }
+        saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling(); renderChecklist();
+      });
+      if(document.getElementById('form-add-expense')) document.getElementById('form-add-expense').addEventListener('submit', async (e) => {
+        e.preventDefault(); const schoolId = document.getElementById('exp-input-school').value, month = parseInt(document.getElementById('exp-input-month').value, 10), amount = parseInt(document.getElementById('exp-input-amount').value, 10), file = document.getElementById('exp-input-file').files[0];
+        const fileId = 'e_' + Date.now(); const fileName = file ? file.name : `지출결의서.pdf`; if (file) await storeFile(fileId, file);
+        appData.expenses.push({ id: fileId, month, schoolId, amount, fileName }); saveData('expenses', appData.expenses); closeModal('modal-add-expense'); currentMonth = month; document.getElementById('select-month').value = month; renderExpenseAndAttendance(); renderChecklist();
+      });
+      if(document.getElementById('form-add-attendance')) document.getElementById('form-add-attendance').addEventListener('submit', async (e) => {
+        e.preventDefault(); const schoolId = document.getElementById('att-input-school').value, month = parseInt(document.getElementById('att-input-month').value, 10), teacher = document.getElementById('att-input-teacher').value.trim(), file = document.getElementById('att-input-file').files[0];
+        const fileId = 'a_' + Date.now(); const fileName = file ? file.name : `코디출근부.pdf`; if (file) await storeFile(fileId, file);
+        appData.attendances.push({ id: fileId, month: month, schoolId, teacher, fileName }); saveData('attendances', appData.attendances); closeModal('modal-add-attendance'); currentMonth = month; document.getElementById('select-month').value = month; renderExpenseAndAttendance(); renderChecklist();
+      });
+      if(document.getElementById('form-add-notice')) document.getElementById('form-add-notice').addEventListener('submit', async (e) => {
+        e.preventDefault(); const schoolId = document.getElementById('not-input-school').value, quarter = parseInt(document.getElementById('not-input-quarter').value, 10), file = document.getElementById('not-input-file').files[0];
+        const fileId = 'n_' + Date.now(); const fileName = file ? file.name : `안내장.pdf`; if (file) await storeFile(fileId, file);
+        appData.notices.push({ id: fileId, schoolId, quarter, date: new Date().toISOString().split('T')[0], fileName }); saveData('notices', appData.notices); closeModal('modal-add-notice'); renderNotices();
+      });
+      if(document.getElementById('form-add-vault')) document.getElementById('form-add-vault').addEventListener('submit', async (e) => {
+        e.preventDefault(); const file = document.getElementById('vault-input-file').files[0]; if (!file) return;
+        const fileId = 'v_' + Date.now(); await storeFile(fileId, file);
+        appData.vaultFiles.push({ id: fileId, date: new Date().toISOString().split('T')[0], name: file.name }); saveData('vaultFiles', appData.vaultFiles); closeModal('modal-add-vault'); renderVaultFiles();
+      });
+      if(document.getElementById('form-add-memo')) document.getElementById('form-add-memo').addEventListener('submit', (e) => {
+        e.preventDefault(); const schoolId = document.getElementById('memo-input-school').value, author = document.getElementById('memo-input-author').value, text = document.getElementById('memo-input-text').value.trim();
+        appData.memos.push({ id: 'm_' + Date.now(), schoolId, author, text, date: new Date().toISOString().split('T')[0] }); saveData('memos', appData.memos); closeModal('modal-add-memo'); renderMemos();
+      });
+      
+      // 강사 명단 엑셀 업로드 동작 처리
+      if(document.getElementById('form-upload-teacher-excel')) {
+        document.getElementById('form-upload-teacher-excel').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const file = document.getElementById('teacher-upload-file').files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            try {
+              const data = evt.target.result;
+              const workbook = XLSX.read(data, {type: 'binary'});
+              const firstSheet = workbook.SheetNames[0];
+              const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+              appData.masterTeachers = rows.map(r => ({
+                  school: r['학교명'] || r['학교'] || '소속없음',
+                  subject: r['과목명'] || r['과목'] || '기타',
+                  name: r['강사명'] || r['이름'] || '무명',
+                  phone: r['연락처'] || r['전화번호'] || '',
+                  day: r['출강요일'] || r['요일'] || '월화수목금'
+              }));
+              saveData('masterTeachers', appData.masterTeachers);
+              closeModal('modal-upload-teacher-excel');
+              renderMasterTeacherList();
+              alert('강사 명단이 성공적으로 업데이트 되었습니다.');
+            } catch(err) { alert('엑셀 파싱 오류: ' + err); }
+          };
+          reader.readAsBinaryString(file);
+        });
+      }
+    }
+  </script>
+</body>
+</html>

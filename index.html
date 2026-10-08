@@ -536,9 +536,10 @@
             group.slots.sort((a, b) => a.time.localeCompare(b.time));
             const card = document.createElement('div'); card.className = "p-3 bg-white rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all text-xs group flex flex-col h-full justify-between mb-2";
             let slotsHtml = '';
-            group.slots.forEach(s => {
+            group.slots.forEach((s, idx) => {
               const classMatch = s.originalCourse.match(/[A-Z]반$/);
-              const classLabel = classMatch ? classMatch[0] : '단일';
+              // 원본에 A/B/C/D반 표기가 없으면 시간순으로 A반, B반, C반... 자동 부여
+              const classLabel = classMatch ? classMatch[0] : `${String.fromCharCode(65 + idx)}반`;
               slotsHtml += `<div class="flex items-center justify-between font-mono text-stone-700 mt-1 pb-1 border-b border-stone-50 border-dashed"><span class="font-semibold text-[11px] text-stone-600">[${classLabel}] ${s.time}</span><div class="opacity-0 group-hover:opacity-100 flex gap-1"><button onclick="openEditScheduleModal('${s.id}')" class="text-amber-600 hover:text-amber-800 font-bold px-1">수정</button><button onclick="deleteScheduleItem('${s.id}')" class="text-rose-500 hover:text-rose-700 font-bold px-1">×</button></div></div>`;
             });
             card.innerHTML = `<div><h5 class="font-black text-stone-900 text-[13px] mb-1">${group.displayCourse} <span class="text-amber-800 font-bold text-[11px]">(${group.teacher})</span></h5><div class="mt-1">${slotsHtml}</div></div><div class="mt-2 pt-1 font-mono text-stone-400 text-[10px] text-right">${group.phone || ''}</div>`;
@@ -566,19 +567,29 @@
       }
 
       const dayShort = searchDay.replace('요일','');
-      // 같은 요일에 이미 수업이 하나라도 있는 강사는 제외합니다.
-      const busyTeacherNames = new Set((appData.schedules || [])
-        .filter(s => s.day === searchDay && s.teacher)
-        .map(s => String(s.teacher).trim()));
-
-      const availableTeachers = (appData.masterTeachers || []).filter(t => {
+      // 여러 학교에 출강하는 강사는 한 사람으로 묶되, 원하는 요일/과목 수업이 있으면 검색합니다.
+      // 다른 학교의 같은 요일 수업 때문에 무조건 제외하지 않고, 실제 출강 학교/수업 정보를 함께 보여줍니다.
+      const matchedRows = (appData.masterTeachers || []).filter(t => {
         const teacherName = String(t.name || '').trim();
         const teacherDays = String(t.day || '');
         const teacherSubject = String(t.subject || t.course || '').toLowerCase();
         const dayAvailable = teacherDays.includes(dayShort) || teacherDays.includes(searchDay);
         const subjectMatch = teacherSubject.includes(subjectKeyword) || subjectKeyword.includes(teacherSubject);
-        return teacherName && dayAvailable && subjectMatch && !busyTeacherNames.has(teacherName);
+        return teacherName && dayAvailable && subjectMatch;
       });
+
+      const teacherMap = new Map();
+      matchedRows.forEach(t => {
+        const name = String(t.name || '').trim();
+        const phone = String(t.phone || '').trim();
+        const key = `${name}|${phone}`;
+        if (!teacherMap.has(key)) teacherMap.set(key, { ...t, schools: [], matchedRows: [] });
+        const item = teacherMap.get(key);
+        if (t.school && !item.schools.includes(t.school)) item.schools.push(t.school);
+        item.matchedRows.push(t);
+      });
+
+      const availableTeachers = Array.from(teacherMap.values());
 
       if (availableTeachers.length === 0) {
         resultList.innerHTML = `<div class="col-span-full p-3 bg-white rounded-xl text-xs text-stone-500 text-center">조건에 일치하는 출강 가능 강사가 없습니다.<br><span class="text-indigo-600 font-bold">${searchDay} · ${subjectKeyword}</span> 기준으로 조회했습니다.</div>`;
@@ -587,7 +598,12 @@
 
       let html = '';
       availableTeachers.forEach(t => {
-        html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs flex flex-col justify-between"><div><div class="flex justify-between mb-1"><span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-bold text-[10px]">${t.school || '소속없음'} 출강강사</span><span class="font-mono text-emerald-600 font-bold">투입 가능</span></div><p class="font-black text-stone-900 text-sm mt-1">${t.name} 강사</p><p class="text-stone-600 font-semibold mt-0.5">${t.subject || t.course || '과목 미입력'}</p><p class="text-[10px] text-indigo-600 mt-1 font-bold">${searchDay} 출강 가능 · 동일 요일 수업 없음</p></div><div class="mt-2 pt-2 border-t border-stone-100 font-mono text-right text-stone-500">${t.phone || '연락처 없음'}</div></div>`;
+        const schools = t.schools.length ? t.schools.join(' · ') : '소속없음';
+        const otherDayRows = (appData.schedules || []).filter(s => s.day === searchDay && String(s.teacher || '').trim() === String(t.name || '').trim());
+        const conflictText = otherDayRows.length
+          ? `⚠ ${searchDay} 다른 학교 수업 ${otherDayRows.length}건 있음 · 시간 확인 필요`
+          : `${searchDay} 다른 학교 수업 없음`;
+        html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs flex flex-col justify-between"><div><div class="flex justify-between mb-1 gap-2"><span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-bold text-[10px] truncate">${schools}</span><span class="font-mono text-emerald-600 font-bold shrink-0">조회 가능</span></div><p class="font-black text-stone-900 text-sm mt-1">${t.name} 강사</p><p class="text-stone-600 font-semibold mt-0.5">${t.subject || t.course || '과목 미입력'}</p><p class="text-[10px] text-indigo-600 mt-1 font-bold">${searchDay} · ${conflictText}</p></div><div class="mt-2 pt-2 border-t border-stone-100 font-mono text-right text-stone-500">${t.phone || '연락처 없음'}</div></div>`;
       });
       resultList.innerHTML = html;
     }
@@ -768,15 +784,9 @@
               <p class="text-[10px] text-stone-400 font-bold mb-1">강좌명</p>
               <h5 class="font-black text-stone-900 text-[15px] leading-tight">${subject}</h5>
             </div>
-            <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <div class="bg-stone-50 rounded-xl p-2.5">
-                <p class="text-stone-400 font-bold mb-1">강사명</p>
-                <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
-              </div>
-              <div class="bg-stone-50 rounded-xl p-2.5">
-                <p class="text-stone-400 font-bold mb-1">수업시간</p>
-                <p class="font-bold text-stone-700">${time || '시간 미입력'}</p>
-              </div>
+            <div class="bg-stone-50 rounded-xl p-2.5 text-[11px]">
+              <p class="text-stone-400 font-bold mb-1">강사명</p>
+              <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
             </div>
             <div class="mt-2 pt-2.5 border-t border-stone-200 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
               <span class="font-mono font-semibold text-stone-600">☎ ${phone}</span>

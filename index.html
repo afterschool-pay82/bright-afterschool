@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
   <style>
+    .field-label{display:block;font-size:11px;font-weight:800;color:#78716c;margin:0 0 5px 2px}.field-input{width:100%;padding:.65rem .75rem;border:1px solid #e7e5e4;border-radius:.75rem;font-size:12px;outline:none;background:#fff}.field-input:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.08)}
     @font-face { font-family: 'NanumSquareRound'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff'); }
     @font-face { font-family: 'GmarketSansBold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff'); font-weight: 700; }
     body { background-color: #F8F9FA; font-family: 'NanumSquareRound', sans-serif; letter-spacing: -0.02em; overflow: hidden; }
@@ -169,15 +170,27 @@
       </section>
 
       <!-- ================= 3. TAB: MASTER TEACHERS ================= -->
-      <section id="view-master-teachers" class="space-y-6 hidden">
-        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between gap-4">
-          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 강사 엑셀 데이터 관리</h4><p class="text-xs text-stone-400 mt-1">업로드된 이 명단과 실제 시간표를 대조하여 결강 강사를 찾습니다.</p></div>
-          <div class="flex items-center gap-2">
-            <button onclick="openModal('modal-upload-teacher-excel')" class="px-3.5 py-2 bg-stone-900 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"><i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 명단 엑셀 업로드</button>
+      <section id="view-master-teachers" class="space-y-5 hidden">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 학교별 강사 관리</h4><p class="text-xs text-stone-400 mt-1">학교별로 강사를 직접 등록하고 수정·삭제할 수 있습니다. 강사 추가가 생길 때마다 엑셀을 다시 올릴 필요가 없습니다.</p></div>
+            <button onclick="openAddTeacherModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"><i data-lucide="user-plus" class="w-4 h-4"></i> 강사 등록</button>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-stone-400">학교 선택</span>
+            <select id="teacher-school-filter" onchange="renderMasterTeacherList()" class="p-2.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold min-w-48"></select>
+            <input id="teacher-search-input" oninput="renderMasterTeacherList()" placeholder="강사명 · 과목 · 전화번호 검색" class="p-2.5 rounded-xl border border-stone-200 text-xs outline-none w-64" />
           </div>
         </div>
-        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
-          <div id="master-teacher-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1"></div>
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[1100px] text-left text-xs">
+              <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold">
+                <tr><th class="py-3 px-4">학교</th><th class="py-3 px-3">강사명</th><th class="py-3 px-3">강좌/과목</th><th class="py-3 px-3">수업요일</th><th class="py-3 px-3">주민등록번호</th><th class="py-3 px-3">주소</th><th class="py-3 px-3">전화번호</th><th class="py-3 px-3">차량번호</th><th class="py-3 px-3">입금은행</th><th class="py-3 px-3">계좌번호</th><th class="py-3 px-3">비고</th><th class="py-3 px-3 text-center">관리</th></tr>
+              </thead>
+              <tbody id="master-teacher-grid" class="divide-y divide-stone-100"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -301,8 +314,28 @@
   <!-- 메모 등록 -->
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">메모 작성</h3><button onclick="closeModal('modal-add-memo')">×</button></div><form id="form-add-memo" class="space-y-3"><select id="memo-input-school" class="w-full p-2 border rounded-xl"></select><select id="memo-input-author" class="w-full p-2 border rounded-xl"><option>현장 코디네이터</option><option>본사 운영팀</option></select><textarea id="memo-input-text" required placeholder="메모 내용" class="w-full p-2 border rounded-xl"></textarea><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   
-  <!-- 강사 엑셀 업로드 -->
-  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2 leading-5">엑셀 열 예시: 학교명 · 강좌명(과목명) · 강사명 · 수업요일(출강요일) · 전화번호(연락처) · 수업시간</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 block w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
+  <!-- 강사 등록/수정 -->
+  <div id="modal-teacher-form" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl w-full max-w-3xl p-6 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5"><div><h3 id="teacher-modal-title" class="font-black text-lg">강사 등록</h3><p class="text-xs text-stone-400 mt-1">학교별 강사 정보를 직접 관리합니다.</p></div><button onclick="closeModal('modal-teacher-form')" class="text-xl text-stone-400">×</button></div>
+      <form id="form-teacher" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <input type="hidden" id="teacher-input-id" />
+        <div><label class="field-label">학교 *</label><select id="teacher-input-school" required class="field-input"></select></div>
+        <div><label class="field-label">강사명 *</label><input id="teacher-input-name" required class="field-input" placeholder="홍길동" /></div>
+        <div><label class="field-label">강좌/과목 *</label><input id="teacher-input-subject" required class="field-input" placeholder="영어" /></div>
+        <div><label class="field-label">수업요일</label><input id="teacher-input-day" class="field-input" placeholder="월요일, 수요일" /></div>
+        <div><label class="field-label">수업시간</label><input id="teacher-input-time" class="field-input" placeholder="13:00~13:40" /></div>
+        <div><label class="field-label">전화번호</label><input id="teacher-input-phone" class="field-input" placeholder="010-0000-0000" /></div>
+        <div><label class="field-label">주민등록번호</label><input id="teacher-input-resident" class="field-input" placeholder="000000-0000000" /></div>
+        <div><label class="field-label">차량번호</label><input id="teacher-input-vehicle" class="field-input" placeholder="12가 3456" /></div>
+        <div class="md:col-span-2"><label class="field-label">주소</label><input id="teacher-input-address" class="field-input" placeholder="주소를 입력하세요" /></div>
+        <div><label class="field-label">입금은행명</label><input id="teacher-input-bank" class="field-input" placeholder="국민은행" /></div>
+        <div><label class="field-label">계좌번호</label><input id="teacher-input-account" class="field-input" placeholder="000-000-000000" /></div>
+        <div class="md:col-span-2"><label class="field-label">비고</label><textarea id="teacher-input-note" class="field-input min-h-20" placeholder="특이사항, 계약 관련 메모 등"></textarea></div>
+        <div class="md:col-span-2 flex gap-2 pt-2"><button type="button" onclick="closeModal('modal-teacher-form')" class="flex-1 py-2.5 rounded-xl bg-stone-100 text-stone-600 font-bold">취소</button><button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white font-bold">저장</button></div>
+      </form>
+    </div>
+  </div>
   
   <!-- 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col"><div class="p-4 border-b flex justify-between"><h3 id="preview-title" class="font-bold">미리보기</h3><button onclick="closeModal('modal-file-preview')">×</button></div><div id="preview-body" class="flex-1 overflow-auto p-4 flex justify-center items-start bg-stone-100"></div></div></div>
@@ -456,6 +489,7 @@
       renderDashboardBillingSummary(); 
     });
 
+    function escapeHtml(v) { return String(v ?? '').replace(/[&<>\'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;',"\"":'&quot;'}[c])); }
     function saveData(key, val) { appData[key] = val; saveLocalData(); firebase.database().ref('brightmind_data').set(appData); }
     function updateClock() { const now = new Date(); document.getElementById('realtime-clock').textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`; }
 
@@ -723,18 +757,26 @@
     function setDashboardQuarter(q) { dashboardQuarter=q; renderDashboardBillingSummary(); }
     function renderDashboardBillingSummary() {
       const list=document.getElementById('dash-billing-items'); if(!list) return;
-      [1,2,3,4].forEach(q=>{const b=document.getElementById(`dash-q-${q}`); if(b)b.className=q===dashboardQuarter?'px-1.5 py-1.5 rounded-lg text-[10px] font-bold bg-amber-500 text-white':'px-1.5 py-1.5 rounded-lg text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200';});
-      document.getElementById('dash-quarter-label').textContent=`${dashboardQuarter}분기 · 3차까지`;
+      [1,2,3,4].forEach(q=>{const b=document.getElementById(`dash-q-${q}`); if(b)b.className=q===dashboardQuarter?'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-white':'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200';});
+      document.getElementById('dash-quarter-label').textContent=`${dashboardQuarter}분기 · 학교별 1~3차`;
       const schools=currentSchoolId==='all'?appData.schools:appData.schools.filter(s=>s.id===currentSchoolId);
-      let html='', total=0, completed=0;
+      let html='', total=0, counts={'미진행':0,'청구중':0,'청구완료':0,'입금완료':0};
       schools.forEach(sch=>{
         const rounds=getBillingRounds(sch.id,dashboardQuarter);
-        const cards=[1,2,3].map(p=>{const st=getBillingStatus(sch.id,dashboardQuarter,p),m=billingStatusMeta[st], used=!!rounds[p-1]; if(st==='입금완료')completed++; return used?`<span class="px-1.5 py-1 rounded-lg border ${m.cls} text-[10px] font-black">${m.icon}${p}차 ${st.replace('미진행','')}</span>`:`<span class="px-1.5 py-1 rounded-lg border border-dashed border-stone-200 text-[10px] text-stone-300">${p}차 미사용</span>`;}).join('');
+        const roundHtml=[1,2,3].map(p=>{
+          const used=!!(rounds[p-1]&&String(rounds[p-1]).trim());
+          const st=getBillingStatus(sch.id,dashboardQuarter,p),m=billingStatusMeta[st]||billingStatusMeta['미진행'];
+          if(used) counts[st]=(counts[st]||0)+1;
+          return used
+            ? `<div class="flex items-center justify-between gap-2 px-2.5 py-2 rounded-xl border ${m.cls}"><span class="font-black text-[11px]">${m.icon} ${p}차 <span class="font-semibold">${escapeHtml(rounds[p-1])}</span></span><span class="font-black text-[10px]">${st}</span></div>`
+            : `<div class="flex items-center justify-between gap-2 px-2.5 py-2 rounded-xl border border-dashed border-stone-200 bg-stone-50 text-stone-300"><span class="font-bold text-[11px]">${p}차</span><span class="font-bold text-[10px]">미사용</span></div>`;
+        }).join('');
         const amount=(appData.billings||[]).filter(b=>b.schoolId===sch.id&&Number(b.quarter)===Number(dashboardQuarter)).reduce((a,b)=>a+(Number(b.amount)||0),0); total+=amount;
-        html+=`<div class="p-3 rounded-2xl border border-stone-200 bg-white shadow-2xs"><div class="flex items-center justify-between gap-2 mb-2"><span class="font-black text-xs truncate">${sch.name}</span><span class="text-[10px] font-bold text-stone-400">${amount.toLocaleString()}원</span></div><div class="flex flex-wrap gap-1">${cards}</div></div>`;
+        html+=`<div class="p-3 rounded-2xl border-2 border-stone-200 bg-white shadow-2xs hover:border-amber-300 transition-all"><div class="flex items-center justify-between gap-2 mb-2.5"><span class="font-black text-sm truncate">${escapeHtml(sch.name)}</span><span class="text-[10px] font-bold text-stone-400">${amount.toLocaleString()}원</span></div><div class="space-y-1.5">${roundHtml}</div></div>`;
       });
       document.getElementById('dash-billing-total').textContent=total.toLocaleString()+'원';
-      document.getElementById('dash-billing-count').textContent=`${schools.length}개 기관 · 입금완료 ${completed}건`;
+      document.getElementById('dash-billing-count').textContent=`청구중 ${counts['청구중']||0} · 청구완료 ${counts['청구완료']||0} · 입금완료 ${counts['입금완료']||0}`;
+      list.className='col-span-1 md:col-span-3 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2.5 max-h-[420px] overflow-y-auto custom-scroll pr-1';
       list.innerHTML=html || '<div class="text-xs text-stone-400">학교가 없습니다.</div>';
     }
 
@@ -829,45 +871,62 @@
       tbody.innerHTML = html;
     }
 
+    function renderTeacherSchoolFilter(){
+      const sel=document.getElementById('teacher-school-filter'); if(!sel) return;
+      const prev=sel.value;
+      sel.innerHTML='<option value="all">전체 학교</option>'+(appData.schools||[]).map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+      const target=currentSchoolId!=='all'?currentSchoolId:prev; if(target && [...sel.options].some(o=>o.value===target)) sel.value=target;
+    }
     function renderMasterTeacherList() {
-      const query = document.getElementById('teacher-search-input')?.value.trim().toLowerCase();
-      const grid = document.getElementById('master-teacher-grid'); if (!grid) return;
-      let list = appData.masterTeachers || [];
-      if (currentSchoolId !== 'all') { const sch = appData.schools.find(s => s.id === currentSchoolId); if (sch) list = list.filter(t => t.school === sch.name); }
-      if (query) list = list.filter(t => `${t.subject || ''} ${t.name || ''} ${t.school || ''} ${t.day || ''} ${t.time || ''} ${t.phone || ''}`.toLowerCase().includes(query));
+      renderTeacherSchoolFilter();
+      const query=(document.getElementById('teacher-search-input')?.value||'').trim().toLowerCase();
+      const tbody=document.getElementById('master-teacher-grid'); if(!tbody) return;
+      const filterSchool=document.getElementById('teacher-school-filter')?.value||'all';
+      let list=appData.masterTeachers||[];
+      if(filterSchool!=='all'){ const sch=appData.schools.find(s=>s.id===filterSchool); if(sch) list=list.filter(t=>t.schoolId===filterSchool || t.school===sch.name); }
+      else if(currentSchoolId!=='all'){ const sch=appData.schools.find(s=>s.id===currentSchoolId); if(sch) list=list.filter(t=>t.schoolId===currentSchoolId || t.school===sch.name); }
+      if(query) list=list.filter(t=>`${t.school||''} ${t.name||''} ${t.subject||''} ${t.day||''} ${t.phone||''} ${t.vehicle||''} ${t.bank||''} ${t.account||''} ${t.note||''}`.toLowerCase().includes(query));
+      const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+      if(!list.length){tbody.innerHTML='<tr><td colspan="12" class="py-14 text-center text-stone-400 text-xs">등록된 강사가 없습니다. 오른쪽 위 <b>강사 등록</b>에서 추가해 주세요.</td></tr>';return;}
+      tbody.innerHTML=list.map(t=>{
+        const school=appData.schools.find(s=>s.id===t.schoolId)?.name || t.school || '소속없음';
+        return `<tr class="hover:bg-emerald-50/30">
+          <td class="py-3 px-4 font-bold text-stone-900 whitespace-nowrap">${esc(school)}</td>
+          <td class="py-3 px-3 font-black whitespace-nowrap">${esc(t.name||'')}</td>
+          <td class="py-3 px-3 whitespace-nowrap">${esc(t.subject||'')}</td>
+          <td class="py-3 px-3 whitespace-nowrap">${esc(t.day||'-')}</td>
+          <td class="py-3 px-3 font-mono text-[11px]">${esc(t.residentNo||'-')}</td>
+          <td class="py-3 px-3 max-w-[220px] truncate" title="${esc(t.address||'')}">${esc(t.address||'-')}</td>
+          <td class="py-3 px-3 whitespace-nowrap">${esc(t.phone||'-')}</td>
+          <td class="py-3 px-3 whitespace-nowrap">${esc(t.vehicle||'-')}</td>
+          <td class="py-3 px-3 whitespace-nowrap">${esc(t.bank||'-')}</td>
+          <td class="py-3 px-3 font-mono whitespace-nowrap">${esc(t.account||'-')}</td>
+          <td class="py-3 px-3 max-w-[180px] truncate" title="${esc(t.note||'')}">${esc(t.note||'-')}</td>
+          <td class="py-3 px-3 text-center whitespace-nowrap"><button onclick="openEditTeacherModal('${t.id}')" class="px-2 py-1 rounded-lg bg-sky-50 text-sky-700 font-bold mr-1">수정</button><button onclick="deleteTeacher('${t.id}')" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 font-bold">삭제</button></td>
+        </tr>`;
+      }).join('');
+    }
 
-      const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-      let html = '';
-      if (list.length === 0) html = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">업로드된 강사 명단이 없습니다.</div>`;
-      else list.forEach(t => {
-        const school = esc(t.school || '소속없음');
-        const subject = esc(t.subject || '강좌 미입력');
-        const name = esc(t.name || '강사명 미입력');
-        const day = esc(t.day || '요일 미입력');
-        const time = esc(t.time || '');
-        const phone = esc(t.phone || '연락처 없음');
-        const email = esc(t.email || '');
-        html += `
-          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 hover:shadow-sm transition-all text-xs">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="px-2 py-1 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[11px] truncate max-w-[55%]">${school}</span>
-              <span class="px-2 py-1 rounded-md bg-sky-50 text-sky-700 font-bold text-[11px]">${day}</span>
-            </div>
-            <div class="mb-3">
-              <p class="text-[10px] text-stone-400 font-bold mb-1">강좌명</p>
-              <h5 class="font-black text-stone-900 text-[15px] leading-tight">${subject}</h5>
-            </div>
-            <div class="bg-stone-50 rounded-xl p-2.5 text-[11px]">
-              <p class="text-stone-400 font-bold mb-1">강사명</p>
-              <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
-            </div>
-            <div class="mt-2 pt-2.5 border-t border-stone-200 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
-              <span class="font-mono font-semibold text-stone-600">☎ ${phone}</span>
-              ${email ? `<span class="text-stone-500 truncate">✉ ${email}</span>` : ''}
-            </div>
-          </div>`;
-      });
-      grid.innerHTML = html;
+    function populateTeacherSchoolSelect(){
+      const sel=document.getElementById('teacher-input-school'); if(!sel) return;
+      sel.innerHTML=(appData.schools||[]).map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    }
+    function openAddTeacherModal(){
+      document.getElementById('form-teacher')?.reset(); document.getElementById('teacher-input-id').value='';
+      populateTeacherSchoolSelect();
+      document.getElementById('teacher-input-school').value=currentSchoolId!=='all'?currentSchoolId:(appData.schools[0]?.id||'');
+      document.getElementById('teacher-modal-title').textContent='강사 등록'; openModal('modal-teacher-form');
+    }
+    function openEditTeacherModal(id){
+      const t=(appData.masterTeachers||[]).find(x=>x.id===id); if(!t)return; populateTeacherSchoolSelect();
+      document.getElementById('teacher-input-id').value=t.id; document.getElementById('teacher-input-school').value=t.schoolId || (appData.schools.find(s=>s.name===t.school)?.id||'');
+      document.getElementById('teacher-input-name').value=t.name||''; document.getElementById('teacher-input-subject').value=t.subject||''; document.getElementById('teacher-input-day').value=t.day||''; document.getElementById('teacher-input-time').value=t.time||''; document.getElementById('teacher-input-phone').value=t.phone||''; document.getElementById('teacher-input-resident').value=t.residentNo||''; document.getElementById('teacher-input-address').value=t.address||''; document.getElementById('teacher-input-vehicle').value=t.vehicle||''; document.getElementById('teacher-input-bank').value=t.bank||''; document.getElementById('teacher-input-account').value=t.account||''; document.getElementById('teacher-input-note').value=t.note||'';
+      document.getElementById('teacher-modal-title').textContent='강사 정보 수정'; openModal('modal-teacher-form');
+    }
+    function deleteTeacher(id){
+      const t=(appData.masterTeachers||[]).find(x=>x.id===id); if(!t)return;
+      if(!confirm(`${t.name||'해당 강사'} 정보를 삭제하시겠습니까?`))return;
+      appData.masterTeachers=appData.masterTeachers.filter(x=>x.id!==id); saveData('masterTeachers',appData.masterTeachers); renderMasterTeacherList();
     }
 
     // Modal opens & deletes
@@ -950,6 +1009,21 @@
         appData.memos.push({ id: 'm_' + Date.now(), schoolId, author, text, date: new Date().toISOString().split('T')[0] }); saveData('memos', appData.memos); closeModal('modal-add-memo'); renderMemos();
       });
       
+      document.getElementById('form-teacher')?.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const schoolId=document.getElementById('teacher-input-school').value;
+        const school=appData.schools.find(s=>s.id===schoolId);
+        const item={
+          id:document.getElementById('teacher-input-id').value || 'teacher_'+Date.now(), schoolId, school:school?.name||'',
+          name:document.getElementById('teacher-input-name').value.trim(), subject:document.getElementById('teacher-input-subject').value.trim(),
+          day:document.getElementById('teacher-input-day').value.trim(), time:document.getElementById('teacher-input-time').value.trim(), phone:document.getElementById('teacher-input-phone').value.trim(),
+          residentNo:document.getElementById('teacher-input-resident').value.trim(), address:document.getElementById('teacher-input-address').value.trim(), vehicle:document.getElementById('teacher-input-vehicle').value.trim(),
+          bank:document.getElementById('teacher-input-bank').value.trim(), account:document.getElementById('teacher-input-account').value.trim(), note:document.getElementById('teacher-input-note').value.trim()
+        };
+        const i=appData.masterTeachers.findIndex(x=>x.id===item.id); if(i>=0) appData.masterTeachers[i]=item; else appData.masterTeachers.push(item);
+        saveData('masterTeachers',appData.masterTeachers); closeModal('modal-teacher-form'); renderMasterTeacherList();
+      });
+
       if(document.getElementById('form-upload-teacher-excel')) {
         document.getElementById('form-upload-teacher-excel').addEventListener('submit', async (e) => {
           e.preventDefault();

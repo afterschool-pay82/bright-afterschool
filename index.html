@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(주)밝은생각 - 메뉴 최적화 및 새말초 보호 완료</title>
+  <title>(주)밝은생각 - 강사 연동 및 메뉴 복구판</title>
+  <!-- Tailwind & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Excel Parser -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Fonts -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff">
   <style>
@@ -37,7 +41,7 @@
 
       <div class="flex items-center justify-between px-2 mb-2 shrink-0">
         <span class="text-xs font-bold text-stone-400 tracking-wider">위탁 기관 목록</span>
-        <button onclick="openAddSchoolModal()" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors cursor-pointer">
+        <button onclick="openModal('modal-add-school')" class="text-xs px-2.5 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold flex items-center gap-1 transition-colors cursor-pointer">
           <i data-lucide="plus" class="w-3.5 h-3.5"></i> 기관 추가
         </button>
       </div>
@@ -66,7 +70,7 @@
     <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between gap-2 shadow-xs shrink-0">
       <div class="flex items-center gap-2 truncate flex-1">
         <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase shrink-0">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 불필요한 강사 명단 탭 삭제 및 새말초/경원초 시간표 철통 방어 완료!</span>
+        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 메뉴 연동 및 대체 강사 스마트 검색 기능 적용 완료!</span>
       </div>
     </div>
 
@@ -80,11 +84,12 @@
       </div>
     </header>
 
-    <!-- Navigation Tabs (불필요한 '강사 & 과목 검색' 탭 삭제 -> 총 8개 메뉴) -->
+    <!-- Navigation Tabs (에러방지 완벽 탭 구성) -->
     <div class="px-4 md:px-6 pt-4 pb-2 border-b border-stone-200 bg-[#F8F9FA] sticky top-[73px] z-10 shrink-0">
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar-days" class="w-4 h-4"></i> 학사 일정 캘린더</button>
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표</button>
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 엑셀 업로드</button>
         <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calculator" class="w-4 h-4"></i> 청구서 관리</button>
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="check-square" class="w-4 h-4"></i> 마감 신호등 현황판</button>
         <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 출근부</button>
@@ -97,7 +102,7 @@
     <!-- Content Sections -->
     <div id="printArea" class="p-4 md:p-6 space-y-6">
 
-      <!-- ================= 1. TAB: CALENDAR EVENTS (첫 화면) ================= -->
+      <!-- ================= 1. TAB: CALENDAR EVENTS ================= -->
       <section id="view-calendar-events" class="space-y-4">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-4">
@@ -106,7 +111,7 @@
               <h3 class="text-lg font-brand text-stone-900" id="calendar-month-title">2026년 10월</h3>
               <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
-            <span class="text-xs text-stone-400 font-bold ml-2">| 공휴일 및 학사일정 자동 표시</span>
+            <span class="text-xs text-stone-400 font-bold ml-2">| 공휴일 및 일정 자동 표시</span>
           </div>
           <button onclick="openAddCalendarEventModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5">
             <i data-lucide="calendar-plus" class="w-4 h-4"></i> 휴강/재량휴일 등록
@@ -120,24 +125,21 @@
         </div>
       </section>
 
-      <!-- ================= 2. TAB: TIMETABLE & SUBSTITUTE TEACHER SEARCH ================= -->
+      <!-- ================= 2. TAB: TIMETABLE & SUBSTITUTE SEARCH ================= -->
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표 & 대체강사 관리</span><h4 class="font-bold text-stone-900 text-base" id="school-timetable-grid-title">전체 기관 통합 시간표</h4></div>
-          </div>
-          <button onclick="openAddScheduleModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs cursor-pointer">
-            새 시간표 등록
-          </button>
+          <div><h4 class="font-bold text-stone-900 text-base flex items-center gap-2" id="school-timetable-grid-title"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표</span> 전체 기관 시간표</h4></div>
+          <button onclick="openModal('modal-add-schedule')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs cursor-pointer">새 시간표 등록</button>
         </div>
 
-        <!-- 대체 강사 찾기 위젯 (엑셀 업로드 불필요, 기존 데이터 자동 기반) -->
-        <div id="substitute-search-box" class="p-5 rounded-3xl bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200 shadow-xs space-y-3">
-          <div class="flex items-center justify-between"><h4 class="font-brand text-indigo-950 text-sm flex items-center gap-2 font-bold"><i data-lucide="search" class="w-4 h-4 text-indigo-600"></i> 긴급 결강 대체 강사 찾기</h4></div>
+        <!-- 🌟 새 기능: 엑셀 파일과 시간표 교차 검증 대체 강사 찾기 -->
+        <div id="substitute-search-box" class="p-5 rounded-3xl bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200 shadow-xs space-y-3 hidden">
+          <div class="flex items-center justify-between"><h4 class="font-brand text-indigo-950 text-sm flex items-center gap-2"><i data-lucide="search" class="w-4 h-4 text-indigo-600"></i> 스마트 긴급 결강 대체 강사 조회</h4></div>
+          <p class="text-[11px] text-indigo-700 font-bold">💡 '강사 현황'에 업로드된 명단 중 해당 요일에 출강 가능하며, 시간표상 타 학교 수업과 겹치지 않는 강사만 찾아냅니다.</p>
           <div class="flex flex-wrap items-center gap-3">
-            <div><select id="sub-search-day" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none"><option value="월요일">월요일</option><option value="화요일">화요일</option><option value="수요일">수요일</option><option value="목요일">목요일</option><option value="금요일">금요일</option></select></div>
-            <div><input type="text" id="sub-search-time" placeholder="시간 (예: 13:40)" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none w-48 font-mono" /></div>
-            <div><button onclick="findSubstituteTeachers()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm cursor-pointer">강사 검색</button></div>
+            <select id="sub-search-day" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none"><option value="월요일">월요일</option><option value="화요일">화요일</option><option value="수요일">수요일</option><option value="목요일">목요일</option><option value="금요일">금요일</option></select>
+            <input type="text" id="sub-search-time" placeholder="결강 시간 (예: 13:40)" class="text-xs p-2.5 rounded-xl border border-indigo-200 bg-white font-bold outline-none w-48 font-mono" />
+            <button onclick="findSmartSubstituteTeachers()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm cursor-pointer">가능한 강사 검색</button>
           </div>
           <div id="substitute-result-area" class="mt-3 pt-3 border-t border-indigo-100 hidden"><div id="substitute-result-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2"></div></div>
         </div>
@@ -153,23 +155,34 @@
         </div>
       </section>
 
-      <!-- ================= 3. TAB: BILLING ================= -->
-      <section id="view-billing" class="space-y-5 hidden">
-        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
-            <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기</button>
-            <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">2분기</button>
-            <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">3분기</button>
-            <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">4분기</button>
+      <!-- ================= 3. TAB: MASTER TEACHERS ================= -->
+      <section id="view-master-teachers" class="space-y-6 hidden">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between gap-4">
+          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 강사 엑셀 데이터 관리</h4><p class="text-xs text-stone-400 mt-1">업로드된 이 명단과 실제 시간표를 대조하여 결강 강사를 찾습니다.</p></div>
+          <div class="flex items-center gap-2">
+            <button onclick="openModal('modal-upload-teacher-excel')" class="px-3.5 py-2 bg-stone-900 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"><i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 명단 엑셀 업로드</button>
           </div>
+        </div>
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
+          <div id="master-teacher-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto custom-scroll pr-1"></div>
+        </div>
+      </section>
+
+      <!-- ================= 4. TAB: BILLING ================= -->
+      <section id="view-billing" class="space-y-5 hidden">
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center gap-2">
+          <span class="text-xs font-bold text-stone-400 mr-1">분기 선택:</span>
+          <button onclick="changeQuarter(1)" id="btn-q-1" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">1분기</button>
+          <button onclick="changeQuarter(2)" id="btn-q-2" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">2분기</button>
+          <button onclick="changeQuarter(3)" id="btn-q-3" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">3분기</button>
+          <button onclick="changeQuarter(4)" id="btn-q-4" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-100 text-stone-600 shadow-xs cursor-pointer">4분기</button>
         </div>
         <div id="billing-single-school-view" class="space-y-5">
           <div class="bg-amber-50/70 p-2 rounded-2xl border border-amber-200 flex flex-wrap gap-2">
-            <button onclick="switchBillingCategory('after_instructor')" id="sub-billing-btn-after_instructor" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs cursor-pointer">방과후 강사료</button>
-            <button onclick="switchBillingCategory('after_materials')" id="sub-billing-btn-after_materials" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 cursor-pointer">방과후 교재비</button>
-            <button onclick="switchBillingCategory('custom_instructor')" id="sub-billing-btn-custom_instructor" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 cursor-pointer">맞춤형 강사료</button>
-            <button onclick="switchBillingCategory('custom_materials')" id="sub-billing-btn-custom_materials" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 cursor-pointer">맞춤형 교재비</button>
+            <button onclick="switchBillingCategory('after_instructor')" id="sub-billing-btn-after_instructor" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs cursor-pointer">방과후 강사료</button>
+            <button onclick="switchBillingCategory('after_materials')" id="sub-billing-btn-after_materials" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-stone-700 cursor-pointer">방과후 교재비</button>
+            <button onclick="switchBillingCategory('custom_instructor')" id="sub-billing-btn-custom_instructor" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-stone-700 cursor-pointer">맞춤형 강사료</button>
+            <button onclick="switchBillingCategory('custom_materials')" id="sub-billing-btn-custom_materials" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-stone-700 cursor-pointer">맞춤형 교재비</button>
           </div>
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
             <table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">기관명</th><th class="py-3 px-3 text-center">정산 차수</th><th class="py-3 px-4 text-right">청구 금액</th><th class="py-3 px-3 text-center">미리보기</th><th class="py-3 px-3 text-center">다운로드</th><th class="py-3 px-3 text-center">수정</th><th class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="billing-table-body" class="divide-y divide-stone-100"></tbody></table>
@@ -177,7 +190,7 @@
         </div>
       </section>
 
-      <!-- ================= 4. TAB: CHECKLIST ================= -->
+      <!-- ================= 5. TAB: CHECKLIST ================= -->
       <section id="view-checklist" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <h4 class="font-bold text-stone-900 text-base flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> 기관별 마감 신호등</h4>
@@ -188,7 +201,7 @@
         </div>
       </section>
 
-      <!-- ================= 5. TAB: EXPENSE & ATTENDANCE ================= -->
+      <!-- ================= 6. TAB: EXPENSE & ATTENDANCE ================= -->
       <section id="view-expense" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex justify-between gap-4">
           <div class="flex items-center gap-2"><span class="font-bold text-xs text-stone-700">월별 선택:</span><select id="select-month" onchange="changeMonth(this.value)" class="text-xs font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 outline-none text-amber-900"><option value="9">9월 정산</option><option value="10" selected>10월 정산</option><option value="11">11월 정산</option></select></div>
@@ -200,19 +213,19 @@
         </div>
       </section>
 
-      <!-- ================= 6. TAB: NOTICES ================= -->
+      <!-- ================= 7. TAB: NOTICES ================= -->
       <section id="view-notices" class="space-y-5 hidden">
         <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex justify-between"><span class="text-xs font-bold text-stone-400">분기별 안내장</span><button onclick="openModal('modal-add-notice')" class="px-3 py-2 bg-stone-900 text-white font-bold rounded-xl text-xs">등록하기</button></div>
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5"><table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">등록일</th><th class="py-3 px-4">기관명</th><th class="py-3 px-4">파일명</th><th class="py-3 px-3 text-center">보기</th><th class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="notices-table-body" class="divide-y divide-stone-100"></tbody></table></div>
       </section>
 
-      <!-- ================= 7. TAB: MEMOS ================= -->
+      <!-- ================= 8. TAB: MEMOS ================= -->
       <section id="view-memos" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between"><h4 class="font-bold text-base">기관별 1:1 업무소통</h4><button onclick="openModal('modal-add-memo')" class="px-3 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">새 메모 작성</button></div>
         <div id="memo-list-container" class="space-y-3"></div>
       </section>
 
-      <!-- ================= 8. TAB: VAULT ================= -->
+      <!-- ================= 9. TAB: VAULT ================= -->
       <section id="view-vault" class="space-y-5 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between"><h4 class="font-bold text-base">공용 행정 서식 자료실</h4><button onclick="openModal('modal-add-vault')" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">파일 업로드</button></div>
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5"><table class="w-full text-left text-xs"><thead class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold"><tr><th class="py-3 px-4">등록일</th><th class="py-3 px-4">서식 파일명</th><th class="py-3 px-3 text-center">보기</th><th class="py-3 px-3 text-center">다운</th><th class="py-3 px-3 text-center">삭제</th></tr></thead><tbody id="vault-table-body" class="divide-y divide-stone-100"></tbody></table></div>
@@ -221,13 +234,13 @@
     </div>
   </main>
 
-  <!-- ================= M O D A L S ================= -->
+  <!-- ================= 안전한 모달창(팝업) 처리 구역 ================= -->
   <!-- 학교 추가 -->
   <div id="modal-add-school" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">기관 추가</h3><button onclick="closeModal('modal-add-school')">×</button></div><form id="form-add-school"><input type="text" id="new-school-name" required placeholder="기관명" class="w-full p-3 rounded-xl border border-stone-200 mb-4" /><button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 text-white font-bold">등록</button></form></div></div>
   <!-- 일정 등록 -->
   <div id="modal-add-calendar-event" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">휴강/재량휴일 등록</h3><button onclick="closeModal('modal-add-calendar-event')">×</button></div><form id="form-add-calendar-event" class="space-y-3"><select id="cal-input-school" class="w-full p-2 border rounded-xl"></select><select id="cal-input-type" class="w-full p-2 border rounded-xl"><option value="휴강일">휴강일</option><option value="재량휴일">재량휴일</option></select><div class="flex gap-2"><input type="text" id="cal-input-ym" readonly class="w-full p-2 border rounded-xl bg-stone-100" /><input type="number" id="cal-input-daynum" required placeholder="일자" class="w-full p-2 border rounded-xl" /></div><input type="text" id="cal-input-keyword" required placeholder="제목" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-indigo-600 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 시간표 등록/수정 -->
-  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')">×</button></div><form id="form-add-schedule" class="space-y-3"><input type="hidden" id="sched-input-edit-id" /><div class="flex gap-2"><select id="sched-input-day" class="w-1/2 p-2 border rounded-xl"><option>월요일</option><option>화요일</option><option>수요일</option><option>목요일</option><option>금요일</option></select><input type="text" id="sched-input-time" required placeholder="13:00~13:40" class="w-1/2 p-2 border rounded-xl" /></div><input type="text" id="sched-input-course" required placeholder="과목명 (예: 영어 A반)" class="w-full p-2 border rounded-xl" /><div class="flex gap-2"><input type="text" id="sched-input-teacher" required placeholder="강사명" class="w-1/2 p-2 border rounded-xl" /><input type="text" id="sched-input-phone" placeholder="연락처" class="w-1/2 p-2 border rounded-xl" /></div><div class="flex gap-2 pt-2"><button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button><button type="submit" class="flex-1 py-2.5 bg-amber-500 text-white font-bold rounded-xl">저장</button></div></form></div></div>
+  <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')">×</button></div><form id="form-add-schedule" class="space-y-3"><input type="hidden" id="sched-input-edit-id" /><div class="flex gap-2"><select id="sched-input-day" class="w-1/2 p-2 border rounded-xl"><option>월요일</option><option>화요일</option><option>수요일</option><option>목요일</option><option>금요일</option></select><input type="text" id="sched-input-time" required placeholder="13:00~13:40" class="w-1/2 p-2 border rounded-xl" /></div><input type="text" id="sched-input-course" required placeholder="과목명 (예: 영어 A반)" class="w-full p-2 border rounded-xl" /><div class="flex gap-2"><input type="text" id="sched-input-teacher" required placeholder="강사명" class="w-1/2 p-2 border rounded-xl" /><input type="text" id="sched-input-phone" placeholder="연락처" class="w-1/2 p-2 border rounded-xl" /></div><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">저장</button></form></div></div>
   <!-- 청구서 등록 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 등록</h3><button onclick="closeModal('modal-add-billing')">×</button></div><form id="form-add-billing" class="space-y-3"><input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" /><input type="number" id="billing-input-amount" required placeholder="청구 금액(원)" class="w-full p-2 border rounded-xl" /><input type="file" id="billing-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 청구서 수정 -->
@@ -242,16 +255,19 @@
   <div id="modal-add-vault" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">서식 업로드</h3><button onclick="closeModal('modal-add-vault')">×</button></div><form id="form-add-vault"><input type="file" id="vault-input-file" required class="w-full p-2 border rounded-xl mb-4" /><button type="submit" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 메모 등록 -->
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">메모 작성</h3><button onclick="closeModal('modal-add-memo')">×</button></div><form id="form-add-memo" class="space-y-3"><select id="memo-input-school" class="w-full p-2 border rounded-xl"></select><select id="memo-input-author" class="w-full p-2 border rounded-xl"><option>현장 코디네이터</option><option>본사 운영팀</option></select><textarea id="memo-input-text" required placeholder="메모 내용" class="w-full p-2 border rounded-xl"></textarea><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
+  <!-- 강사 엑셀 업로드 -->
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2">엑셀 열 이름: 학교명, 과목명, 강사명, 출강요일, 연락처</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
   
-  <!-- 미리보기 모달 -->
+  <!-- 파일 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col"><div class="p-4 border-b flex justify-between"><h3 id="preview-title" class="font-bold">미리보기</h3><button onclick="closeModal('modal-file-preview')">×</button></div><div id="preview-body" class="flex-1 overflow-auto p-4 flex justify-center items-start bg-stone-100"></div></div></div>
 
+  <!-- ================= S C R I P T S ================= -->
   <script>
     const firebaseConfig = { apiKey: "AIzaSyAT0Ruu4ZqUnhvgKCTaBrOKqBGhKCNaJ-4", authDomain: "bright-afterschool.firebaseapp.com", databaseURL: "https://bright-afterschool-default-rtdb.firebaseio.com", projectId: "bright-afterschool", storageBucket: "bright-afterschool.firebasestorage.app", messagingSenderId: "646660756482", appId: "1:646660756482:web:7354b82be51299277ec31b" };
     firebase.initializeApp(firebaseConfig);
 
     // ==========================================
-    // 오리지널 데이터베이스 키 복구
+    // 오리지널 데이터베이스 복구(파일 유실 방지)
     // ==========================================
     let dbInstance = null;
     function initIndexedDB() {
@@ -287,7 +303,7 @@
           const a = document.createElement('a'); a.href = fileData.data; a.download = fileData.name || fallbackName;
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
-      } else alert('저장된 원본 파일이 없습니다. 다시 업로드해주세요.');
+      } else alert('저장된 원본 파일이 없습니다.');
     }
 
     async function previewFile(fileId, fileType, fileName) {
@@ -307,12 +323,5 @@
       { id: 'sch_1', name: '경원초' }, { id: 'sch_2', name: '남부초' }, { id: 'sch_3', name: '문남초' }, { id: 'sch_4', name: '새말초' }, { id: 'sch_5', name: '서화초' }, { id: 'sch_6', name: '서흥초' }, { id: 'sch_7', name: '숭의초' }, { id: 'sch_8', name: '연학초' }, { id: 'sch_9', name: '창신초' }, { id: 'sch_10', name: '창영초' }, { id: 'sch_11', name: '청량초' }, { id: 'sch_12', name: '온동네돌봄센터' }
     ];
 
-    const kwSchedules = [
-      { id: 's_gw_1', schoolId: 'sch_1', day: '월요일', time: '13:00~13:40', course: '영어교실 A반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_2', schoolId: 'sch_1', day: '월요일', time: '13:45~14:25', course: '영어교실 B반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_3', schoolId: 'sch_1', day: '월요일', time: '14:30~15:10', course: '영어교실 C반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_4', schoolId: 'sch_1', day: '월요일', time: '13:00~13:40', course: '피아노(주2회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_5', schoolId: 'sch_1', day: '월요일', time: '13:45~14:25', course: '피아노(주2회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_6', schoolId: 'sch_1', day: '월요일', time: '14:30~15:10', course: '피아노(주2회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_104', schoolId: 'sch_1', day: '월요일', time: '15:15~15:55', course: '피아노(주2회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_7', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '방송댄스 A반', teacher: '임지향', phone: '010-6568-1716' }, { id: 's_gw_8', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '방송댄스 B반', teacher: '임지향', phone: '010-6568-1716' }, { id: 's_gw_9', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '요리 A반', teacher: '김수연', phone: '010-2823-7744' }, { id: 's_gw_10', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '요리 B반', teacher: '김수연', phone: '010-2823-7744' }, { id: 's_gw_11', schoolId: 'sch_1', day: '월요일', time: '13:00~14:20', course: '창의과학 A반', teacher: '강현정', phone: '010-5386-7502' }, { id: 's_gw_12', schoolId: 'sch_1', day: '월요일', time: '14:30~15:50', course: '창의과학 B반', teacher: '강현정', phone: '010-5386-7502' },
-      { id: 's_gw_13', schoolId: 'sch_1', day: '화요일', time: '13:40~14:20', course: '컴퓨터 A반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_14', schoolId: 'sch_1', day: '화요일', time: '14:25~15:05', course: '컴퓨터 B반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_15', schoolId: 'sch_1', day: '화요일', time: '15:10~15:50', course: '컴퓨터 C반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_16', schoolId: 'sch_1', day: '화요일', time: '15:55~16:35', course: '컴퓨터 D반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_17', schoolId: 'sch_1', day: '화요일', time: '13:40~14:20', course: '피아노(주3회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_18', schoolId: 'sch_1', day: '화요일', time: '14:25~15:05', course: '피아노(주3회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_19', schoolId: 'sch_1', day: '화요일', time: '15:10~15:50', course: '피아노(주3회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_20', schoolId: 'sch_1', day: '화요일', time: '15:55~16:35', course: '피아노(주3회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_21', schoolId: 'sch_1', day: '화요일', time: '13:40~15:00', course: '독서논술 A반', teacher: '안덕희', phone: '010-6401-0262' }, { id: 's_gw_22', schoolId: 'sch_1', day: '화요일', time: '15:10~16:30', course: '독서논술 B반', teacher: '안덕희', phone: '010-6401-0262' }, { id: 's_gw_23', schoolId: 'sch_1', day: '화요일', time: '13:40~15:00', course: '창의미술 A반', teacher: '허윤정', phone: '010-6770-3624' }, { id: 's_gw_24', schoolId: 'sch_1', day: '화요일', time: '15:10~16:30', course: '창의미술 B반', teacher: '허윤정', phone: '010-6770-3624' }, { id: 's_gw_25', schoolId: 'sch_1', day: '화요일', time: '14:40~15:40', course: '배드민턴 I A반', teacher: '임종원', phone: '010-2770-3348' }, { id: 's_gw_26', schoolId: 'sch_1', day: '화요일', time: '15:40~16:40', course: '배드민턴 I B반', teacher: '임종원', phone: '010-2770-3348' },
-      { id: 's_gw_27', schoolId: 'sch_1', day: '수요일', time: '13:00~13:40', course: '영어교실 A반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_28', schoolId: 'sch_1', day: '수요일', time: '13:45~14:25', course: '영어교실 B반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_29', schoolId: 'sch_1', day: '수요일', time: '14:30~15:10', course: '영어교실 C반', teacher: '강미은', phone: '010-6862-4843' }, { id: 's_gw_30', schoolId: 'sch_1', day: '수요일', time: '13:00~13:40', course: '피아노(주2회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_31', schoolId: 'sch_1', day: '수요일', time: '13:45~14:25', course: '피아노(주2회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_32', schoolId: 'sch_1', day: '수요일', time: '14:30~15:10', course: '피아노(주2회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_105', schoolId: 'sch_1', day: '수요일', time: '15:15~15:55', course: '피아노(주2회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_33', schoolId: 'sch_1', day: '수요일', time: '13:00~14:20', course: '바이올린 A반', teacher: '연정윤', phone: '010-5298-5076' }, { id: 's_gw_34', schoolId: 'sch_1', day: '수요일', time: '14:30~15:50', course: '바이올린 B반', teacher: '연정윤', phone: '010-5298-5076' }, { id: 's_gw_35', schoolId: 'sch_1', day: '수요일', time: '13:00~14:20', course: '코딩 I A반', teacher: '서지연', phone: '010-7101-2039' }, { id: 's_gw_36', schoolId: 'sch_1', day: '수요일', time: '14:30~15:50', course: '코딩 I B반', teacher: '서지연', phone: '010-7101-2039' }, { id: 's_gw_37', schoolId: 'sch_1', day: '수요일', time: '13:00~14:20', course: '한자 A반', teacher: '김애연', phone: '010-2258-7696' }, { id: 's_gw_38', schoolId: 'sch_1', day: '수요일', time: '14:30~15:50', course: '한자 B반', teacher: '김애연', phone: '010-2258-7696' },
-      { id: 's_gw_39', schoolId: 'sch_1', day: '목요일', time: '13:40~14:20', course: '컴퓨터 A반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_40', schoolId: 'sch_1', day: '목요일', time: '14:25~15:05', course: '컴퓨터 B반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_41', schoolId: 'sch_1', day: '목요일', time: '15:10~15:50', course: '컴퓨터 C반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_42', schoolId: 'sch_1', day: '목요일', time: '15:55~16:35', course: '컴퓨터 D반', teacher: '정래희', phone: '010-6483-9476' }, { id: 's_gw_43', schoolId: 'sch_1', day: '목요일', time: '13:40~14:20', course: '피아노(주3회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_44', schoolId: 'sch_1', day: '목요일', time: '14:25~15:05', course: '피아노(주3회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_45', schoolId: 'sch_1', day: '목요일', time: '15:10~15:50', course: '피아노(주3회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_46', schoolId: 'sch_1', day: '목요일', time: '15:55~16:35', course: '피아노(주3회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_47', schoolId: 'sch_1', day: '목요일', time: '13:40~15:00', course: '바둑체스 A반', teacher: '이연희', phone: '010-8876-5833' }, { id: 's_gw_48', schoolId: 'sch_1', day: '목요일', time: '15:10~16:30', course: '바둑체스 B반', teacher: '이연희', phone: '010-8876-5833' }, { id: 's_gw_49', schoolId: 'sch_1', day: '목요일', time: '13:40~15:00', course: '주산암산 A반', teacher: '이지영', phone: '010-8743-5089' }, { id: 's_gw_50', schoolId: 'sch_1', day: '목요일', time: '15:10~16:30', course: '주산암산 B반', teacher: '이지영', phone: '010-8743-5089' }, { id: 's_gw_51', schoolId: 'sch_1', day: '목요일', time: '13:40~15:00', course: '클레이아트 A반', teacher: '김은주', phone: '010-6750-8754' }, { id: 's_gw_52', schoolId: 'sch_1', day: '목요일', time: '15:10~16:30', course: '클레이아트 B반', teacher: '김은주', phone: '010-6750-8754' }, { id: 's_gw_53', schoolId: 'sch_1', day: '목요일', time: '14:40~15:40', course: '축구 A반', teacher: '성준모', phone: '010-5054-7880' }, { id: 's_gw_54', schoolId: 'sch_1', day: '목요일', time: '15:40~16:40', course: '축구 B반', teacher: '성준모', phone: '010-5054-7880' },
-      { id: 's_gw_55', schoolId: 'sch_1', day: '금요일', time: '13:40~14:20', course: '피아노(주3회) A반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_56', schoolId: 'sch_1', day: '금요일', time: '14:25~15:05', course: '피아노(주3회) B반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_57', schoolId: 'sch_1', day: '금요일', time: '15:10~15:50', course: '피아노(주3회) C반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_58', schoolId: 'sch_1', day: '금요일', time: '15:55~16:35', course: '피아노(주3회) D반', teacher: '최정아', phone: '010-9814-1024' }, { id: 's_gw_59', schoolId: 'sch_1', day: '금요일', time: '14:40~15:40', course: '배드민턴 II A반', teacher: '남성락', phone: '010-7103-7198' }, { id: 's_gw_60', schoolId: 'sch_1', day: '금요일', time: '15:40~16:40', course: '배드민턴 II B반', teacher: '남성락', phone: '010-7103-7198' }, { id: 's_gw_61', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '수학아카데미 A반', teacher: '홍진선', phone: '010-9133-1061' }, { id: 's_gw_62', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '수학아카데미 B반', teacher: '홍진선', phone: '010-9133-1061' }, { id: 's_gw_63', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '전자로봇 A반', teacher: '박선희', phone: '010-3713-6906' }, { id: 's_gw_64', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '전자로봇 B반', teacher: '박선희', phone: '010-3713-6906' }, { id: 's_gw_65', schoolId: 'sch_1', day: '금요일', time: '13:40~15:00', course: '코딩 II A반', teacher: '박미경', phone: '010-9442-3439' }, { id: 's_gw_66', schoolId: 'sch_1', day: '금요일', time: '15:10~16:30', course: '코딩 II B반', teacher: '박미경', phone: '010-9442-3439' }
-    ];
-
-    const saemalSchedules =
+    // 데이터 압축 복구 배열
+    const rawKw = [[1,"월요일","13:00~13:40","영어교실 A반","강미은","010-6862-4843"],[1,"월요일","13:45~14:25","영어교실 B반","강미은","010-6862-4843"],[1,"월요일","14:30~15:10","영어교실 C반","강미은","010-6862-4843"],[1,"월요일","13:00~13:40","피아노(주2회) A반","최정아","010-9814-1024"],[1,"월요일","13:45~14:25","피아노(주2회) B반","최정아","010-9814-1024"],[1,"월요일","14:30~15:10","피아노(주2회) C반","최정아","010-98

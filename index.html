@@ -21,6 +21,67 @@
     .calendar-event-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: keep-all; line-height: 1.25; }
     .calendar-event { min-height: 30px; }
   </style>
+<style>
+/* ===== 모바일 최적화 ===== */
+@media (max-width: 767px) {
+  html, body { width:100%; max-width:100%; overflow:hidden; }
+  body { min-height:100vh; }
+  body > aside {
+    width:100% !important; height:auto !important; max-height:170px; flex:none !important;
+    border-right:0 !important; border-bottom:1px solid #e7e5e4; box-shadow:none !important;
+  }
+  body > aside > div:first-child { padding:10px 14px !important; }
+  body > aside > div:first-child h1 { font-size:18px !important; }
+  body > aside > div:nth-child(2) { padding:8px 10px !important; min-height:0; overflow:hidden; }
+  #btn-school-all { margin-bottom:7px !important; padding:9px 12px !important; }
+  #school-list-container {
+    display:flex !important; flex-direction:row !important; gap:6px !important;
+    overflow-x:auto !important; overflow-y:hidden !important; padding-bottom:4px !important;
+    flex:none !important; white-space:nowrap;
+  }
+  #school-list-container > * { min-width:115px !important; flex:0 0 auto !important; }
+  body > aside > div:last-child { display:none !important; }
+
+  body > main { width:100%; height:calc(100vh - 170px) !important; min-height:0; overflow-y:auto !important; }
+  main > header { position:static !important; padding:10px 14px !important; }
+  main > header h2 { font-size:19px !important; }
+  main > header .text-xs { font-size:10px !important; }
+  main > div:first-child { padding:7px 10px !important; }
+  main > div:first-child .truncate { max-width:70vw; }
+
+  /* 상단 메뉴는 가로 스크롤 */
+  main > div:nth-of-type(2) { position:static !important; padding:7px 10px 4px !important; }
+  main > div:nth-of-type(2) nav { overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+  .tab-btn { padding:8px 11px !important; font-size:11px !important; }
+
+  #printArea { padding:10px !important; }
+  #printArea > section { gap:10px !important; }
+
+  /* 캘린더는 7칸을 억지로 좁히지 않고 가로 스크롤 */
+  #view-calendar-events .grid.grid-cols-1 { display:block !important; }
+  #view-calendar-events .grid.grid-cols-7 { min-width:560px !important; grid-template-columns:repeat(7,minmax(72px,1fr)) !important; }
+  #view-calendar-events .bg-white.rounded-3xl { overflow-x:auto !important; padding:10px !important; }
+  #view-calendar-events aside { margin-top:10px; }
+  #view-calendar-events .bg-indigo-50\/70 { padding:8px 10px !important; }
+  #view-calendar-events .bg-indigo-50\/70 span.text-\[10px\] { display:none; }
+  #view-calendar-events .bg-indigo-50\/70 button { padding:8px 10px !important; }
+
+  /* 시간표/강사 결과는 필요할 때 가로 스크롤 */
+  #view-timetable .grid.md\:grid-cols-5 { min-width:720px; }
+  #view-timetable .bg-white.rounded-3xl { overflow-x:auto; }
+  #substitute-result-list { grid-template-columns:1fr !important; }
+
+  /* 청구서/신호등 표는 내용이 잘리지 않도록 가로 스크롤 */
+  #view-billing, #view-checklist, #view-expense, #view-master-teachers { overflow-x:auto; }
+  #view-billing table, #view-checklist table { min-width:720px; }
+  #view-master-teachers table { min-width:850px; }
+
+  /* 카드/버튼이 화면 밖으로 튀어나가지 않게 */
+  .flex.flex-wrap { max-width:100%; }
+  input, select, textarea { max-width:100%; box-sizing:border-box; }
+  .modal-box, [id^="modal-"] > div { max-width:calc(100vw - 20px) !important; }
+}
+</style>
 </head>
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
 

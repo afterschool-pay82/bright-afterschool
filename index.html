@@ -464,6 +464,10 @@
         if(sb) sb.classList.toggle('hidden', id !== 'all'); 
       }
       
+      // 학교를 변경하면 이전 학교에서 보고 있던 탭을 그대로 유지하지 않고
+      // 항상 해당 학교의 첫 화면(학사 일정 캘린더)으로 이동합니다.
+      switchTab('calendar-events');
+
       renderSchoolTimetableGrid(); renderCalendarGrid(); renderBilling();
       renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles();
     }
@@ -542,7 +546,11 @@
         const isSunday = new Date(calYear, calMonth - 1, day).getDay() === 0, holidayName = holidays[`${calMonth}-${day}`];
         const dayEvents = events.filter(ev => (!ev.ym && parseInt(ev.dateStr, 10) === day) || (ev.ym === `${calYear}-${calMonth}` && parseInt(ev.dateStr, 10) === day));
         let contentHtml = holidayName ? `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold bg-rose-100 text-rose-900 border-rose-300 mb-1">🔴 ${holidayName}</div>` : '';
-        dayEvents.forEach(ev => { contentHtml += `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex justify-between ${ev.type === '휴강일' ? 'bg-rose-100 text-rose-900' : 'bg-indigo-100 text-indigo-900'} mb-1"><span>📌 ${ev.keyword}</span><button onclick="deleteCalendarEvent('${ev.id}')" class="text-rose-500 font-bold">×</button></div>`; });
+        dayEvents.forEach(ev => {
+          const schoolName = (appData.schools || []).find(s => s.id === ev.schoolId)?.name || '공통';
+          const eventLabel = currentSchoolId === 'all' ? `${schoolName} (${ev.keyword})` : ev.keyword;
+          contentHtml += `<div class="px-1.5 py-1 rounded-lg border text-[10px] font-bold truncate flex justify-between ${ev.type === '휴강일' ? 'bg-rose-100 text-rose-900' : 'bg-indigo-100 text-indigo-900'} mb-1"><span title="${schoolName} - ${ev.keyword}">📌 ${eventLabel}</span><button onclick="deleteCalendarEvent('${ev.id}')" class="text-rose-500 font-bold">×</button></div>`;
+        });
         const dayColorClass = (isSunday || holidayName) ? 'text-rose-600' : new Date(calYear, calMonth - 1, day).getDay() === 6 ? 'text-blue-600' : 'text-stone-800';
         html += `<div class="bg-white rounded-2xl border border-stone-200 min-h-[140px] p-2.5 flex flex-col justify-between shadow-2xs"><div><div class="flex items-center justify-between mb-1.5"><span class="font-mono font-bold text-xs md:text-sm ${dayColorClass}">${day}</span><button onclick="quickAddCalDay(${day})" class="text-stone-300 hover:text-indigo-600 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer">+</button></div><div class="space-y-1 overflow-y-auto max-h-[100px] custom-scroll pr-0.5">${contentHtml}</div></div></div>`;
       }

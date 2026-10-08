@@ -270,7 +270,7 @@
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">메모 작성</h3><button onclick="closeModal('modal-add-memo')">×</button></div><form id="form-add-memo" class="space-y-3"><select id="memo-input-school" class="w-full p-2 border rounded-xl"></select><select id="memo-input-author" class="w-full p-2 border rounded-xl"><option>현장 코디네이터</option><option>본사 운영팀</option></select><textarea id="memo-input-text" required placeholder="메모 내용" class="w-full p-2 border rounded-xl"></textarea><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   
   <!-- 강사 엑셀 업로드 -->
-  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2">필수 열: 학교명, 과목명, 강사명, 출강요일, 연락처</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 block w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
+  <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2 leading-5">엑셀 열 예시: 학교명 · 강좌명(과목명) · 강사명 · 수업요일(출강요일) · 전화번호(연락처) · 수업시간</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 block w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
   
   <!-- 미리보기 모달 -->
   <div id="modal-file-preview" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col"><div class="p-4 border-b flex justify-between"><h3 id="preview-title" class="font-bold">미리보기</h3><button onclick="closeModal('modal-file-preview')">×</button></div><div id="preview-body" class="flex-1 overflow-auto p-4 flex justify-center items-start bg-stone-100"></div></div></div>
@@ -654,14 +654,48 @@
 
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input')?.value.trim().toLowerCase();
-      const grid = document.getElementById('master-teacher-grid'); if (!grid) return; 
+      const grid = document.getElementById('master-teacher-grid'); if (!grid) return;
       let list = appData.masterTeachers || [];
       if (currentSchoolId !== 'all') { const sch = appData.schools.find(s => s.id === currentSchoolId); if (sch) list = list.filter(t => t.school === sch.name); }
-      if (query) list = list.filter(t => t.subject.toLowerCase().includes(query) || t.name.toLowerCase().includes(query) || t.school.toLowerCase().includes(query) || t.day.toLowerCase().includes(query));
-      
+      if (query) list = list.filter(t => `${t.subject || ''} ${t.name || ''} ${t.school || ''} ${t.day || ''} ${t.time || ''} ${t.phone || ''}`.toLowerCase().includes(query));
+
+      const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
       let html = '';
       if (list.length === 0) html = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">업로드된 강사 명단이 없습니다.</div>`;
-      else list.forEach(t => { html += `<div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 transition-all flex flex-col justify-between text-xs"><div><div class="flex items-center justify-between mb-1.5"><span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[11px]">${t.school}</span><span class="font-mono text-stone-500 font-bold">${t.day}</span></div><h5 class="font-black text-stone-900 text-sm mt-1">${t.subject}</h5><p class="font-bold text-amber-800 mt-0.5">${t.name} 강사님</p></div><div class="mt-3 pt-2.5 border-t border-stone-200 flex items-center justify-between"><span class="font-mono text-stone-600 font-semibold">${t.phone || '연락처 없음'}</span></div></div>`; });
+      else list.forEach(t => {
+        const school = esc(t.school || '소속없음');
+        const subject = esc(t.subject || '강좌 미입력');
+        const name = esc(t.name || '강사명 미입력');
+        const day = esc(t.day || '요일 미입력');
+        const time = esc(t.time || '');
+        const phone = esc(t.phone || '연락처 없음');
+        const email = esc(t.email || '');
+        html += `
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 hover:shadow-sm transition-all text-xs">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2 py-1 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[11px] truncate max-w-[55%]">${school}</span>
+              <span class="px-2 py-1 rounded-md bg-sky-50 text-sky-700 font-bold text-[11px]">${day}</span>
+            </div>
+            <div class="mb-3">
+              <p class="text-[10px] text-stone-400 font-bold mb-1">강좌명</p>
+              <h5 class="font-black text-stone-900 text-[15px] leading-tight">${subject}</h5>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <p class="text-stone-400 font-bold mb-1">강사명</p>
+                <p class="font-extrabold text-amber-800">${name} <span class="font-normal text-stone-500">강사님</span></p>
+              </div>
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <p class="text-stone-400 font-bold mb-1">수업시간</p>
+                <p class="font-bold text-stone-700">${time || '시간 미입력'}</p>
+              </div>
+            </div>
+            <div class="mt-2 pt-2.5 border-t border-stone-200 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+              <span class="font-mono font-semibold text-stone-600">☎ ${phone}</span>
+              ${email ? `<span class="text-stone-500 truncate">✉ ${email}</span>` : ''}
+            </div>
+          </div>`;
+      });
       grid.innerHTML = html;
     }
 
@@ -744,14 +778,27 @@
               const data = evt.target.result;
               const workbook = XLSX.read(data, {type: 'binary'});
               const firstSheet = workbook.SheetNames[0];
-              const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+              const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {defval: ''});
+              const clean = (v) => String(v ?? '').trim();
+              const pick = (row, aliases) => {
+                const normalized = {};
+                Object.keys(row).forEach(k => { normalized[clean(k).replace(/\s+/g, '')] = row[k]; });
+                for (const alias of aliases) {
+                  const key = clean(alias).replace(/\s+/g, '');
+                  if (normalized[key] !== undefined && clean(normalized[key]) !== '') return clean(normalized[key]);
+                }
+                return '';
+              };
+              const currentSchoolName = currentSchoolId !== 'all' ? (appData.schools.find(s => s.id === currentSchoolId)?.name || '') : '';
               appData.masterTeachers = rows.map(r => ({
-                  school: r['학교명'] || r['학교'] || '소속없음',
-                  subject: r['과목명'] || r['과목'] || '기타',
-                  name: r['강사명'] || r['이름'] || '무명',
-                  phone: r['연락처'] || r['전화번호'] || '',
-                  day: r['출강요일'] || r['요일'] || '월화수목금'
-              }));
+                  school: pick(r, ['학교명', '학교', '학교이름']) || currentSchoolName || '소속없음',
+                  subject: pick(r, ['강좌명', '과목명', '강좌', '과목', '프로그램명']) || '강좌 미입력',
+                  name: pick(r, ['강사명', '강사', '이름', '선생님']) || '강사명 미입력',
+                  phone: pick(r, ['전화번호', '연락처', '휴대폰', '휴대전화', '전화']) || '',
+                  day: pick(r, ['수업요일', '출강요일', '요일', '수업일', '요일명']) || '요일 미입력',
+                  time: pick(r, ['수업시간', '시간', '수업 시간', '강의시간', '출강시간']) || '',
+                  email: pick(r, ['이메일', '메일', '이메일주소']) || ''
+              })).filter(t => t.name !== '강사명 미입력' || t.subject !== '강좌 미입력' || t.phone || t.school !== '소속없음');
               saveData('masterTeachers', appData.masterTeachers);
               closeModal('modal-upload-teacher-excel');
               renderMasterTeacherList();

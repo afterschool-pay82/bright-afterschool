@@ -89,6 +89,7 @@
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표</button>
         <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 엑셀 업로드</button>
         <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calculator" class="w-4 h-4"></i> 청구서 관리</button>
+        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="traffic-cone" class="w-4 h-4"></i> 마감 신호등 현황판</button>
         <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 출근부</button>
         <button onclick="switchTab('notices')" id="tab-btn-notices" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="file-text" class="w-4 h-4"></i> 분기별 안내장</button>
         <button onclick="switchTab('memos')" id="tab-btn-memos" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="message-square" class="w-4 h-4"></i> 1:1 업무메모</button>
@@ -472,7 +473,7 @@
       const container = document.getElementById('school-list-container'); if (!container) return;
       const checklistBtn = document.getElementById('tab-btn-checklist');
       if (checklistBtn) {
-        checklistBtn.style.display = currentSchoolId === 'all' ? '' : 'none';
+        checklistBtn.style.display = currentSchoolId === 'all' ? 'flex' : 'none';
       }
       let html = '';
       document.getElementById('badge-total-schools').textContent = `${appData.schools.length}개소`;

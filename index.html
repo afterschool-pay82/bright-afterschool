@@ -780,24 +780,31 @@
               const firstSheet = workbook.SheetNames[0];
               const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {defval: ''});
               const clean = (v) => String(v ?? '').trim();
-              const pick = (row, aliases) => {
-                const normalized = {};
-                Object.keys(row).forEach(k => { normalized[clean(k).replace(/\s+/g, '')] = row[k]; });
+              const normKey = (v) => clean(v).toLowerCase().replace(/[^0-9a-z가-힣]/g, '');
+              const pick = (row, aliases, fuzzy = []) => {
+                const entries = Object.keys(row).map(k => ({ raw: k, key: normKey(k), value: clean(row[k]) }));
+                // 1) 정확한 열 이름 우선
                 for (const alias of aliases) {
-                  const key = clean(alias).replace(/\s+/g, '');
-                  if (normalized[key] !== undefined && clean(normalized[key]) !== '') return clean(normalized[key]);
+                  const key = normKey(alias);
+                  const found = entries.find(x => x.key === key && x.value !== '');
+                  if (found) return found.value;
+                }
+                // 2) 열 이름에 핵심 단어가 포함되어 있는 경우도 인식
+                for (const words of fuzzy) {
+                  const found = entries.find(x => words.every(w => x.key.includes(normKey(w))) && x.value !== '');
+                  if (found) return found.value;
                 }
                 return '';
               };
               const currentSchoolName = currentSchoolId !== 'all' ? (appData.schools.find(s => s.id === currentSchoolId)?.name || '') : '';
               appData.masterTeachers = rows.map(r => ({
-                  school: pick(r, ['학교명', '학교', '학교이름']) || currentSchoolName || '소속없음',
-                  subject: pick(r, ['강좌명', '과목명', '강좌', '과목', '프로그램명']) || '강좌 미입력',
-                  name: pick(r, ['강사명', '강사', '이름', '선생님']) || '강사명 미입력',
-                  phone: pick(r, ['전화번호', '연락처', '휴대폰', '휴대전화', '전화']) || '',
-                  day: pick(r, ['수업요일', '출강요일', '요일', '수업일', '요일명']) || '요일 미입력',
-                  time: pick(r, ['수업시간', '시간', '수업 시간', '강의시간', '출강시간']) || '',
-                  email: pick(r, ['이메일', '메일', '이메일주소']) || ''
+                  school: pick(r, ['학교명', '학교', '학교이름', '기관명', '기관'], [['학교'], ['기관']]) || currentSchoolName || '소속없음',
+                  subject: pick(r, ['강좌명', '과목명', '강좌', '과목', '프로그램명', '수업명', '교육과정'], [['강좌'], ['과목'], ['프로그램'], ['수업명'], ['교육과정']]) || '강좌 미입력',
+                  name: pick(r, ['강사명', '강사', '이름', '성명', '선생님', '강사이름', '강사 이름', '강사명(성명)'], [['강사'], ['선생님'], ['성명']]) || '강사명 미입력',
+                  phone: pick(r, ['전화번호', '연락처', '휴대폰', '휴대전화', '전화', '핸드폰', '휴대폰번호'], [['전화'], ['연락'], ['휴대']]) || '',
+                  day: pick(r, ['수업요일', '출강요일', '요일', '수업일', '요일명', '수업 요일'], [['요일'], ['출강일'], ['수업일']]) || '요일 미입력',
+                  time: pick(r, ['수업시간', '시간', '수업 시간', '강의시간', '출강시간', '수업시간대'], [['시간'], ['시작시간'], ['종료시간']]) || '',
+                  email: pick(r, ['이메일', '메일', '이메일주소', '이메일 주소'], [['이메일'], ['메일']]) || ''
               })).filter(t => t.name !== '강사명 미입력' || t.subject !== '강좌 미입력' || t.phone || t.school !== '소속없음');
               saveData('masterTeachers', appData.masterTeachers);
               closeModal('modal-upload-teacher-excel');

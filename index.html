@@ -32,7 +32,7 @@
 
     <div class="p-4 flex-1 flex flex-col overflow-hidden">
       <!-- 통합보기 버튼 -->
-      <button onclick="selectSchool('all')" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer shrink-0">
+      <button onclick="selectSchool('all'); syncChecklistTabVisibility()" id="btn-school-all" class="w-full mb-3 px-4 py-3.5 rounded-2xl flex items-center justify-between text-left font-bold transition-all border border-amber-300 bg-amber-400 text-stone-900 shadow-sm cursor-pointer shrink-0">
         <div class="flex items-center gap-2"><span class="text-lg">🏫</span><span class="text-sm font-extrabold tracking-tight">전체 기관 통합보기</span></div>
         <span id="badge-total-schools" class="text-xs px-2.5 py-0.5 rounded-full bg-white/90 text-amber-950 font-extrabold">12개소</span>
       </button>
@@ -448,6 +448,7 @@
     function updateClock() { const now = new Date(); document.getElementById('realtime-clock').textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`; }
 
     function switchTab(tId) {
+      if (tId === 'checklist' && currentSchoolId !== 'all') { tId = 'calendar-events'; }
       ['timetable', 'calendar-events', 'billing', 'checklist', 'expense', 'master-teachers', 'notices', 'memos', 'vault'].forEach(t => {
         const v = document.getElementById(`view-${t}`); const b = document.getElementById(`tab-btn-${t}`);
         if (!v || !b) return;
@@ -492,8 +493,20 @@
       });
     }
 
+    // 초기 화면에서도 통합/학교별 메뉴 노출 상태를 맞춥니다.
+    function syncChecklistTabVisibility() {
+      const btn = document.getElementById('tab-btn-checklist');
+      if (btn) btn.classList.toggle('hidden', currentSchoolId !== 'all');
+    }
+
     function selectSchool(id) {
       currentSchoolId = id; renderSchoolList();
+      // 마감 신호등 현황판은 전체 위탁기관 통합 화면에서만 표시
+      const checklistTabBtn = document.getElementById('tab-btn-checklist');
+      if (checklistTabBtn) checklistTabBtn.classList.toggle('hidden', id !== 'all');
+      if (id !== 'all' && document.getElementById('view-checklist') && !document.getElementById('view-checklist').classList.contains('hidden')) {
+        switchTab('calendar-events');
+      }
       const titleEl = document.getElementById('current-school-title');
       const badgeEl = document.getElementById('current-school-badge');
       if (id === 'all') {
@@ -623,7 +636,7 @@
         const daysText = sortedDays.length ? sortedDays.map(d => d.replace('요일','')).join(' · ') : '요일 미입력';
         const subjects = Array.from(t.subjects).join(' · ') || subjectKeyword;
         const availableHtml = availableDays.length
-          ? `<span class="inline-flex items-center gap-1 text-rose-600 font-black">🔴 ${availableDays.map(d => d.replace('요일','')).join(' · ')} · 가능</span>`
+          ? `<span class="inline-flex items-center gap-1 text-rose-600 font-black">🔴 ${availableDays.map(d => d.replace('요일','')).join(' · ')}</span>`
           : '<span class="text-stone-400">가능한 요일 없음</span>';
         html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs">
           <p class="font-black text-stone-900 text-sm">${t.name} 강사</p>

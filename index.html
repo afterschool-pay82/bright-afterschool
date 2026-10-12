@@ -14,6 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff">
@@ -118,6 +119,21 @@
 </style>
 </head>
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
+
+  <!-- 로그인 전 업무 화면 접근 차단 (서버 데이터 보호는 별도 규칙 필요) -->
+  <div id="auth-gate" class="fixed inset-0 z-[9999] bg-slate-100 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-7 shadow-xl border border-amber-200">
+      <h2 class="text-xl font-black text-stone-900 mb-2">(주)밝은생각 업무협업룸</h2>
+      <p class="text-sm text-stone-500 mb-5">직원 계정으로 로그인해 주세요.</p>
+      <form id="auth-login-form" class="space-y-3">
+        <label class="block text-xs font-bold">아이디 또는 이메일<input id="auth-login-id" autocomplete="username" required class="w-full border rounded-xl p-3 mt-1" placeholder="admin" /></label>
+        <label class="block text-xs font-bold">비밀번호<input id="auth-login-password" type="password" autocomplete="current-password" required class="w-full border rounded-xl p-3 mt-1" /></label>
+        <p id="auth-error" class="text-xs text-rose-700" role="alert"></p>
+        <button id="auth-login-button" type="submit" class="w-full bg-amber-500 text-stone-900 rounded-xl p-3 font-black">로그인</button>
+      </form>
+      <p class="text-xs text-stone-400 mt-4">직원 계정은 최고관리자가 별도로 발급합니다.</p>
+    </div>
+  </div>
 
   <!-- ================= L E F T   S I D E B A R ================= -->
   <aside class="w-full md:w-[320px] h-full bg-white border-r border-stone-200 flex flex-col shrink-0 z-20 shadow-sm">
@@ -516,7 +532,7 @@
     
     function saveLocalData() { localStorage.setItem('brightMind_appData_v37', JSON.stringify(appData)); }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function startBrightMindApp() {
       lucide.createIcons(); updateClock(); setInterval(updateClock, 1000);
       
       initIndexedDB().catch(console.error);
@@ -555,6 +571,53 @@
       dashboardQuarter = getCurrentQuarter();
       switchTab('calendar-events');
       renderDashboardBillingSummary(); 
+    }
+
+    // Supabase publishable key는 공개용 키입니다. secret/service_role 키는 절대 넣지 마세요.
+    const SUPABASE_URL = 'https://lelqnbvjilludifkagyj.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4TWRdJxFx-9qa2gPMBy7cg_Njuo9o-m';
+    let brightAuth = null;
+    let brightStarted = false;
+    async function showAuthenticatedApp(session) {
+      if (!session?.user || brightStarted) return;
+      const { data: profile, error } = await brightAuth.from('staff_profiles')
+        .select('login_id, display_name, role, school_ids')
+        .eq('user_id', session.user.id).single();
+      if (error || !profile) throw new Error('직원 프로필이 등록되지 않았습니다. 관리자에게 문의하세요.');
+      // 현재 버전은 관리자 테스트 전용입니다. 학교별 직원 권한 필터링 전에는 일반 직원에게 배포하지 않습니다.
+      if (profile.role !== 'admin') throw new Error('현재는 최고관리자 계정만 이용할 수 있습니다.');
+      brightStarted = true;
+      document.getElementById('auth-gate').classList.add('hidden');
+      startBrightMindApp();
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      const msg = document.getElementById('auth-error');
+      if (SUPABASE_PUBLISHABLE_KEY.startsWith('여기에_')) {
+        msg.textContent = '설정 필요: Supabase Publishable key를 HTML에 입력해 주세요.';
+        return;
+      }
+      try {
+        brightAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { data: { session } } = await brightAuth.auth.getSession();
+        if (session) await showAuthenticatedApp(session);
+      } catch (err) { msg.textContent = err.message || '로그인 설정을 확인해 주세요.'; }
+      document.getElementById('auth-login-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = document.getElementById('auth-login-button');
+        btn.disabled = true; msg.textContent = '';
+        try {
+          const login = document.getElementById('auth-login-id').value.trim();
+          // admin은 사전에 생성한 관리자 이메일과 매칭합니다. 일반 직원 아이디 연결은 서버 검증 후 구현합니다.
+          const email = login.toLowerCase() === 'admin' ? 'brilliantedu2022@gmail.com' : login;
+          if (!email.includes('@')) throw new Error('현재는 관리자 아이디 또는 등록된 이메일로 로그인해 주세요.');
+          const { data, error } = await brightAuth.auth.signInWithPassword({ email, password: document.getElementById('auth-login-password').value });
+          if (error) throw error;
+          await showAuthenticatedApp(data.session);
+        } catch (err) {
+          await brightAuth.auth.signOut();
+          msg.textContent = err.message || '로그인에 실패했습니다.';
+        } finally { btn.disabled = false; }
+      });
     });
 
     function saveData(key, val) { appData[key] = val; saveLocalData(); firebase.database().ref('brightmind_data').set(appData); }

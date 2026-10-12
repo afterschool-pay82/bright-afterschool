@@ -183,7 +183,7 @@
       <nav class="flex gap-1.5 overflow-x-auto custom-scroll whitespace-nowrap pb-1">
         <button onclick="switchTab('calendar-events')" id="tab-btn-calendar-events" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar-days" class="w-4 h-4"></i> 학사 일정 캘린더</button>
         <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calendar" class="w-4 h-4"></i> 요일별 시간표</button>
-        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="users" class="w-4 h-4"></i> 강사 현황 & 엑셀 업로드</button>
+        <button onclick="switchTab('master-teachers')" id="tab-btn-master-teachers" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="users" class="w-4 h-4"></i> 강사 현황 · 직접 관리</button>
         <button onclick="switchTab('billing')" id="tab-btn-billing" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="calculator" class="w-4 h-4"></i> 청구서 관리</button>
         <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="traffic-cone" class="w-4 h-4"></i> 마감 신호등 현황판</button>
         <button onclick="switchTab('expense')" id="tab-btn-expense" class="tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer"><i data-lucide="file-text" class="w-4 h-4"></i> 지출결의서 & 출근부</button>
@@ -270,9 +270,9 @@
       <!-- ================= 3. TAB: MASTER TEACHERS ================= -->
       <section id="view-master-teachers" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex justify-between gap-4">
-          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 강사 엑셀 데이터 관리</h4><p class="text-xs text-stone-400 mt-1">업로드된 이 명단과 실제 시간표를 대조하여 결강 강사를 찾습니다.</p></div>
+          <div><h4 class="font-bold text-base flex items-center gap-2"><span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs">강사 현황 DB</span> 학교별 강사 직접 관리</h4><p class="text-xs text-stone-400 mt-1">학교별로 강사를 직접 등록·수정·삭제합니다. 기존 엑셀 명단은 그대로 유지됩니다.</p></div>
           <div class="flex items-center gap-2">
-            <button onclick="openModal('modal-upload-teacher-excel')" class="px-3.5 py-2 bg-stone-900 text-white font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5"><i data-lucide="file-up" class="w-3.5 h-3.5 text-amber-400"></i> 명단 엑셀 업로드</button>
+            <button onclick="openTeacherEditor()" class="px-3.5 py-2 bg-emerald-700 text-white font-bold rounded-xl text-xs cursor-pointer">+ 강사 직접 등록</button>
           </div>
         </div>
         <div class="bg-white rounded-3xl border border-stone-200 shadow-xs p-5">
@@ -385,7 +385,25 @@
   <!-- 메모 등록 -->
   <div id="modal-add-memo" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">메모 작성</h3><button onclick="closeModal('modal-add-memo')">×</button></div><form id="form-add-memo" class="space-y-3"><select id="memo-input-school" class="w-full p-2 border rounded-xl"></select><select id="memo-input-author" class="w-full p-2 border rounded-xl"><option>현장 코디네이터</option><option>본사 운영팀</option></select><textarea id="memo-input-text" required placeholder="메모 내용" class="w-full p-2 border rounded-xl"></textarea><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   
-  <!-- 강사 엑셀 업로드 -->
+
+  <!-- 학교별 강사 직접 입력 및 수정: 금융정보는 로그인 보안 연동 후 추가 -->
+  <div id="modal-teacher-editor" class="fixed inset-0 bg-black/50 flex items-center justify-center p-3 z-50 hidden">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4"><h3 id="teacher-editor-title" class="font-black text-lg">강사 직접 등록</h3><button type="button" onclick="closeModal('modal-teacher-editor')" class="text-2xl">×</button></div>
+      <form id="form-teacher-editor" class="space-y-3">
+        <input id="teacher-edit-id" type="hidden" />
+        <div class="grid grid-cols-2 gap-2"><label class="text-xs font-bold">학교<select id="teacher-edit-school" required class="block w-full p-2 border rounded-xl mt-1"></select></label><label class="text-xs font-bold">강사명<input id="teacher-edit-name" required class="block w-full p-2 border rounded-xl mt-1" /></label></div>
+        <div class="grid grid-cols-2 gap-2"><label class="text-xs font-bold">과목<input id="teacher-edit-subject" required class="block w-full p-2 border rounded-xl mt-1" /></label><label class="text-xs font-bold">연락처<input id="teacher-edit-phone" type="tel" class="block w-full p-2 border rounded-xl mt-1" /></label></div>
+        <fieldset class="border rounded-xl p-3"><legend class="text-xs font-bold px-1">수업요일 (복수 선택)</legend><div class="flex flex-wrap gap-3 text-sm" id="teacher-edit-days"><label><input type="checkbox" value="월요일" /> 월</label><label><input type="checkbox" value="화요일" /> 화</label><label><input type="checkbox" value="수요일" /> 수</label><label><input type="checkbox" value="목요일" /> 목</label><label><input type="checkbox" value="금요일" /> 금</label></div></fieldset>
+        <label class="text-xs font-bold block">주소<input id="teacher-edit-address" class="block w-full p-2 border rounded-xl mt-1" placeholder="필요한 범위만 입력" /></label>
+        <div class="grid grid-cols-2 gap-2"><label class="text-xs font-bold">차량번호<input id="teacher-edit-car" class="block w-full p-2 border rounded-xl mt-1" /></label><label class="text-xs font-bold">비고<input id="teacher-edit-note" class="block w-full p-2 border rounded-xl mt-1" /></label></div>
+        <p class="text-xs text-rose-700 bg-rose-50 rounded-xl p-2">은행·계좌번호·주민등록번호는 직원 로그인과 데이터 접근 권한 설정이 완료된 뒤 추가합니다. 현재 공동 데이터베이스에는 입력하지 마세요.</p>
+        <div class="flex gap-2"><button type="button" onclick="closeModal('modal-teacher-editor')" class="flex-1 bg-stone-100 rounded-xl p-3 font-bold">취소</button><button type="submit" class="flex-1 bg-emerald-700 text-white rounded-xl p-3 font-bold">저장</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 강사 엑셀 업로드 (기존 데이터 호환용) -->
   <div id="modal-upload-teacher-excel" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl p-6 w-full max-w-sm"><div class="flex justify-between mb-4"><h3 class="font-bold">강사 엑셀 업로드</h3><button onclick="closeModal('modal-upload-teacher-excel')">×</button></div><form id="form-upload-teacher-excel"><p class="text-[11px] text-stone-500 mb-2 leading-5">엑셀 열 예시: 학교명 · 강좌명(과목명) · 강사명 · 수업요일(출강요일) · 전화번호(연락처) · 수업시간</p><input type="file" id="teacher-upload-file" accept=".xlsx,.xls" class="mb-4 block w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl font-bold">명단 업데이트</button></form></div></div>
   
   <!-- 미리보기 모달 -->
@@ -947,6 +965,48 @@
       tbody.innerHTML = html;
     }
 
+    function teacherEscape(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function openTeacherEditor(id) {
+      const t = id ? (appData.masterTeachers || []).find(x => x.id === id) : null;
+      const schoolSelect = document.getElementById('teacher-edit-school');
+      schoolSelect.innerHTML = appData.schools.map(s => `<option value="${teacherEscape(s.name)}">${teacherEscape(s.name)}</option>`).join('');
+      document.getElementById('form-teacher-editor').reset();
+      document.getElementById('teacher-edit-id').value = t?.id || '';
+      document.getElementById('teacher-editor-title').textContent = t ? '강사 정보 수정' : '강사 직접 등록';
+      schoolSelect.value = t?.school || (appData.schools.find(s => s.id === currentSchoolId)?.name || appData.schools[0]?.name || '');
+      for (const key of ['name','subject','phone','address','car','note']) document.getElementById('teacher-edit-'+key).value = t?.[key] || '';
+      const days = t ? normalizeTeacherWeekdays(t.day || '') : [];
+      document.querySelectorAll('#teacher-edit-days input').forEach(c => c.checked = days.includes(c.value));
+      openModal('modal-teacher-editor');
+    }
+    function migrateTeacherForEditing(index) {
+      const t = appData.masterTeachers[index]; if (!t) return;
+      t.id = 'teacher_legacy_'+Date.now()+'_'+index;
+      saveData('masterTeachers',appData.masterTeachers);
+      openTeacherEditor(t.id);
+    }
+    function deleteTeacherRecord(id) {
+      const t = (appData.masterTeachers || []).find(x => x.id === id);
+      if (!t || !confirm(`${t.name || '강사'}의 ${t.school || ''} 강사현황 등록을 삭제하시겠습니까?\n시간표 자료는 삭제되지 않습니다.`)) return;
+      appData.masterTeachers = appData.masterTeachers.filter(x => x.id !== id);
+      saveData('masterTeachers', appData.masterTeachers);
+      renderMasterTeacherList();
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('form-teacher-editor')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('teacher-edit-id').value;
+        const old = (appData.masterTeachers || []).find(x => x.id === id);
+        const get = key => document.getElementById('teacher-edit-'+key).value.trim();
+        const selected = [...document.querySelectorAll('#teacher-edit-days input:checked')].map(x => x.value);
+        if (!selected.length) return alert('수업요일을 하나 이상 선택해주세요.');
+        const record = {...(old || {}), id: id || 'teacher_manual_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), school:get('school'), name:get('name'), subject:get('subject'), phone:get('phone'), day:selected.join(', '), address:get('address'), car:get('car'), note:get('note'), manual:true};
+        if (old) Object.assign(old,record); else appData.masterTeachers.push(record);
+        saveData('masterTeachers',appData.masterTeachers);
+        closeModal('modal-teacher-editor'); renderMasterTeacherList();
+      });
+    });
+
     function renderMasterTeacherList() {
       const query = document.getElementById('teacher-search-input')?.value.trim().toLowerCase();
       const grid = document.getElementById('master-teacher-grid'); if (!grid) return;
@@ -956,7 +1016,7 @@
 
       const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
       let html = '';
-      if (list.length === 0) html = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">업로드된 강사 명단이 없습니다.</div>`;
+      if (list.length === 0) html = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">등록된 강사가 없습니다. 상단의 강사 직접 등록을 눌러주세요.</div>`;
       else list.forEach(t => {
         const school = esc(t.school || '소속없음');
         const subject = esc(t.subject || '강좌 미입력');
@@ -965,6 +1025,7 @@
         const time = esc(t.time || '');
         const phone = esc(t.phone || '연락처 없음');
         const email = esc(t.email || '');
+        const actions = t.id ? `<div class="flex gap-2 mt-3 pt-3 border-t"><button type="button" onclick="openTeacherEditor('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button><button type="button" onclick="deleteTeacherRecord('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 font-bold">삭제</button></div>` : `<div class="mt-3"><button type="button" onclick="migrateTeacherForEditing(${appData.masterTeachers.indexOf(t)})" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button></div>`;
         html += `
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 hover:shadow-sm transition-all text-xs">
             <div class="flex items-center justify-between gap-2 mb-3">
@@ -983,6 +1044,7 @@
               <span class="font-mono font-semibold text-stone-600">☎ ${phone}</span>
               ${email ? `<span class="text-stone-500 truncate">✉ ${email}</span>` : ''}
             </div>
+            ${actions}
           </div>`;
       });
       grid.innerHTML = html;

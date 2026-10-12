@@ -659,6 +659,24 @@
     function openEditScheduleModal(id) { const item = appData.schedules.find(s => s.id === id); if (!item) return; document.getElementById('sched-input-edit-id').value = item.id; document.getElementById('schedule-modal-title').textContent = '시간표 수정'; document.getElementById('sched-input-day').value = item.day; document.getElementById('sched-input-time').value = item.time; document.getElementById('sched-input-course').value = item.course; document.getElementById('sched-input-teacher').value = item.teacher; document.getElementById('sched-input-phone').value = item.phone || ''; openModal('modal-add-schedule'); }
     function deleteScheduleItem(id) { if (confirm('해당 수업을 삭제하시겠습니까?')) { appData.schedules = appData.schedules.filter(s => s.id !== id); saveData('schedules', appData.schedules); renderSchoolTimetableGrid(); } }
     
+    // 강사 요일 입력 형식(월/월요일/월화수/월~금/월, 수 등)을 통일합니다.
+    function normalizeTeacherWeekdays(value) {
+      const result = new Set();
+      const order = ['월', '화', '수', '목', '금'];
+      const raw = String(value || '').replace(/\s+/g, '').replace(/요일/g, '');
+      if (!raw || /미입력|없음|미정/.test(raw)) return result;
+      // 월~금, 월-금, 월부터금까지 같은 연속 범위
+      const ranges = /([월화수목금])(?:~|～|〜|-|–|—|부터)([월화수목금])/g;
+      let match;
+      while ((match = ranges.exec(raw)) !== null) {
+        const a = order.indexOf(match[1]), b = order.indexOf(match[2]);
+        if (a >= 0 && b >= a) order.slice(a, b + 1).forEach(d => result.add(d + '요일'));
+      }
+      // 붙여 쓴 요일, 쉼표 구분, 개별 요일도 모두 인식
+      for (const day of order) if (raw.includes(day)) result.add(day + '요일');
+      return result;
+    }
+
     function findSmartSubstituteTeachers() {
       const subjectKeyword = (document.getElementById('sub-search-subject')?.value || '').trim().toLowerCase();
       const resultList = document.getElementById('substitute-result-list');
@@ -690,7 +708,7 @@
         const item = teacherMap.get(key);
         if (t.school && t.school !== '소속없음') item.schools.add(String(t.school).trim());
         if (t.day && t.day !== '요일 미입력') {
-          String(t.day).split(/[,/·]+/).map(v => v.trim()).filter(Boolean).forEach(d => item.days.add(d));
+          normalizeTeacherWeekdays(t.day).forEach(d => item.days.add(d));
         }
         if (t.subject) item.subjects.add(String(t.subject).trim());
       });
@@ -704,8 +722,15 @@
           const phone = String(t.phone || '').trim();
           if (`${name}|${phone}` !== key) return;
           if (t.day && t.day !== '요일 미입력') {
-            String(t.day).split(/[,/·]+/).map(v => v.trim()).filter(Boolean).forEach(d => item.allDays.add(d));
+            normalizeTeacherWeekdays(t.day).forEach(d => item.allDays.add(d));
           }
+        });
+        // 강사 명단 외 시간표에 등록된 출강요일도 함께 반영
+        (appData.schedules || []).forEach(s => {
+          if (String(s.teacher || '').trim() !== item.name) return;
+          const schedulePhone = String(s.phone || '').trim();
+          if (item.phone && schedulePhone && item.phone !== schedulePhone) return;
+          normalizeTeacherWeekdays(s.day).forEach(d => item.allDays.add(d));
         });
       });
 
@@ -729,7 +754,7 @@
           ? sortedDays.map(d => `<span class="inline-block px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 font-bold text-[10px] mr-1 mb-1">${d.replace('요일','')}</span>`).join('')
           : '<span class="text-stone-400">요일 미입력</span>';
         const availableHtml = availableDays.length
-          ? availableDays.map(d => `<span class="inline-block px-2 py-0.5 rounded bg-rose-100 text-rose-600 border border-rose-200 font-bold text-[10px] mr-1 mb-1">${d.replace('요일','')} · 가능</span>`).join('')
+          ? availableDays.map(d => `<span class="inline-block px-2 py-0.5 rounded bg-rose-100 text-rose-600 border border-rose-200 font-bold text-[10px] mr-1 mb-1">${d.replace('요일','')}</span>`).join('')
           : '<span class="text-stone-400">가능한 요일 없음</span>';
         const subjects = Array.from(t.subjects).join(' · ') || subjectKeyword;
         html += `<div class="p-3 bg-white rounded-xl border border-indigo-100 shadow-2xs text-xs">

@@ -649,6 +649,51 @@
     let brightProfile = null;
     let brightAppRows = [];
     let brightSaveQueue = Promise.resolve();
+    let brightOwnSchoolIds = new Set();
+    let brightSharedSchoolIds = new Set();
+    const brightSharedTabs = new Set(['calendar-events', 'timetable', 'master-teachers']);
+    function brightIsOtherSchool() {
+      return brightProfile?.role === 'coordinator' && currentSchoolId !== 'all' && !brightOwnSchoolIds.has(currentSchoolId);
+    }
+    function brightSchoolIdFromAssignment(value) {
+      const school = fixedMasterSchools.find(s => s.id === value || s.name === value);
+      return school?.id || null;
+    }
+    function brightApplyViewPermissions() {
+      const other = brightIsOtherSchool();
+      const badge = document.getElementById('bright-readonly-badge');
+      if (badge) badge.classList.toggle('hidden', !other);
+      const hiddenTabs = ['billing','expense','notices','memos','vault','checklist'];
+      hiddenTabs.forEach(tab => {
+        const el = document.getElementById('tab-btn-'+tab);
+        if (el) el.style.display = other ? 'none' : (tab === 'checklist' && currentSchoolId !== 'all' ? 'none' : '');
+      });
+      const summary = document.querySelector('#view-calendar-events aside');
+      if (summary) summary.style.display = other ? 'none' : '';
+      // 타 학교에서는 등록·수정·삭제를 위한 UI를 숨기되 달력 월 이동은 허용합니다.
+      for (const section of ['calendar-events','timetable','master-teachers']) {
+        const root = document.getElementById('view-'+section);
+        if (!root) continue;
+        root.querySelectorAll('button').forEach(btn => {
+          const handler = btn.getAttribute('onclick') || '';
+          const allowed = /^(changeCalendarMonth|findSmartSubstituteTeachers)\(/.test(handler);
+          if (btn.dataset.bOriginalDisplay === undefined) btn.dataset.bOriginalDisplay = btn.style.display || '';
+          btn.style.display = other && !allowed ? 'none' : btn.dataset.bOriginalDisplay;
+        });
+      }
+    }
+    document.addEventListener('click', e => {
+      if (!brightIsOtherSchool()) return;
+      const btn = e.target.closest('button');
+      const section = btn?.closest('#view-calendar-events,#view-timetable,#view-master-teachers');
+      if (!section) return;
+      const handler = btn.getAttribute('onclick') || '';
+      if (!/^(changeCalendarMonth|findSmartSubstituteTeachers)\(/.test(handler)) {
+        e.preventDefault(); e.stopImmediatePropagation();
+        alert('다른 학교는 읽기 전용입니다.');
+      }
+    }, true);
+
 
     function blankSchoolPayload() {
       return { schools: fixedMasterSchools, bannerNotice: appData.bannerNotice, schedules: [], masterTeachers: [], billings: [], calendarEvents: [], expenses: [], attendances: [], notices: [], memos: [], vaultFiles: [] };
@@ -659,17 +704,15 @@
       if (error) throw new Error('업무자료 연결 오류: ' + (error.message || 'Supabase bright_app_data 테이블/API 설정을 확인해 주세요.'));
       if (!Array.isArray(data) || data.length === 0) throw new Error('업무자료가 아직 연결되지 않았습니다. 마이그레이션 SQL을 실행하고 Data API에서 bright_app_data 테이블을 노출해 주세요.');
       brightAppRows = data.map(r => ({ school_id: r.school_id, payload: r.payload || blankSchoolPayload() }));
-      const allSchools = (brightAppRows.find(r => Array.isArray(r.payload.schools))?.payload.schools || fixedMasterSchools);
-      let visibleSchools = allSchools;
-      if (brightProfile?.role !== 'admin') {
-        const allowedNames = Array.isArray(brightProfile?.school_ids) ? brightProfile.school_ids : [];
-        visibleSchools = allSchools.filter(s => allowedNames.includes(s.name) || allowedNames.includes(s.id));
-        if (visibleSchools.length !== 1) throw new Error('담당 학교 배정이 정확히 1개인지 확인해 주세요.');
-        const visibleIds = new Set(visibleSchools.map(s => s.id));
-        brightAppRows = brightAppRows.filter(r => visibleIds.has(r.school_id));
-        if (brightAppRows.length !== visibleSchools.length) throw new Error('담당 학교의 업무자료 권한이 없습니다. RLS 정책을 확인해 주세요.');
+      const allSchools = fixedMasterSchools;
+      const isAdmin = brightProfile?.role === 'admin';
+      if (!isAdmin) {
+        brightOwnSchoolIds = new Set((brightProfile?.school_ids || []).map(brightSchoolIdFromAssignment).filter(Boolean));
+        if (brightOwnSchoolIds.size !== 1) throw new Error('담당 학교 배정을 확인해 주세요.');
+        brightAppRows = brightAppRows.filter(r => brightOwnSchoolIds.has(r.school_id));
+        if (brightAppRows.length !== 1) throw new Error('본인 학교 업무자료 접근 권한을 확인해 주세요.');
       }
-      appData.schools = visibleSchools;
+      appData.schools = allSchools;
       const arrayKeys = ['schedules','masterTeachers','billings','calendarEvents','expenses','attendances','notices','memos','vaultFiles'];
       for (const key of arrayKeys) appData[key] = [];
       for (const row of brightAppRows) {
@@ -677,8 +720,36 @@
         for (const key of arrayKeys) if (Array.isArray(payload[key])) appData[key].push(...payload[key]);
         if (payload.bannerNotice) appData.bannerNotice = payload.bannerNotice;
       }
-      if (brightProfile?.role === 'admin') currentSchoolId = 'all';
-      else currentSchoolId = visibleSchools[0].id;
+      if (!isAdmin) {
+        // 서버에서 허용된 항목만 제공하는 SECURITY DEFINER RPC를 사용합니다.
+        const [sharedInfo, sharedTeachers] = await Promise.all([
+          brightAuth.rpc('bright_shared_school_info'),
+          brightAuth.rpc('bright_shared_teachers')
+        ]);
+        if (sharedInfo.error || sharedTeachers.error) {
+          throw new Error('공유 조회 권한 확인 실패: ' + (sharedInfo.error?.message || sharedTeachers.error?.message));
+        }
+        for (const row of sharedInfo.data || []) {
+          if (brightOwnSchoolIds.has(row.school_id)) continue;
+          brightSharedSchoolIds.add(row.school_id);
+          for (const [key, value] of [['calendarEvents',row.calendar_events],['schedules',row.schedules]]) {
+            if (Array.isArray(value)) {
+              appData[key].push(...value.map(item => ({...item, schoolId:row.school_id})));
+            }
+          }
+        }
+        for (const t of sharedTeachers.data || []) {
+          if (brightOwnSchoolIds.has(t.school_id)) continue;
+          const school = fixedMasterSchools.find(s => s.id === t.school_id);
+          if (!school) continue;
+          appData.masterTeachers.push({
+            school:school.name, schoolId:t.school_id, name:t.teacher_name,
+            subject:t.subject, day:Array.isArray(t.teaching_days) ? t.teaching_days.join(', ') : '',
+            phone:t.phone, readonly:true
+          });
+        }
+      }
+      currentSchoolId = isAdmin ? 'all' : [...brightOwnSchoolIds][0];
     }
 
     function applyRoleRestrictions() {
@@ -694,6 +765,7 @@
     }
 
     async function startBrightMindApp() {
+      const badge = document.createElement('span'); badge.id = 'bright-readonly-badge'; badge.className = 'hidden px-3 py-1 rounded-xl text-xs font-bold bg-sky-100 text-sky-800'; badge.textContent = '다른 학교 · 읽기 전용'; document.getElementById('current-school-badge')?.after(badge);
       lucide.createIcons(); updateClock(); setInterval(updateClock, 1000);
       initIndexedDB().catch(console.error);
       await loadSupabaseAppData();
@@ -788,6 +860,7 @@
     // 학교별 저장: 각 학교의 현재 서버 payload를 읽어 해당 항목만 변경합니다.
     // 전체 학교 자료를 일괄 덮어쓰거나 기존 행을 upsert로 새로 만들지 않습니다.
     function saveData(key, val) {
+      if (brightIsOtherSchool()) return Promise.reject(new Error('다른 학교 자료는 수정할 수 없습니다.'));
       appData[key] = val;
       if (!brightAuth || !brightProfile) return Promise.resolve();
       if (key === 'schools' && brightProfile.role !== 'admin') return Promise.resolve();
@@ -833,6 +906,7 @@
 
     function switchTab(tId) {
       if (tId === 'checklist' && currentSchoolId !== 'all') return;
+      if (brightIsOtherSchool() && !brightSharedTabs.has(tId)) return;
       ['timetable', 'calendar-events', 'billing', 'checklist', 'expense', 'master-teachers', 'notices', 'memos', 'vault'].forEach(t => {
         const v = document.getElementById(`view-${t}`); const b = document.getElementById(`tab-btn-${t}`);
         if (!v || !b) return;
@@ -851,6 +925,7 @@
           v.classList.add('hidden'); b.className = "tab-btn px-3.5 py-2.5 rounded-xl font-bold text-xs md:text-[13px] flex items-center gap-1.5 bg-stone-100 text-stone-600 hover:bg-stone-200 shrink-0 cursor-pointer";
         }
       });
+      brightApplyViewPermissions();
       lucide.createIcons();
     }
 
@@ -884,7 +959,7 @@
     }
 
     function selectSchool(id) {
-      if (brightProfile?.role !== 'admin') { if (id === 'all') id = appData.schools[0]?.id; if (!appData.schools.some(s => s.id === id)) return; }
+      if (brightProfile?.role !== 'admin') { if (id === 'all') id = [...brightOwnSchoolIds][0]; if (!appData.schools.some(s => s.id === id)) return; }
       document.querySelector('body > aside')?.classList.remove('mobile-schools-open');
       const mobileToggle = document.getElementById('mobile-school-toggle'); if (mobileToggle) mobileToggle.setAttribute('aria-expanded','false');
       currentSchoolId = id;
@@ -911,8 +986,9 @@
       // 항상 해당 학교의 첫 화면(학사 일정 캘린더)으로 이동합니다.
       switchTab('calendar-events');
 
-      renderSchoolTimetableGrid(); renderCalendarGrid(); renderBilling(); renderDashboardBillingSummary();
-      renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles();
+      renderSchoolTimetableGrid(); renderCalendarGrid(); if (!brightIsOtherSchool()) { renderBilling(); renderDashboardBillingSummary(); }
+      if (!brightIsOtherSchool()) { renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles(); }
+      brightApplyViewPermissions();
     }
 
 
@@ -1274,6 +1350,7 @@
 
     function teacherEscape(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
     function openTeacherEditor(id) {
+      if (brightIsOtherSchool()) return alert('다른 학교는 읽기 전용입니다.');
       const t = id ? (appData.masterTeachers || []).find(x => x.id === id) : null;
       const schoolSelect = document.getElementById('teacher-edit-school');
       schoolSelect.innerHTML = appData.schools.map(s => `<option value="${teacherEscape(s.name)}">${teacherEscape(s.name)}</option>`).join('');
@@ -1293,6 +1370,7 @@
       openTeacherEditor(t.id);
     }
     function deleteTeacherRecord(id) {
+      if (brightIsOtherSchool()) return alert('다른 학교는 읽기 전용입니다.');
       const t = (appData.masterTeachers || []).find(x => x.id === id);
       if (!t || !confirm(`${t.name || '강사'}의 ${t.school || ''} 강사현황 등록을 삭제하시겠습니까?\n시간표 자료는 삭제되지 않습니다.`)) return;
       appData.masterTeachers = appData.masterTeachers.filter(x => x.id !== id);
@@ -1302,6 +1380,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-teacher-editor')?.addEventListener('submit', e => {
         e.preventDefault();
+        if (brightIsOtherSchool()) return alert('다른 학교는 읽기 전용입니다.');
         const id = document.getElementById('teacher-edit-id').value;
         const old = (appData.masterTeachers || []).find(x => x.id === id);
         const get = key => document.getElementById('teacher-edit-'+key).value.trim();
@@ -1331,8 +1410,8 @@
         const day = esc(t.day || '요일 미입력');
         const time = esc(t.time || '');
         const phone = esc(t.phone || '연락처 없음');
-        const email = esc(t.email || '');
-        const actions = t.id ? `<div class="flex gap-2 mt-3 pt-3 border-t"><button type="button" onclick="openTeacherEditor('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button><button type="button" onclick="deleteTeacherRecord('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 font-bold">삭제</button></div>` : `<div class="mt-3"><button type="button" onclick="migrateTeacherForEditing(${appData.masterTeachers.indexOf(t)})" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button></div>`;
+        const email = brightIsOtherSchool() ? '' : esc(t.email || '');
+        const actions = brightIsOtherSchool() ? '' : t.id ? `<div class="flex gap-2 mt-3 pt-3 border-t"><button type="button" onclick="openTeacherEditor('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button><button type="button" onclick="deleteTeacherRecord('${teacherEscape(t.id)}')" class="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 font-bold">삭제</button></div>` : `<div class="mt-3"><button type="button" onclick="migrateTeacherForEditing(${appData.masterTeachers.indexOf(t)})" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">수정</button></div>`;
         html += `
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs hover:border-amber-400 hover:shadow-sm transition-all text-xs">
             <div class="flex items-center justify-between gap-2 mb-3">

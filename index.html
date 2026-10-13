@@ -758,10 +758,10 @@
         btn.disabled = true; msg.textContent = '';
         try {
           const login = document.getElementById('auth-login-id').value.trim();
-          // 현재 검증된 로그인 매핑: admin과 새말초. 다른 학교 계정은 매핑 확인 후 추가합니다.
-          const loginEmails = { admin: 'brilliantedu2022@gmail.com', '새말초': 'saemal@naver.com' };
-          const email = loginEmails[login.toLowerCase()] || loginEmails[login];
-          if (!email) throw new Error('현재 테스트 파일은 admin 또는 새말초 계정만 지원합니다.');
+          // 확인된 로그인 매핑. 등록된 이메일 주소 직접 입력도 허용합니다.
+          const loginEmails = { admin: 'brilliantedu2022@gmail.com', '새말초': 'saemal@naver.com', '남부초': 'brilliantedu2022+nambu@gmail.com' };
+          const email = loginEmails[login.toLowerCase()] || loginEmails[login] || (login.includes('@') ? login : null);
+          if (!email) throw new Error('등록된 학교 아이디 또는 이메일 주소로 로그인해 주세요.');
           const { data, error } = await brightAuth.auth.signInWithPassword({ email, password: document.getElementById('auth-login-password').value });
           if (error) throw error;
           await showAuthenticatedApp(data.session);

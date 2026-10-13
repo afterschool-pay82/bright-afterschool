@@ -35,6 +35,23 @@
     .calendar-event { min-height: 30px; }
   </style>
 <style>
+/* B버전: 공지사항 전광판 (기존 공지 데이터 및 저장 방식 유지) */
+.bright-notice-window { overflow:hidden; white-space:nowrap; }
+.bright-notice-track { display:inline-block; min-width:100%; width:max-content; padding-left:100%; box-sizing:content-box; animation:brightNoticeScroll 19s linear infinite; will-change:transform; }
+.bright-notice-message { display:inline-block; white-space:nowrap; font-size:18px; line-height:1.6; font-weight:800; }
+.bright-notice-window:hover .bright-notice-track,
+.bright-notice-window:focus .bright-notice-track,
+.bright-notice-window:focus-within .bright-notice-track { animation-play-state:paused; }
+@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(-100%); } }
+@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:16s; } }
+@media (prefers-reduced-motion:reduce) {
+ .bright-notice-window { overflow-x:auto; white-space:normal; }
+ .bright-notice-track { animation:none; padding-left:0; min-width:0; width:auto; }
+ .bright-notice-message { white-space:normal; }
+}
+</style>
+
+<style>
 /* ===== 모바일 최적화 ===== */
 @media (max-width: 767px) {
   html, body { width:100%; max-width:100%; overflow:hidden; }
@@ -241,10 +258,10 @@
 
   <!-- ================= M A I N   C O N T E N T ================= -->
   <main class="flex-1 flex flex-col h-full overflow-y-auto custom-scroll min-w-0 bg-[#F8F9FA]">
-    <div class="bg-amber-400 px-4 md:px-6 py-2.5 text-xs text-stone-900 font-bold flex items-center justify-between gap-2 shadow-xs shrink-0">
-      <div class="flex items-center gap-2 truncate flex-1">
-        <span class="px-2 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-extrabold uppercase shrink-0">Notice</span>
-        <span id="banner-notice-text" class="truncate font-semibold">📢 [공지] 안내장 1~4분기 선택 정상 복구 완료!</span>
+    <div class="bright-notice-bar bg-amber-400 px-4 md:px-6 py-3 text-stone-900 font-bold flex items-center gap-3 shadow-xs shrink-0" role="region" aria-label="중요 공지사항">
+      <span class="px-2 py-1 rounded-full bg-stone-900 text-amber-300 text-xs font-extrabold shrink-0">📢 공지</span>
+      <div class="bright-notice-window flex-1 min-w-0" tabindex="0" aria-label="움직이는 공지사항. 마우스를 올리거나 키보드로 선택하면 멈춥니다.">
+        <div class="bright-notice-track"><span id="banner-notice-text" class="bright-notice-message">📢 [공지] 안내장 1~4분기 선택 정상 복구 완료!</span></div>
       </div>
     </div>
 

@@ -561,6 +561,12 @@
       a.download = local.name || fallbackName; document.body.appendChild(a); a.click(); a.remove();
     }
     async function previewFile(fileId, fileType, fileName) {
+      // Mobile browsers often cannot embed signed PDF URLs in an iframe.
+      // Use the already verified download path instead of a blank preview modal.
+      if (/\.pdf$/i.test(fileName || '') && window.matchMedia('(max-width: 768px)').matches) {
+        await downloadFileFromDB(fileId, fileName);
+        return;
+      }
       const signed = await cloudFile(fileId);
       const local = signed ? null : await getFileFromDB(fileId);
       const src = signed || local?.data;

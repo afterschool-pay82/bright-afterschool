@@ -266,7 +266,17 @@ body.bright-mode-own #current-school-badge { background:#dbeafe !important; colo
 body.bright-mode-other main > header { background:#f1f5f9 !important; border-bottom:3px solid #94a3b8 !important; }
 body.bright-mode-other #current-school-badge { background:#e2e8f0 !important; color:#334155 !important; border-color:#cbd5e1 !important; }
 body.bright-mode-all main > header { background:#fff !important; }
-.bright-work-panel { background:white; border:1px solid #e7e5e4; border-radius:18px; padding:14px 16px; margin-bottom:14px; }
+.bright-work-panel { background:white; border:1px solid #e7e5e4; border-radius:18px; margin-bottom:14px; overflow:hidden; }
+.bright-work-toggle { display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; padding:12px 16px; list-style:none; user-select:none; }
+.bright-work-toggle::-webkit-details-marker { display:none; }
+.bright-work-toggle:focus-visible { outline:3px solid #f59e0b; outline-offset:-3px; }
+.bright-work-heading,.bright-work-right { display:flex; align-items:center; gap:8px; }
+.bright-work-heading { font-size:14px; font-weight:700; color:#292524; }
+.bright-work-count { border-radius:999px; background:#fef3c7; color:#92400e; font-size:11px; font-weight:700; padding:2px 8px; }
+.bright-work-chevron { display:inline-block; font-size:22px; line-height:1; color:#78716c; transition:transform .2s; }
+.bright-work-panel[open] .bright-work-chevron { transform:rotate(180deg); }
+.bright-work-contents { border-top:1px solid #f5f5f4; padding:12px 16px; }
+@media (max-width:520px) { .bright-work-toggle { padding:11px 12px; } .bright-work-right { gap:4px; } #bright-work-scope { font-size:10px; } }
 .bright-work-item { padding:8px 0; border-bottom:1px solid #f5f5f4; font-size:13px; }
 .bright-work-item:last-child { border-bottom:0; }
 </style>
@@ -310,10 +320,13 @@ body.bright-mode-all main > header { background:#fff !important; }
     <!-- Content Sections -->
     <div id="printArea" class="p-4 md:p-6 space-y-6">
 
-      <div id="bright-work-panel" class="bright-work-panel" aria-live="polite">
-        <div class="flex items-center justify-between gap-2 mb-2"><strong class="text-sm text-stone-900">📋 확인할 업무</strong><span id="bright-work-scope" class="text-xs text-stone-500"></span></div>
-        <div id="bright-work-items" class="text-xs text-stone-500">업무 현황을 불러오는 중입니다.</div>
-      </div>
+      <details id="bright-work-panel" class="bright-work-panel">
+        <summary class="bright-work-toggle" aria-label="확인할 업무 목록 펼치기 또는 접기">
+          <span class="bright-work-heading">📋 확인할 업무 <span id="bright-work-count" class="bright-work-count">확인 중</span></span>
+          <span class="bright-work-right"><span id="bright-work-scope" class="text-xs text-stone-500"></span><span class="bright-work-chevron" aria-hidden="true">⌄</span></span>
+        </summary>
+        <div id="bright-work-items" class="bright-work-contents text-xs text-stone-500" aria-live="polite">업무 현황을 불러오는 중입니다.</div>
+      </details>
 
       <!-- ================= 1. TAB: CALENDAR EVENTS ================= -->
       <section id="view-calendar-events" class="space-y-4 hidden">
@@ -1047,7 +1060,8 @@ body.bright-mode-all main > header { background:#fff !important; }
       const panel = document.getElementById('bright-work-panel');
       const items = document.getElementById('bright-work-items');
       const scope = document.getElementById('bright-work-scope');
-      if (!panel || !items || !scope) return;
+      const count = document.getElementById('bright-work-count');
+      if (!panel || !items || !scope || !count) return;
       // 타 학교 열람 시에는 청구 현황이나 내부 업무를 표시하지 않습니다.
       if (brightIsOtherSchool()) { panel.style.display='none'; return; }
       panel.style.display='block';
@@ -1055,6 +1069,7 @@ body.bright-mode-all main > header { background:#fff !important; }
       scope.textContent = currentSchoolId === 'all' ? '전체 학교 · 이번 분기' : '내 학교 · 이번 분기';
       const quarter = getCurrentQuarter();
       const pending = schools.filter(s => !(appData.billings || []).some(b => b.schoolId === s.id && Number(b.quarter) === quarter));
+      count.textContent = pending.length ? `확인 필요 ${pending.length}건` : '확인 필요 0건';
       // 차수는 학교마다 달라서 미등록을 확정 마감으로 간주하지 않습니다.
       if (!pending.length) {
         items.textContent = '이번 분기에 청구서 등록 내역이 있습니다. 세부 진행 상태는 청구서 관리에서 확인해 주세요.';

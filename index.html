@@ -35,18 +35,22 @@
     .calendar-event { min-height: 30px; }
   </style>
 <style>
-/* B버전 개선: 화면 너비와 무관하게 흐르는 공지 */
-.bright-notice-window { position:relative; overflow:hidden; min-height:34px; flex:1; }
-.bright-notice-track { position:absolute; left:0; top:0; display:block; width:max-content; min-width:100%; padding-left:100%; box-sizing:content-box; white-space:nowrap; animation:brightNoticeScroll 18s linear infinite; will-change:transform; }
-.bright-notice-message { display:inline-block; white-space:nowrap; font-size:19px; line-height:34px; font-weight:850; }
-.bright-notice-window:hover .bright-notice-track { animation-play-state:paused; }
-@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(-100%); } }
-@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:16s; } }
-@media (prefers-reduced-motion:reduce) {
- .bright-notice-track { animation:none; left:0; position:relative; white-space:normal; width:auto; padding-left:0; }
- .bright-notice-message { white-space:normal; }
- .bright-notice-window { overflow:auto; }
+/* B버전: 화면 오른쪽에서 즉시 시작하는 공지 전광판 */
+.bright-notice-window { position:relative; overflow:hidden; min-height:38px; flex:1; isolation:isolate; }
+.bright-notice-track {
+ position:absolute; left:100%; top:0; display:block;
+ width:max-content; min-width:0; padding:0; box-sizing:border-box;
+ white-space:nowrap;
+ animation:brightNoticeScrollV3 14s linear infinite !important;
+ animation-play-state:running !important;
+ will-change:transform;
 }
+.bright-notice-message { display:inline-block; white-space:nowrap; font-size:20px; line-height:38px; font-weight:850; }
+@keyframes brightNoticeScrollV3 {
+ from { transform:translateX(0); }
+ to { transform:translateX(calc(-100% - 100vw)); }
+}
+@media (max-width:767px) { .bright-notice-message { font-size:17px; } .bright-notice-track { animation-duration:12s !important; } }
 </style>
 
 <style>

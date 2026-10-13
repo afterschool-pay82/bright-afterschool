@@ -37,15 +37,13 @@
 <style>
 /* B버전 개선: 화면 너비와 무관하게 흐르는 공지 */
 .bright-notice-window { position:relative; overflow:hidden; min-height:34px; flex:1; }
-.bright-notice-track { position:absolute; left:100%; top:0; display:block; width:max-content; white-space:nowrap; animation:brightNoticeScroll 22s linear infinite; will-change:transform; }
+.bright-notice-track { position:absolute; left:0; top:0; display:block; width:max-content; min-width:100%; padding-left:100%; box-sizing:content-box; white-space:nowrap; animation:brightNoticeScroll 18s linear infinite; will-change:transform; }
 .bright-notice-message { display:inline-block; white-space:nowrap; font-size:19px; line-height:34px; font-weight:850; }
-.bright-notice-window:hover .bright-notice-track,
-.bright-notice-window:focus .bright-notice-track,
-.bright-notice-window:focus-within .bright-notice-track { animation-play-state:paused; }
-@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(calc(-100% - 100vw)); } }
-@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:18s; } }
+.bright-notice-window:hover .bright-notice-track { animation-play-state:paused; }
+@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(-100%); } }
+@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:16s; } }
 @media (prefers-reduced-motion:reduce) {
- .bright-notice-track { animation:none; left:0; position:relative; white-space:normal; width:auto; }
+ .bright-notice-track { animation:none; left:0; position:relative; white-space:normal; width:auto; padding-left:0; }
  .bright-notice-message { white-space:normal; }
  .bright-notice-window { overflow:auto; }
 }
@@ -260,7 +258,7 @@
   <main class="flex-1 flex flex-col h-full overflow-y-auto custom-scroll min-w-0 bg-[#F8F9FA]">
     <div class="bright-notice-bar bg-amber-400 px-4 md:px-6 py-3 text-stone-900 font-bold flex items-center gap-3 shadow-xs shrink-0" role="region" aria-label="중요 공지사항">
       <span class="px-2 py-1 rounded-full bg-stone-900 text-amber-300 text-xs font-extrabold shrink-0">📢 공지</span>
-      <div class="bright-notice-window flex-1 min-w-0" tabindex="0" aria-label="움직이는 공지사항. 마우스를 올리거나 키보드로 선택하면 멈춥니다.">
+      <div class="bright-notice-window flex-1 min-w-0" tabindex="0" aria-label="움직이는 공지사항. 마우스를 올리면 멈춥니다.">
         <div class="bright-notice-track"><span id="banner-notice-text" class="bright-notice-message">📢 [공지] 안내장 1~4분기 선택 정상 복구 완료!</span></div>
       </div>
       <button id="bright-notice-edit-button" type="button" onclick="openBrightNoticeEditor()" class="hidden shrink-0 px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-700">공지 등록·수정</button>

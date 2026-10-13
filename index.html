@@ -323,7 +323,6 @@
       <section id="view-timetable" class="space-y-6 hidden">
         <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div><h4 class="font-bold text-stone-900 text-base flex items-center gap-2" id="school-timetable-grid-title"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 text-xs font-bold">시간표</span> 전체 기관 시간표</h4></div>
-          <button onclick="importNambu2026Term4()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs cursor-pointer">남부초 2026년 4기 일괄 등록</button>
           <button onclick="openModal('modal-add-schedule')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs cursor-pointer">새 시간표 등록</button>
         </div>
 
@@ -903,45 +902,6 @@
       renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles();
     }
 
-
-    // 남부초 2026학년도 4기 안내장 기반 일괄 등록. 기존 시간표는 유지합니다.
-    async function importNambu2026Term4() {
-      if (brightProfile?.role !== 'admin' && currentSchoolId !== 'sch_2') {
-        alert('남부초 시간표를 등록할 권한이 없습니다.'); return;
-      }
-      if (currentSchoolId !== 'sch_2') {
-        alert('왼쪽 학교 목록에서 남부초를 선택한 뒤 등록해 주세요.'); return;
-      }
-      const records = [];
-      const add = (day, course, teacher, phone, time) => records.push({
-        schoolId:'sch_2', day:day+'요일', course:course+' (2026 4기)', teacher, phone, time
-      });
-      // 40분 강좌: A/B/C 각 반은 요일별 실제 시간이 다를 수 있습니다.
-      [['화','13:50~14:30','14:40~15:20','15:30~16:10'],['수','13:00~13:40','13:50~14:30','14:40~15:20']].forEach(([day,a,b,c]) => {
-        add(day,'영어 A반','김지연','',a); add(day,'영어 B반','김지연','',b); add(day,'영어 C반','김지연','',c);
-      });
-      ['월','목'].forEach(day => { add(day,'수학 A반','송태윤','', '13:50~14:30'); add(day,'수학 B반','송태윤','','14:40~15:20'); });
-      ['화','목'].forEach(day => { add(day,'피아노 A반','김희영','','13:50~14:30'); add(day,'피아노 B반','김희영','','14:40~15:20'); add(day,'피아노 C반','김희영','','15:30~16:10'); });
-      add('월','멀티스포츠 A반','정용호','','13:50~15:20'); add('월','멀티스포츠 B반','정용호','','15:30~17:00');
-      add('화','요리 A반','김수연','','13:50~15:20'); add('화','요리 B반','김수연','','15:30~17:00');
-      add('수','방송댄스 A반','송가휘','','13:00~14:30'); add('수','방송댄스 B반','송가휘','','14:40~16:10');
-      add('수','창의과학 B반','최희자','','14:40~16:10');
-      const existing = appData.schedules || [];
-      const key = s => [s.schoolId,s.day,s.course,s.teacher,s.time].join('|');
-      const keys = new Set(existing.map(key));
-      const additions = records.filter(r => !keys.has(key(r)));
-      if (!additions.length) { alert('이미 같은 시간표 23건이 등록되어 있어 중복 등록하지 않았습니다.'); return; }
-      if (!confirm('남부초 2026학년도 4기 시간표 '+additions.length+'건을 추가할까요?\n운영 기간: 2026.11.30 ~ 2027.02.05\n기존 시간표는 삭제하지 않습니다.')) return;
-      const stamp = Date.now();
-      const updated = [...existing, ...additions.map((r,i) => ({...r, id:'s_nambu_2026t4_'+stamp+'_'+i}))];
-      try {
-        await saveData('schedules', updated);
-        renderSchoolTimetableGrid();
-        alert('남부초 4기 시간표 '+additions.length+'건을 추가했습니다.');
-      } catch (err) {
-        alert('서버 저장에 실패했습니다. 다시 확인해 주세요. '+(err?.message || ''));
-      }
-    }
 
     // ================= TIMETABLE =================
     function renderSchoolTimetableGrid() {

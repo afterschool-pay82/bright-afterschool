@@ -35,19 +35,19 @@
     .calendar-event { min-height: 30px; }
   </style>
 <style>
-/* B버전: 공지사항 전광판 (기존 공지 데이터 및 저장 방식 유지) */
-.bright-notice-window { overflow:hidden; white-space:nowrap; }
-.bright-notice-track { display:inline-block; min-width:100%; width:max-content; padding-left:100%; box-sizing:content-box; animation:brightNoticeScroll 19s linear infinite; will-change:transform; }
-.bright-notice-message { display:inline-block; white-space:nowrap; font-size:18px; line-height:1.6; font-weight:800; }
+/* B버전 개선: 화면 너비와 무관하게 흐르는 공지 */
+.bright-notice-window { position:relative; overflow:hidden; min-height:34px; flex:1; }
+.bright-notice-track { position:absolute; left:100%; top:0; display:block; width:max-content; white-space:nowrap; animation:brightNoticeScroll 22s linear infinite; will-change:transform; }
+.bright-notice-message { display:inline-block; white-space:nowrap; font-size:19px; line-height:34px; font-weight:850; }
 .bright-notice-window:hover .bright-notice-track,
 .bright-notice-window:focus .bright-notice-track,
 .bright-notice-window:focus-within .bright-notice-track { animation-play-state:paused; }
-@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(-100%); } }
-@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:16s; } }
+@keyframes brightNoticeScroll { from { transform:translateX(0); } to { transform:translateX(calc(-100% - 100vw)); } }
+@media (max-width:767px) { .bright-notice-message { font-size:16px; } .bright-notice-track { animation-duration:18s; } }
 @media (prefers-reduced-motion:reduce) {
- .bright-notice-window { overflow-x:auto; white-space:normal; }
- .bright-notice-track { animation:none; padding-left:0; min-width:0; width:auto; }
+ .bright-notice-track { animation:none; left:0; position:relative; white-space:normal; width:auto; }
  .bright-notice-message { white-space:normal; }
+ .bright-notice-window { overflow:auto; }
 }
 </style>
 
@@ -263,6 +263,7 @@
       <div class="bright-notice-window flex-1 min-w-0" tabindex="0" aria-label="움직이는 공지사항. 마우스를 올리거나 키보드로 선택하면 멈춥니다.">
         <div class="bright-notice-track"><span id="banner-notice-text" class="bright-notice-message">📢 [공지] 안내장 1~4분기 선택 정상 복구 완료!</span></div>
       </div>
+      <button id="bright-notice-edit-button" type="button" onclick="openBrightNoticeEditor()" class="hidden shrink-0 px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-bold hover:bg-stone-700">공지 등록·수정</button>
     </div>
 
     <header class="bg-white sticky top-0 z-10 px-4 md:px-6 py-4 border-b border-stone-200 flex flex-wrap items-center justify-between gap-4 shrink-0">
@@ -452,6 +453,18 @@
   <div id="modal-add-calendar-event" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">휴강/재량휴일 등록</h3><button onclick="closeModal('modal-add-calendar-event')">×</button></div><form id="form-add-calendar-event" class="space-y-3"><select id="cal-input-school" class="w-full p-2 border rounded-xl"></select><select id="cal-input-type" class="w-full p-2 border rounded-xl"><option value="휴강일">휴강일</option><option value="재량휴일">재량휴일</option></select><div class="flex gap-2"><input type="text" id="cal-input-ym" readonly class="w-full p-2 border rounded-xl bg-stone-100" /><input type="number" id="cal-input-daynum" required placeholder="일자" class="w-full p-2 border rounded-xl" /></div><input type="text" id="cal-input-keyword" required placeholder="제목" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-indigo-600 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 시간표 등록/수정 -->
   <div id="modal-add-schedule" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold" id="schedule-modal-title">강좌 시간표 등록</h3><button onclick="closeModal('modal-add-schedule')">×</button></div><form id="form-add-schedule" class="space-y-3"><input type="hidden" id="sched-input-edit-id" /><div class="flex gap-2"><select id="sched-input-day" class="w-1/2 p-2 border rounded-xl"><option>월요일</option><option>화요일</option><option>수요일</option><option>목요일</option><option>금요일</option></select><input type="text" id="sched-input-time" required placeholder="13:00~13:40" class="w-1/2 p-2 border rounded-xl" /></div><input type="text" id="sched-input-course" required placeholder="과목명 (예: 영어 A반)" class="w-full p-2 border rounded-xl" /><div class="flex gap-2"><input type="text" id="sched-input-teacher" required placeholder="강사명" class="w-1/2 p-2 border rounded-xl" /><input type="text" id="sched-input-phone" placeholder="연락처" class="w-1/2 p-2 border rounded-xl" /></div><div class="flex gap-2 pt-2"><button type="button" onclick="closeModal('modal-add-schedule')" class="flex-1 py-2.5 font-bold rounded-xl bg-stone-100 text-stone-600">취소</button><button type="submit" class="flex-1 py-2.5 bg-amber-500 text-white font-bold rounded-xl">저장</button></div></form></div></div>
+  <!-- 통합 전광판 공지 편집: 관리자 전용 -->
+  <div id="modal-bright-notice" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-label="공지사항 등록 및 수정">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">📢 전광판 공지 등록·수정</h3><button type="button" onclick="closeBrightNoticeEditor()" class="text-xl px-2" aria-label="닫기">×</button></div>
+      <form id="form-bright-notice" class="space-y-4">
+        <label class="block text-sm font-bold text-stone-700" for="bright-notice-input">전체 학교에 표시할 공지</label>
+        <textarea id="bright-notice-input" required maxlength="300" rows="4" class="w-full border border-stone-300 rounded-xl p-3 text-base" placeholder="예: 3분기 1차 청구서 등록해주세요~"></textarea>
+        <p class="text-xs text-stone-500">관리자만 수정할 수 있으며, 기존 공지를 새 내용으로 교체합니다.</p>
+        <button type="submit" id="bright-notice-save-button" class="w-full rounded-xl py-3 bg-amber-500 text-stone-900 font-extrabold">공지 저장</button>
+      </form>
+    </div>
+  </div>
   <!-- 청구서 등록 -->
   <div id="modal-add-billing" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden"><div class="bg-white rounded-3xl w-full max-w-sm p-6"><div class="flex justify-between mb-4"><h3 class="font-bold">청구서 등록</h3><button onclick="closeModal('modal-add-billing')">×</button></div><form id="form-add-billing" class="space-y-3"><input type="hidden" id="billing-input-category" /><input type="hidden" id="billing-input-school" /><input type="hidden" id="billing-input-quarter" /><input type="hidden" id="billing-input-period" /><input type="number" id="billing-input-amount" required placeholder="청구 금액(원)" class="w-full p-2 border rounded-xl" /><input type="file" id="billing-input-file" class="w-full p-2 border rounded-xl" /><button type="submit" class="w-full py-2 bg-amber-500 text-white font-bold rounded-xl">등록</button></form></div></div>
   <!-- 청구서 수정 -->
@@ -792,6 +805,7 @@
       selectSchool(currentSchoolId);
       const banner = document.getElementById('banner-notice-text');
       if (banner) banner.textContent = appData.bannerNotice;
+      document.getElementById('bright-notice-edit-button')?.classList.toggle('hidden', brightProfile?.role !== 'admin');
       currentQuarter = getCurrentQuarter();
       const checklistPeriod = document.getElementById('checklist-period');
       if (checklistPeriod) checklistPeriod.value = String(currentQuarter);
@@ -918,6 +932,40 @@
         alert('저장하지 못했습니다. 새로고침 후 자료를 확인해 주세요.\n' + (err.message || ''));
       });
       return task;
+    }
+    function openBrightNoticeEditor() {
+      if (brightProfile?.role !== 'admin') return;
+      document.getElementById('bright-notice-input').value = appData.bannerNotice || '';
+      const modal = document.getElementById('modal-bright-notice');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      document.getElementById('bright-notice-input').focus();
+    }
+    function closeBrightNoticeEditor() {
+      const modal = document.getElementById('modal-bright-notice');
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+    }
+    document.getElementById('form-bright-notice')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (brightProfile?.role !== 'admin') return;
+      const content = document.getElementById('bright-notice-input').value.trim();
+      if (!content) return alert('공지 내용을 입력해 주세요.');
+      const button = document.getElementById('bright-notice-save-button');
+      button.disabled = true;
+      try {
+        await saveData('bannerNotice', content);
+        appData.bannerNotice = content;
+        document.getElementById('banner-notice-text').textContent = content;
+        closeBrightNoticeEditor();
+        alert('전광판 공지가 저장되었습니다.');
+      } catch (err) {
+        alert('공지 저장에 실패했습니다: ' + (err.message || err));
+      } finally { button.disabled = false; }
+    });
+    function downloadBillingAttachment(id) {
+      const item = (appData.billings || []).find(b => b.id === id);
+      if (!item) return alert('청구서를 찾지 못했습니다.');
+      if (!item.fileName || item.fileName === '청구서') return alert('첨부된 원본 파일이 없습니다.');
+      return downloadFileFromDB(item.id, item.fileName);
     }
     function updateClock() { const now = new Date(); document.getElementById('realtime-clock').textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`; }
 
@@ -1276,7 +1324,7 @@
       return (appData.billings || []).filter(b => b.schoolId === schoolId && (b.category || 'after_instructor') === category && Number(b.quarter) === Number(currentQuarter) && Number(b.period) === period);
     }
     function billingActions(item) {
-      return `<div class="flex flex-wrap gap-2 items-center">${billingStatusHtml(item)}<button onclick="previewFile('${item.id}', 'excel', '${encodeURIComponent(item.fileName || '')}')" class="px-2 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold">수정</button><button onclick="deleteBilling('${item.id}')" class="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-xs font-bold">삭제</button></div>`;
+      return `<div class="flex flex-wrap gap-2 items-center">${billingStatusHtml(item)}<button onclick="previewFile('${item.id}', 'excel', '${encodeURIComponent(item.fileName || '')}')" class="px-2 py-1 bg-stone-100 rounded-lg text-xs font-bold">보기</button><button onclick="downloadBillingAttachment('${item.id}')" class="px-2 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold">원본 다운로드</button><button onclick="openEditBillingModal('${item.id}')" class="px-2 py-1 bg-amber-50 text-amber-900 rounded-lg text-xs font-bold">수정</button><button onclick="deleteBilling('${item.id}')" class="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-xs font-bold">삭제</button></div>`;
     }
     function billingFileLabel(item) {
       const name = String(item.fileName || '').trim();

@@ -759,7 +759,20 @@
         try {
           const login = document.getElementById('auth-login-id').value.trim();
           // 확인된 로그인 매핑. 등록된 이메일 주소 직접 입력도 허용합니다.
-          const loginEmails = { admin: 'brilliantedu2022@gmail.com', '새말초': 'saemal@naver.com', '남부초': 'brilliantedu2022+nambu@gmail.com' };
+          const loginEmails = {
+            admin: 'brilliantedu2022@gmail.com',
+            '경원초': 'brilliantedu2022+gyeongwon@gmail.com',
+            '남부초': 'brilliantedu2022+nambu@gmail.com',
+            '문남초': 'brilliantedu2022+munnam@gmail.com',
+            '새말초': 'saemal@naver.com',
+            '서화초': 'brilliantedu2022+seohwa@gmail.com',
+            '서흥초': 'brilliantedu2022+seoheung@gmail.com',
+            '숭의초': 'brilliantedu2022+sungui@gmail.com',
+            '연학초': 'brilliantedu2022+yeonhak@gmail.com',
+            '창신초': 'brilliantedu2022+changsin@gmail.com',
+            '창영초': 'brilliantedu2022+changyeong@gmail.com',
+            '청량초': 'brilliantedu2022+cheongnyang@gmail.com'
+          };
           const email = loginEmails[login.toLowerCase()] || loginEmails[login] || (login.includes('@') ? login : null);
           if (!email) throw new Error('등록된 학교 아이디 또는 이메일 주소로 로그인해 주세요.');
           const { data, error } = await brightAuth.auth.signInWithPassword({ email, password: document.getElementById('auth-login-password').value });

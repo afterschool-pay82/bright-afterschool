@@ -118,6 +118,56 @@
 }
 @media (min-width:768px) { #mobile-school-toggle { display:none !important; } }
 </style>
+<style>
+@media(max-width:640px){
+  table{min-width:620px;} .overflow-x-auto{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+  td,th{word-break:keep-all;overflow-wrap:normal;white-space:nowrap;}
+  #preview-body{min-height:55vh;}
+}
+</style>
+
+<style>
+/* 모바일 첨부파일 목록: 오른쪽 보기 버튼이 화면 밖으로 밀리지 않도록 카드형 표시 */
+@media (max-width: 767px) {
+  #view-notices, #view-vault { width:100%; max-width:100%; min-width:0; }
+  #view-notices > div, #view-vault > div { min-width:0; max-width:100%; }
+  #view-notices table, #view-vault table {
+    display:block !important; width:100% !important; min-width:0 !important;
+    table-layout:auto !important; white-space:normal !important;
+  }
+  #view-notices thead, #view-vault thead { display:none !important; }
+  #notices-table-body, #vault-table-body { display:block !important; width:100% !important; }
+  #notices-table-body tr, #vault-table-body tr {
+    display:grid !important; grid-template-columns:minmax(0,1fr) auto auto;
+    gap:6px 9px; align-items:center; width:100% !important; min-width:0 !important;
+    margin-bottom:10px; padding:12px; border:1px solid #e7e5e4;
+    border-radius:14px; background:#fff;
+  }
+  #notices-table-body td, #vault-table-body td {
+    display:block !important; min-width:0 !important; width:auto !important;
+    padding:0 !important; white-space:normal !important;
+    overflow-wrap:anywhere !important; word-break:break-word !important;
+    text-align:left !important; font-size:12px !important;
+  }
+  #notices-table-body td:nth-child(1) { grid-column:1 / 2; color:#78716c; }
+  #notices-table-body td:nth-child(2) { grid-column:2 / 4; text-align:right !important; }
+  #notices-table-body td:nth-child(3) { grid-column:1 / 4; font-size:13px !important; line-height:1.5; }
+  #notices-table-body td:nth-child(4) { grid-column:2; grid-row:3; }
+  #notices-table-body td:nth-child(5) { grid-column:3; grid-row:3; }
+  #vault-table-body td:nth-child(1) { grid-column:1 / 4; color:#78716c; }
+  #vault-table-body td:nth-child(2) { grid-column:1 / 4; font-size:13px !important; }
+  #vault-table-body td:nth-child(3) { grid-column:1; }
+  #vault-table-body td:nth-child(4) { grid-column:2; }
+  #vault-table-body td:nth-child(5) { grid-column:3; }
+  #notices-table-body td button, #vault-table-body td button {
+    display:inline-flex !important; align-items:center; justify-content:center;
+    min-height:36px; min-width:48px; padding:8px 12px !important;
+    white-space:nowrap !important; font-size:12px !important;
+  }
+  #notices-table-body tr:has(td[colspan]), #vault-table-body tr:has(td[colspan]) { display:block !important; }
+  #notices-table-body td[colspan], #vault-table-body td[colspan] { text-align:center !important; padding:15px !important; }
+}
+</style>
 </head>
 <body class="text-stone-800 h-screen flex flex-col md:flex-row antialiased">
 
@@ -441,44 +491,94 @@
       });
     }
 
-    async function storeFile(fileId, fileObj) {
-      if (!dbInstance || !fileObj) return;
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => { const tx = dbInstance.transaction('files', 'readwrite'); tx.objectStore('files').put({ id: fileId, name: fileObj.name, type: fileObj.type, data: reader.result }); tx.oncomplete = () => resolve(); };
-        reader.readAsDataURL(fileObj);
-      });
+    // 새 첨부파일은 학교별 비공개 Supabase Storage에 저장합니다.
+    // 기존 브라우저 파일은 삭제하지 않고 로컬 폴백으로 보존합니다.
+    function schoolForFile(fileId) {
+      const groups = ['billings','expenses','attendances','notices','vaultFiles'];
+      for (const group of groups) {
+        const item = (appData?.[group] || []).find(x => x.id === fileId);
+        if (item?.schoolId) return item.schoolId;
+      }
+      return null;
     }
-
+    async function storeFile(fileId, fileObj, schoolId) {
+      if (!fileObj) return;
+      if (!brightAuth || !brightProfile) throw new Error('로그인이 필요합니다.');
+      const folder = schoolId || schoolForFile(fileId);
+      if (!folder || folder === 'all') {
+        alert('파일을 저장할 학교를 먼저 선택해 주세요.');
+        throw new Error('파일 학교 정보 누락');
+      }
+      const path = `${folder}/${fileId}`;
+      const { error } = await brightAuth.storage.from('bright-files').upload(path, fileObj, {
+        upsert: true, contentType: fileObj.type || 'application/octet-stream'
+      });
+      if (error) { alert('온라인 파일 저장 실패: ' + error.message); throw error; }
+      // 이전 브라우저 호환용 사본. 온라인 저장이 성공한 뒤에만 저장합니다.
+      if (dbInstance) {
+        await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const tx = dbInstance.transaction('files', 'readwrite');
+            tx.objectStore('files').put({ id: fileId, name: fileObj.name, type: fileObj.type, data: reader.result });
+            tx.oncomplete = resolve; tx.onerror = resolve;
+          };
+          reader.onerror = resolve;
+          reader.readAsDataURL(fileObj);
+        });
+      }
+    }
     async function getFileFromDB(fileId) {
       if (!dbInstance) return null;
-      return new Promise((resolve) => { const tx = dbInstance.transaction('files', 'readonly'); const req = tx.objectStore('files').get(fileId); req.onsuccess = () => resolve(req.result || null); req.onerror = () => resolve(null); });
+      return new Promise(resolve => {
+        const tx = dbInstance.transaction('files', 'readonly');
+        const req = tx.objectStore('files').get(fileId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
     }
-
+    async function cloudFile(fileId) {
+      const folder = schoolForFile(fileId);
+      if (!folder || !brightAuth) return null;
+      const { data, error } = await brightAuth.storage.from('bright-files')
+        .createSignedUrl(`${folder}/${fileId}`, 60);
+      return error ? null : data?.signedUrl;
+    }
     async function downloadFileFromDB(fileId, fallbackName) {
-      const fileData = await getFileFromDB(fileId);
-      if (fileData && fileData.data) {
-        try {
-          const res = await fetch(fileData.data); const blob = await res.blob(); const blobUrl = window.URL.createObjectURL(blob);
-          const a = document.createElement('a'); a.href = blobUrl; a.download = fileData.name || fallbackName;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
-        } catch (e) {
-          const a = document.createElement('a'); a.href = fileData.data; a.download = fileData.name || fallbackName;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        }
-      } else alert('저장된 원본 파일이 없습니다. 다시 업로드해주세요.');
+      const url = await cloudFile(fileId);
+      if (url) {
+        const response = await fetch(url);
+        if (!response.ok) return alert('파일 다운로드에 실패했습니다.');
+        const blobUrl = URL.createObjectURL(await response.blob());
+        const a = document.createElement('a'); a.href = blobUrl;
+        a.download = fallbackName || '첨부파일'; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+        return;
+      }
+      const local = await getFileFromDB(fileId);
+      if (!local?.data) return alert('이 기기에는 파일 원본이 없습니다. 원래 PC에서 파일을 다시 등록해 주세요.');
+      const a = document.createElement('a'); a.href = local.data;
+      a.download = local.name || fallbackName; document.body.appendChild(a); a.click(); a.remove();
     }
-
     async function previewFile(fileId, fileType, fileName) {
-      const fileData = await getFileFromDB(fileId);
-      if (!fileData || !fileData.data) return alert('이 기기에는 첨부파일 원본이 없습니다. 현재 첨부파일은 업로드한 기기의 브라우저에만 저장됩니다. 다른 기기에서도 열려면 온라인 파일 저장소 연동이 필요합니다.');
-      const modal = document.getElementById('modal-file-preview'); document.getElementById('preview-title').textContent = fileName;
+      const signed = await cloudFile(fileId);
+      const local = signed ? null : await getFileFromDB(fileId);
+      const src = signed || local?.data;
+      if (!src) return alert('이 기기에는 첨부파일 원본이 없습니다. 원래 PC에서 파일을 다시 등록해 주세요.');
+      const modal = document.getElementById('modal-file-preview');
+      document.getElementById('preview-title').textContent = fileName || '첨부파일';
       const bodyEl = document.getElementById('preview-body');
-      const isImage = fileData.type && fileData.type.startsWith('image/'); const isPdf = fileData.type === 'application/pdf' || fileName.toLowerCase().endsWith('.pdf');
+      const isImage = /\.(png|jpe?g|gif|webp)$/i.test(fileName || '') || local?.type?.startsWith('image/');
+      const isPdf = /\.pdf$/i.test(fileName || '') || local?.type === 'application/pdf';
       if (isPdf || isImage) {
-        if (isImage) bodyEl.innerHTML = `<img src="${fileData.data}" class="max-w-[85vw] max-h-[75vh] rounded-2xl object-contain mx-auto" />`; 
-        else bodyEl.innerHTML = `<iframe src="${fileData.data}" class="w-full h-full rounded-2xl border border-stone-200"></iframe>`;
-      } else bodyEl.innerHTML = `<div class="p-8 text-center text-xs font-bold text-stone-600">엑셀은 [다운로드] 버튼을 이용해 직접 열어주세요.</div>`;
+        const el = document.createElement(isImage ? 'img' : 'iframe');
+        el.src = src; el.className = isImage
+          ? 'max-w-[85vw] max-h-[75vh] rounded-2xl object-contain mx-auto'
+          : 'w-full h-full rounded-2xl border border-stone-200';
+        bodyEl.replaceChildren(el);
+      } else {
+        bodyEl.textContent = '이 파일은 다운로드 버튼을 이용해 열어주세요.';
+      }
       modal.classList.remove('hidden');
     }
 
@@ -1239,35 +1339,35 @@
         e.preventDefault(); const schoolId = document.getElementById('billing-input-school').value, category = document.getElementById('billing-input-category').value, quarter = parseInt(document.getElementById('billing-input-quarter').value, 10), period = parseInt(document.getElementById('billing-input-period').value, 10), amount = parseInt(document.getElementById('billing-input-amount').value, 10), file = document.getElementById('billing-input-file').files[0];
         const existingIdx = appData.billings.findIndex(b => b.schoolId === schoolId && (b.category || 'after_instructor') === category && b.quarter === quarter && b.period === period);
         const fileId = existingIdx > -1 ? appData.billings[existingIdx].id : 'b_' + Date.now(); const fileName = file ? file.name : (existingIdx > -1 ? appData.billings[existingIdx].fileName : `청구서.xlsx`);
-        if (file) await storeFile(fileId, file);
+        if (file) await storeFile(fileId, file, schoolId);
         if (existingIdx > -1) appData.billings[existingIdx] = { ...appData.billings[existingIdx], id: fileId, schoolId, category, quarter, period, amount, fileName, status: appData.billings[existingIdx].status || '청구중' }; else appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName, status: '청구중' });
         saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
       });
       document.getElementById('form-edit-billing')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const id = document.getElementById('edit-billing-id').value, amount = parseInt(document.getElementById('edit-billing-amount').value, 10), file = document.getElementById('edit-billing-file').files[0];
         const item = appData.billings.find(b => b.id === id); if (!item) return; item.amount = amount;
-        if (file) { item.fileName = file.name; await storeFile(item.id, file); }
+        if (file) { item.fileName = file.name; await storeFile(item.id, file, item.schoolId); }
         saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling(); renderChecklist();
       });
       document.getElementById('form-add-expense')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const schoolId = document.getElementById('exp-input-school').value, month = parseInt(document.getElementById('exp-input-month').value, 10), amount = parseInt(document.getElementById('exp-input-amount').value, 10), file = document.getElementById('exp-input-file').files[0];
-        const fileId = 'e_' + Date.now(); const fileName = file ? file.name : `지출결의서.pdf`; if (file) await storeFile(fileId, file);
+        const fileId = 'e_' + Date.now(); const fileName = file ? file.name : `지출결의서.pdf`; if (file) await storeFile(fileId, file, schoolId);
         appData.expenses.push({ id: fileId, month, schoolId, amount, fileName }); saveData('expenses', appData.expenses); closeModal('modal-add-expense'); currentMonth = month; document.getElementById('select-month').value = month; renderExpenseAndAttendance(); renderChecklist();
       });
       document.getElementById('form-add-attendance')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const schoolId = document.getElementById('att-input-school').value, month = parseInt(document.getElementById('att-input-month').value, 10), teacher = document.getElementById('att-input-teacher').value.trim(), file = document.getElementById('att-input-file').files[0];
-        const fileId = 'a_' + Date.now(); const fileName = file ? file.name : `코디출근부.pdf`; if (file) await storeFile(fileId, file);
+        const fileId = 'a_' + Date.now(); const fileName = file ? file.name : `코디출근부.pdf`; if (file) await storeFile(fileId, file, schoolId);
         appData.attendances.push({ id: fileId, month: month, schoolId, teacher, fileName }); saveData('attendances', appData.attendances); closeModal('modal-add-attendance'); currentMonth = month; document.getElementById('select-month').value = month; renderExpenseAndAttendance(); renderChecklist();
       });
       document.getElementById('form-add-notice')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const schoolId = document.getElementById('not-input-school').value, quarter = parseInt(document.getElementById('not-input-quarter').value, 10), file = document.getElementById('not-input-file').files[0];
-        const fileId = 'n_' + Date.now(); const fileName = file ? file.name : `안내장.pdf`; if (file) await storeFile(fileId, file);
+        const fileId = 'n_' + Date.now(); const fileName = file ? file.name : `안내장.pdf`; if (file) await storeFile(fileId, file, schoolId);
         appData.notices.push({ id: fileId, schoolId, quarter, date: new Date().toISOString().split('T')[0], fileName }); saveData('notices', appData.notices); closeModal('modal-add-notice'); renderNotices();
       });
       document.getElementById('form-add-vault')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const file = document.getElementById('vault-input-file').files[0]; if (!file) return;
-        const fileId = 'v_' + Date.now(); await storeFile(fileId, file);
-        appData.vaultFiles.push({ id: fileId, date: new Date().toISOString().split('T')[0], name: file.name }); saveData('vaultFiles', appData.vaultFiles); closeModal('modal-add-vault'); renderVaultFiles();
+        const fileId = 'v_' + Date.now(); await storeFile(fileId, file, currentSchoolId);
+        appData.vaultFiles.push({ id: fileId, schoolId: currentSchoolId, date: new Date().toISOString().split('T')[0], name: file.name }); saveData('vaultFiles', appData.vaultFiles); closeModal('modal-add-vault'); renderVaultFiles();
       });
       document.getElementById('form-add-memo')?.addEventListener('submit', (e) => {
         e.preventDefault(); const schoolId = document.getElementById('memo-input-school').value, author = document.getElementById('memo-input-author').value, text = document.getElementById('memo-input-text').value.trim();

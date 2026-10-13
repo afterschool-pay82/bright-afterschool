@@ -903,6 +903,22 @@
     }
 
 
+    // 시간표 연락처는 해당 학교의 강사현황을 우선 참조합니다.
+    // 동일 이름에 서로 다른 연락처가 있으면 잘못 표시하지 않도록 비워둡니다.
+    function findTimetableTeacherPhone(schoolId, teacherName, savedPhone) {
+      const schoolName = (appData.schools || []).find(x => x.id === schoolId)?.name || '';
+      const normalize = x => String(x || '').replace(/\\s+/g, '').trim();
+      const matches = (appData.masterTeachers || []).filter(t =>
+        normalize(t.name) === normalize(teacherName) &&
+        normalize(t.school) === normalize(schoolName) &&
+        String(t.phone || '').trim()
+      );
+      const phones = [...new Set(matches.map(t => String(t.phone).trim()))];
+      if (phones.length === 1) return phones[0];
+      if (phones.length > 1) return '';
+      return String(savedPhone || '').trim();
+    }
+
     // ================= TIMETABLE =================
     function renderSchoolTimetableGrid() {
       ['월요일', '화요일', '수요일', '목요일', '금요일'].forEach(d => {
@@ -914,7 +930,7 @@
           items.forEach(item => {
             let cleanCourse = item.course.replace(/\s*[A-Z]반(?=\s*\(2026 4기\)$)/, '').replace(/[A-Z]반$/g, '').trim(); if (!cleanCourse) cleanCourse = item.course;
             const key = `${cleanCourse}_${item.teacher.trim()}`;
-            if (!groupMap.has(key)) groupMap.set(key, { displayCourse: cleanCourse, teacher: item.teacher, phone: item.phone, slots: [] });
+            if (!groupMap.has(key)) groupMap.set(key, { displayCourse: cleanCourse, teacher: item.teacher, phone: findTimetableTeacherPhone(item.schoolId, item.teacher, item.phone), slots: [] });
             groupMap.get(key).slots.push({ id: item.id, time: item.time, originalCourse: item.course });
           });
           groupMap.forEach(group => {
@@ -936,7 +952,7 @@
     }
 
     function openAddScheduleModal() { if (currentSchoolId === 'all') return alert('특정 학교를 먼저 선택해 주세요!'); document.getElementById('sched-input-edit-id').value = ''; document.getElementById('schedule-modal-title').textContent = '새 강좌 등록'; if(document.getElementById('form-add-schedule')) document.getElementById('form-add-schedule').reset(); openModal('modal-add-schedule'); }
-    function openEditScheduleModal(id) { const item = appData.schedules.find(s => s.id === id); if (!item) return; document.getElementById('sched-input-edit-id').value = item.id; document.getElementById('schedule-modal-title').textContent = '시간표 수정'; document.getElementById('sched-input-day').value = item.day; document.getElementById('sched-input-time').value = item.time; document.getElementById('sched-input-course').value = item.course; document.getElementById('sched-input-teacher').value = item.teacher; document.getElementById('sched-input-phone').value = item.phone || ''; openModal('modal-add-schedule'); }
+    function openEditScheduleModal(id) { const item = appData.schedules.find(s => s.id === id); if (!item) return; document.getElementById('sched-input-edit-id').value = item.id; document.getElementById('schedule-modal-title').textContent = '시간표 수정'; document.getElementById('sched-input-day').value = item.day; document.getElementById('sched-input-time').value = item.time; document.getElementById('sched-input-course').value = item.course; document.getElementById('sched-input-teacher').value = item.teacher; document.getElementById('sched-input-phone').value = findTimetableTeacherPhone(item.schoolId, item.teacher, item.phone); openModal('modal-add-schedule'); }
     function deleteScheduleItem(id) { if (confirm('해당 수업을 삭제하시겠습니까?')) { appData.schedules = appData.schedules.filter(s => s.id !== id); saveData('schedules', appData.schedules); renderSchoolTimetableGrid(); } }
     
     // 강사 요일 입력 형식(월/월요일/월화수/월~금/월, 수 등)을 통일합니다.
@@ -1281,7 +1297,7 @@
         const record = {...(old || {}), id: id || 'teacher_manual_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), school:get('school'), name:get('name'), subject:get('subject'), phone:get('phone'), day:selected.join(', '), address:get('address'), car:get('car'), note:get('note'), manual:true};
         if (old) Object.assign(old,record); else appData.masterTeachers.push(record);
         saveData('masterTeachers',appData.masterTeachers);
-        closeModal('modal-teacher-editor'); renderMasterTeacherList();
+        closeModal('modal-teacher-editor'); renderMasterTeacherList(); renderSchoolTimetableGrid();
       });
     });
 

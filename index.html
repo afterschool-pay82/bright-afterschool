@@ -258,6 +258,19 @@
     </div>
   </aside>
 
+
+<style>
+/* B+ 학교 구분: 선택 학교가 바뀌면 상단 색상도 함께 바뀝니다. */
+body.bright-mode-own main > header { background:#eaf4ff !important; border-bottom:3px solid #3b82f6 !important; }
+body.bright-mode-own #current-school-badge { background:#dbeafe !important; color:#1e40af !important; border-color:#93c5fd !important; }
+body.bright-mode-other main > header { background:#f1f5f9 !important; border-bottom:3px solid #94a3b8 !important; }
+body.bright-mode-other #current-school-badge { background:#e2e8f0 !important; color:#334155 !important; border-color:#cbd5e1 !important; }
+body.bright-mode-all main > header { background:#fff !important; }
+.bright-work-panel { background:white; border:1px solid #e7e5e4; border-radius:18px; padding:14px 16px; margin-bottom:14px; }
+.bright-work-item { padding:8px 0; border-bottom:1px solid #f5f5f4; font-size:13px; }
+.bright-work-item:last-child { border-bottom:0; }
+</style>
+
   <!-- ================= M A I N   C O N T E N T ================= -->
   <main class="flex-1 flex flex-col h-full overflow-y-auto custom-scroll min-w-0 bg-[#F8F9FA]">
     <div class="bright-notice-bar bg-amber-400 px-4 md:px-6 py-3 text-stone-900 font-bold flex items-center gap-3 shadow-xs shrink-0" role="region" aria-label="중요 공지사항">
@@ -296,6 +309,11 @@
 
     <!-- Content Sections -->
     <div id="printArea" class="p-4 md:p-6 space-y-6">
+
+      <div id="bright-work-panel" class="bright-work-panel" aria-live="polite">
+        <div class="flex items-center justify-between gap-2 mb-2"><strong class="text-sm text-stone-900">📋 확인할 업무</strong><span id="bright-work-scope" class="text-xs text-stone-500"></span></div>
+        <div id="bright-work-items" class="text-xs text-stone-500">업무 현황을 불러오는 중입니다.</div>
+      </div>
 
       <!-- ================= 1. TAB: CALENDAR EVENTS ================= -->
       <section id="view-calendar-events" class="space-y-4 hidden">
@@ -1025,11 +1043,41 @@
       });
     }
 
+    function brightUpdateWorkPanel() {
+      const panel = document.getElementById('bright-work-panel');
+      const items = document.getElementById('bright-work-items');
+      const scope = document.getElementById('bright-work-scope');
+      if (!panel || !items || !scope) return;
+      // 타 학교 열람 시에는 청구 현황이나 내부 업무를 표시하지 않습니다.
+      if (brightIsOtherSchool()) { panel.style.display='none'; return; }
+      panel.style.display='block';
+      const schools = currentSchoolId === 'all' ? (appData.schools || []) : (appData.schools || []).filter(s => s.id === currentSchoolId);
+      scope.textContent = currentSchoolId === 'all' ? '전체 학교 · 이번 분기' : '내 학교 · 이번 분기';
+      const quarter = getCurrentQuarter();
+      const pending = schools.filter(s => !(appData.billings || []).some(b => b.schoolId === s.id && Number(b.quarter) === quarter));
+      // 차수는 학교마다 달라서 미등록을 확정 마감으로 간주하지 않습니다.
+      if (!pending.length) {
+        items.textContent = '이번 분기에 청구서 등록 내역이 있습니다. 세부 진행 상태는 청구서 관리에서 확인해 주세요.';
+        return;
+      }
+      const summary = document.createElement('div');
+      summary.className = 'text-xs font-bold text-amber-800 mb-1';
+      summary.textContent = `이번 분기 청구서 등록 내역 확인 필요 · ${pending.length}개 학교`;
+      items.replaceChildren(summary);
+      pending.forEach(school => {
+        const line = document.createElement('div'); line.className='bright-work-item';
+        line.textContent = `${school.name} · 이번 분기 청구서 등록 내역 없음 (확인 필요)`;
+        items.appendChild(line);
+      });
+    }
+
     function selectSchool(id) {
       if (brightProfile?.role !== 'admin') { if (id === 'all') id = [...brightOwnSchoolIds][0]; if (!appData.schools.some(s => s.id === id)) return; }
       document.querySelector('body > aside')?.classList.remove('mobile-schools-open');
       const mobileToggle = document.getElementById('mobile-school-toggle'); if (mobileToggle) mobileToggle.setAttribute('aria-expanded','false');
       currentSchoolId = id;
+      document.body.classList.remove('bright-mode-own','bright-mode-other','bright-mode-all');
+      document.body.classList.add(id === 'all' ? 'bright-mode-all' : brightIsOtherSchool() ? 'bright-mode-other' : 'bright-mode-own');
       if (id !== 'all' && document.getElementById('view-checklist') && !document.getElementById('view-checklist').classList.contains('hidden')) {
         switchTab('calendar-events');
       }
@@ -1056,6 +1104,7 @@
       renderSchoolTimetableGrid(); renderCalendarGrid(); if (!brightIsOtherSchool()) { renderBilling(); renderDashboardBillingSummary(); }
       if (!brightIsOtherSchool()) { renderChecklist(); renderExpenseAndAttendance(); renderNotices(); renderMemos(); renderVaultFiles(); }
       brightApplyViewPermissions();
+      brightUpdateWorkPanel();
     }
 
 
@@ -1318,6 +1367,7 @@
       if (!item) return;
       item.status = status;
       saveData('billings', appData.billings);
+      brightUpdateWorkPanel();
       renderBilling(); renderChecklist(); renderDashboardBillingSummary();
     }
     function switchBillingCategory(cat) { currentBillingCategory = cat; ['after_instructor', 'after_materials', 'custom_instructor', 'custom_materials'].forEach(c => { const btn = document.getElementById(`sub-billing-btn-${c}`); if(btn) btn.className = c === cat ? "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs flex items-center gap-1.5 cursor-pointer" : "px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-700 hover:bg-stone-100 flex items-center gap-1.5 cursor-pointer"; }); renderBilling(); }
@@ -1557,13 +1607,15 @@
         const fileName = file ? file.name : '청구서';
         if (file) await storeFile(fileId, file, schoolId);
         appData.billings.push({ id: fileId, schoolId, category, quarter, period, amount, fileName, status: '청구중' });
-        saveData('billings', appData.billings); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
+        saveData('billings', appData.billings);
+      brightUpdateWorkPanel(); closeModal('modal-add-billing'); renderBilling(); renderChecklist();
       });
       document.getElementById('form-edit-billing')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const id = document.getElementById('edit-billing-id').value, amount = parseInt(document.getElementById('edit-billing-amount').value, 10), file = document.getElementById('edit-billing-file').files[0];
         const item = appData.billings.find(b => b.id === id); if (!item) return; item.amount = amount;
         if (file) { item.fileName = file.name; await storeFile(item.id, file, item.schoolId); }
-        saveData('billings', appData.billings); closeModal('modal-edit-billing'); renderBilling(); renderChecklist();
+        saveData('billings', appData.billings);
+      brightUpdateWorkPanel(); closeModal('modal-edit-billing'); renderBilling(); renderChecklist();
       });
       document.getElementById('form-add-expense')?.addEventListener('submit', async (e) => {
         e.preventDefault(); const schoolId = document.getElementById('exp-input-school').value, month = parseInt(document.getElementById('exp-input-month').value, 10), amount = parseInt(document.getElementById('exp-input-amount').value, 10), file = document.getElementById('exp-input-file').files[0];
